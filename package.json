@@ -1,0 +1,14 @@
+{
+  "author": "Joey Schluchter <jschluchter@thuzi.com> (http://twitter.com/sonofjorel)",
+  "name": "FacebookNodeSDK",
+  "description": "NodeJS library to allow easy access to the Facebook Graph",
+  "version": "0.0.1",
+  "repository": {
+    "url": ""
+  },
+  "engines": {
+    "node": "~v0.4.11"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
