@@ -6,6 +6,8 @@ With facebook-node-sdk you can now easily write the same code and share between 
 
 ```
 npm install fb
+
+var FB = require('fb');
 ```
 
 ## Graph Api
