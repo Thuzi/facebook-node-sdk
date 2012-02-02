@@ -137,7 +137,7 @@ var accessToken = '.....';
 
 var extractEtag;
 FB.api('', 'post', { 
-    batch : [
+    batch: [
         { method: 'get', relative_url: '4' },
         { method: 'get', relative_url: 'me/friends?limit=50' },
         { method: 'get', relative_url: 'fql?q=' + encodeURIComponent('SELECT uid FROM user WHERE uid=me()' ) }, /* fql */
@@ -244,6 +244,32 @@ extractETag = function(res) {
     }
     return etag;
 };
+```
+### Post
+
+```js
+var message = 'Hi from facebook-node-js';
+FB.api('', 'post', {
+    batch: [
+        { method: 'post', relative_url: 'me/feed', body:'message=' + encodeURIComponent(message) }
+    ],
+    access_token: accessToken
+}, function (res) {
+    var res0;
+
+    if(!res || res.error) {
+        console.log(res.error);
+        return;
+    }
+
+    res0 = JSON.parse(res[0].body);
+
+    if(res0.error) {
+        console.log(res0.error);
+    } else {
+        console.log('Post Id: ' + res0.id);
+    }
+});
 ```
 
 ## Legacy REST Api
