@@ -248,6 +248,9 @@ extractETag = function(res) {
 ### Post
 
 ```js
+var FB = require('fb');
+var accessToken = '.....';
+
 var message = 'Hi from facebook-node-js';
 FB.api('', 'post', {
     batch: [
