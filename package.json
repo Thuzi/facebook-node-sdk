@@ -9,6 +9,8 @@
   "engines": {
     "node": "~v0.4.11"
   },
-  "dependencies": {},
+  "dependencies": {
+    "request" : "2.9.x"
+  },
   "devDependencies": {}
 }
