@@ -1,16 +1,19 @@
 {
-  "author": "Joey Schluchter <jschluchter@thuzi.com> (http://twitter.com/sonofjorel)",
-  "name": "FacebookNodeSDK",
-  "description": "NodeJS library to allow easy access to the Facebook Graph",
+  "author": "Thuzi LLC <info@thuzi.com> (http://www.thuzi.com)",
+  "name": "fb",
+  "description": "NodeJS Library for Facebook",
   "version": "0.0.1",
+  "homepage": "https://github.com/Thuzi/facebook-node-sdk",
   "repository": {
-    "url": ""
+    "type": "git",
+    "url": "git://github.com/Thuzi/facebook-node-sdk.git"
   },
   "engines": {
-    "node": "~v0.4.11"
+    "node": "~0.6.9"
   },
   "dependencies": {
-    "request" : "2.9.x"
+    "request": "2.9.x"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "optionalDependencies": {}
 }
