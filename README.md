@@ -30,7 +30,7 @@ __Passing Parameters__
 ```js
 var FB = require('fb');
 
-FB.api('4', { fields = ['id', 'name'] }, function (res) {
+FB.api('4', { fields: ['id', 'name'] }, function (res) {
   if(!res || res.error) {
     console.log(res.error);
     return;
@@ -44,27 +44,25 @@ FB.api('4', { fields = ['id', 'name'] }, function (res) {
 
 ```js
 var FB = require('fb');
-
-var body = 'My first post using facebook-node-sdk';
 var accessToken = ".....";
 
+var body = 'My first post using facebook-node-sdk';
 FB.api('me/feed', 'post', { message: body, access_token: accessToken }, function (res) {
   if(!res || res.error) {
     console.log(res.error);
     return;
   }
   console.log('Post Id: ' + res.id);
-};
+});
 ```
 
 ### Delete
 
 ```js
 var FB = require('fb');
-
-var postId = '1234567890';
 var accessToken = '.....');
 
+var postId = '1234567890';
 FB.api(postId, 'delete', { access_token: accessToken }, function (res) {
   if(!res || res.error) {
     console.log(res.error);
@@ -80,7 +78,6 @@ FB.api(postId, 'delete', { access_token: accessToken }, function (res) {
 
 ```js
 var FB = require('fb');
-
 var accessToken = '.....';
 
 FB.api('fql', { q: 'SELECT uid FROM user WHERE uid=me()', access_token: accessToken }, function (res) {
@@ -88,7 +85,7 @@ FB.api('fql', { q: 'SELECT uid FROM user WHERE uid=me()', access_token: accessTo
     console.log(res.error);
     return;
   }
-  console.log(res);
+  console.log(res.data);
 });
 ```
 
@@ -96,18 +93,18 @@ FB.api('fql', { q: 'SELECT uid FROM user WHERE uid=me()', access_token: accessTo
 
 ```js
 var FB = require('fb');
-
 var accessToken = '.....';
 
 FB.api('fql', { q: [
   'SELECT uid FROM user WHERE uid=me()',
   'SELECT name FROM user WHERE uid=me()'
-], access_token = accessToken, function(res) {
+], access_token: accessToken }, function(res) {
   if(!res || res.error) {
     console.log(res.error);
     return;
   }
-  console.log(res);
+  console.log(res.data[0].fql_result_set);
+  console.log(res.data[1].fql_result_set);
 });
 ```
 
@@ -115,18 +112,18 @@ FB.api('fql', { q: [
 
 ```js
 var FB = require('fb');
-
 var accessToken = '.....';
 
-FB.api('fql', { q = {
+FB.api('fql', { q : {
   id: 'SELECT uid FROM user WHERE uid=me()',
   name: 'SELECT name FROM user WHERE uid IN (SELECT uid FROM #id)'
-} }, access_token : acessToken }, function(res) {
+}, access_token: accessToken }, function(res) {
   if(!res || res.error) {
     console.log(res.error);
     return;
   }
-  console.log(res);
+  console.log(res.data[0].fql_result_set);
+  console.log(res.data[1].fql_result_set);
 });
 ```
 
