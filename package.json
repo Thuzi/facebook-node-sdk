@@ -15,5 +15,6 @@
     "request": "2.9.x"
   },
   "devDependencies": {},
-  "optionalDependencies": {}
+  "optionalDependencies": {},
+  "main": "./lib/fb.js"
 }
