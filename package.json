@@ -3,7 +3,7 @@
   "name": "fb",
   "description": "NodeJS Library for Facebook",
   "keywords": ["facebook", "graph"],
-  "version": "0.0.1",
+  "version": "0.0.2",
   "homepage": "https://github.com/Thuzi/facebook-node-sdk",
   "repository": {
     "type": "git",
