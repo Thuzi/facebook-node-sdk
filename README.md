@@ -281,8 +281,49 @@ __Although Legacy REST Api is supported by facebook-node-sdk, it is highly disco
 
 ### Get
 
-[TODO]
+```javascript
+var FB = require('fb');
+
+FB.api({ method: 'users.getInfo', uids: ['4'], fields: ['uid', 'name'] }, function (res) {
+    if(!res || res.error_msg) {
+        console.log(res.error_msg);
+    }
+    else {
+        console.log('User Id: ' + res[0].uid);
+        console.log('Name: ' + res[0].name);
+    }
+});
+```
 
 ### Post
 
-[TODO]
+```javascript
+var FB = require('fb');
+var accessToken = '.....';
+
+var message = 'Hi from facebook-node-sdk';
+FB.api({ method: 'stream.publish', message: message, access_token: accessToken }, function (res) {
+    if(!res || res.error_msg) {
+        console.log(res.error_msg);
+    }
+    else {
+        console.log(res);
+    }
+});
+```
+### Delete
+
+```javascript
+var FB = require('fb');
+var accessToken = '.....';
+
+var postId = '.....';
+FB.api({ method: 'stream.remove', post_id: postId, access_token: accessToken }, function (res) {
+   if(!res || res.error_msg) {
+       console.log(res.error_msg);
+   }
+   else {
+       console.log(res);
+   }
+});
+```
