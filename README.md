@@ -46,10 +46,10 @@ FB.api('4', { fields: ['id', 'name'] }, function (res) {
 
 ```js
 var FB = require('fb');
-var accessToken = ".....";
+FB.setAccessToken('access_token');
 
 var body = 'My first post using facebook-node-sdk';
-FB.api('me/feed', 'post', { message: body, access_token: accessToken }, function (res) {
+FB.api('me/feed', 'post', { message: body}, function (res) {
   if(!res || res.error) {
     console.log(res.error);
     return;
@@ -62,10 +62,10 @@ FB.api('me/feed', 'post', { message: body, access_token: accessToken }, function
 
 ```js
 var FB = require('fb');
-var accessToken = '.....');
+FB.setAccessToken('access_token');
 
 var postId = '1234567890';
-FB.api(postId, 'delete', { access_token: accessToken }, function (res) {
+FB.api(postId, 'delete', function (res) {
   if(!res || res.error) {
     console.log(res.error);
     return;
@@ -80,9 +80,9 @@ FB.api(postId, 'delete', { access_token: accessToken }, function (res) {
 
 ```js
 var FB = require('fb');
-var accessToken = '.....';
+FB.setAccessToken('access_token');
 
-FB.api('fql', { q: 'SELECT uid FROM user WHERE uid=me()', access_token: accessToken }, function (res) {
+FB.api('fql', { q: 'SELECT uid FROM user WHERE uid=me()' }, function (res) {
   if(!res || res.error) {
     console.log(res.error);
     return;
@@ -95,12 +95,12 @@ FB.api('fql', { q: 'SELECT uid FROM user WHERE uid=me()', access_token: accessTo
 
 ```js
 var FB = require('fb');
-var accessToken = '.....';
+FB.setAccessToken('access_token');
 
 FB.api('fql', { q: [
   'SELECT uid FROM user WHERE uid=me()',
   'SELECT name FROM user WHERE uid=me()'
-], access_token: accessToken }, function(res) {
+] }, function(res) {
   if(!res || res.error) {
     console.log(res.error);
     return;
@@ -114,12 +114,12 @@ FB.api('fql', { q: [
 
 ```js
 var FB = require('fb');
-var accessToken = '.....';
+FB.setAccessToken('access_token');
 
 FB.api('fql', { q : {
   id: 'SELECT uid FROM user WHERE uid=me()',
   name: 'SELECT name FROM user WHERE uid IN (SELECT uid FROM #id)'
-}, access_token: accessToken }, function(res) {
+} }, function(res) {
   if(!res || res.error) {
     console.log(res.error);
     return;
@@ -133,7 +133,7 @@ FB.api('fql', { q : {
 
 ```js
 var FB = require('fb');
-var accessToken = '.....';
+FB.setAccessToken('access_token');
 
 var extractEtag;
 FB.api('', 'post', { 
@@ -152,8 +152,7 @@ FB.api('', 'post', {
         { method: 'get', relative_url: '4', headers: { 'If-None-Match': '"7de572574f2a822b65ecd9eb8acef8f476e983e1"' } }, /* etags */
         { method: 'get', relative_url: 'me/friends?limit=1', name: 'one-friend' /* , omit_response_on_success: false */ },
         { method: 'get', relative_url: '{result=one-friend:$.data.0.id}/feed?limit=5'}
-    ],
-    access_token: accessToken
+    ]
 }, function(res) {
     var res0, res1, res2, res3, res4, res5, res6, res7,
         etag1;
@@ -249,14 +248,13 @@ extractETag = function(res) {
 
 ```js
 var FB = require('fb');
-var accessToken = '.....';
+FB.setAccessToken('access_token');
 
 var message = 'Hi from facebook-node-js';
 FB.api('', 'post', {
     batch: [
         { method: 'post', relative_url: 'me/feed', body:'message=' + encodeURIComponent(message) }
-    ],
-    access_token: accessToken
+    ]
 }, function (res) {
     var res0;
 
@@ -299,10 +297,10 @@ FB.api({ method: 'users.getInfo', uids: ['4'], fields: ['uid', 'name'] }, functi
 
 ```javascript
 var FB = require('fb');
-var accessToken = '.....';
+FB.setAccessToken('access_token');
 
 var message = 'Hi from facebook-node-sdk';
-FB.api({ method: 'stream.publish', message: message, access_token: accessToken }, function (res) {
+FB.api({ method: 'stream.publish', message: message }, function (res) {
     if(!res || res.error_msg) {
         console.log(res.error_msg);
     }
@@ -315,10 +313,10 @@ FB.api({ method: 'stream.publish', message: message, access_token: accessToken }
 
 ```javascript
 var FB = require('fb');
-var accessToken = '.....';
+FB.setAccessToken('access_token');
 
 var postId = '.....';
-FB.api({ method: 'stream.remove', post_id: postId, access_token: accessToken }, function (res) {
+FB.api({ method: 'stream.remove', post_id: postId }, function (res) {
    if(!res || res.error_msg) {
        console.log(res.error_msg);
    }
@@ -326,4 +324,31 @@ FB.api({ method: 'stream.remove', post_id: postId, access_token: accessToken }, 
        console.log(res);
    }
 });
+```
+
+## Access Tokens
+
+### setAccessToken
+*This is a non-standard api and does not exist in the official client side FB JS SDK.*
+
+```js
+var FB = require('FB');
+FB.setAccessToken('access_token');
+```
+
+If you want to use the api compaitible with FB JS SDK, pass `access_token` as parameter.
+
+```js
+FB.api('me', { fields: ['id', 'name'], access_token: 'access_token' }, function (res) {
+    console.log(res);
+}
+```
+
+### getAccessToken
+*Unlike `setAccessToken` this is a standard api and exists in FB JS SDK.*
+
+```js
+var FB = require('FB');
+FB.setAccessToken('access_token');
+var accessToken = FB.getAccessToken();
 ```
