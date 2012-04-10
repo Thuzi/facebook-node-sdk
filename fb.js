@@ -9,6 +9,7 @@
             , oauthRequest
             , accessToken
             , setAccessToken
+            , getAccessToken
             , log
             , METHODS = ['get', 'post', 'delete', 'put']
             , readOnlyCalls = {
@@ -273,12 +274,17 @@
             console.log(d);
         };
 
+        getAccessToken = function () {
+            return accessToken || null;  
+        };
+
         setAccessToken = function (access_token) {
             accessToken = access_token;
         };
         
         return {
               api: api
+            , getAccessToken: getAccessToken
             , setAccessToken: setAccessToken // this method does not exist in fb js sdk
         };
 
