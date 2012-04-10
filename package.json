@@ -17,5 +17,5 @@
   },
   "devDependencies": {},
   "optionalDependencies": {},
-  "main": "./lib/fb.js"
+  "main": "./fb.js"
 }
