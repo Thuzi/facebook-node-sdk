@@ -8,6 +8,7 @@
             , rest
             , oauthRequest
             , accessToken
+            , setAccessToken
             , log
             , METHODS = ['get', 'post', 'delete', 'put']
             , readOnlyCalls = {
@@ -207,7 +208,6 @@
                 , value;
 
             if(!params.access_token && accessToken) {
-                // todo: have a better way to set the access_token
                 params.access_token = accessToken;
             }
 
@@ -272,9 +272,14 @@
             // todo
             console.log(d);
         };
+
+        setAccessToken = function (access_token) {
+            accessToken = access_token;
+        };
         
         return {
-            'api': api
+              api: api
+            , setAccessToken: setAccessToken // this method does not exist in fb js sdk
         };
 
     })();
