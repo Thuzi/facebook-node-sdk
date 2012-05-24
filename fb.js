@@ -261,7 +261,7 @@
             }
             ,function(error, response, body) {
                 if(error !== null) {
-                    if(error.hasOwnProperty('error')) {
+                    if(error === Object(error) && error.hasOwnProperty('error')) {
                         return cb(error);
                     }
                     return cb({error:error});
