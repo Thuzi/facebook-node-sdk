@@ -352,16 +352,3 @@ var FB = require('FB');
 FB.setAccessToken('access_token');
 var accessToken = FB.getAccessToken();
 ```
-
-### setMaxWait
-*This is a non-standard api and does not exist in the official client side FB JS SDK.*
-
-Api calls will timeout if you do not get a response within the set waiting time period. Timeouts will return errors to the api callback in the format:
-```js
-{error:'ETIMEDOUT'}
-```
-
-```js
-var FB = require('FB');
-FB.setMaxWait(5000); //defined in milliseconds
-```

@@ -11,7 +11,6 @@
             , setAccessToken
             , getAccessToken
             , log
-            , timeout
             , METHODS = ['get', 'post', 'delete', 'put']
             , readOnlyCalls = {
                   'admin.getallocation': true
@@ -207,8 +206,7 @@
             var   uri
                 , body
                 , key
-                , value
-                , options;
+                , value;
 
             if(!params.access_token && accessToken) {
                 params.access_token = accessToken;
@@ -256,20 +254,13 @@
                 uri = uri.substring(0, uri.length -1);
             };
 
-            options = {
-                method: method
-              , uri: uri
-              , body: body
-            };
-            if(timeout) {
-                options['timeout'] = timeout;
+            request({
+                  method: method
+                , uri: uri
+                , body: body
             }
-            request(options
             ,function(error, response, body) {
                 if(error !== null) {
-                    if(error.hasOwnProperty('code')) {
-                        return cb({error: error.code});
-                    }
                     console.log(error);
                     return;
                 }
@@ -291,15 +282,10 @@
             accessToken = access_token;
         };
         
-        setMaxWait = function(t) {
-            timeout = t;
-        };
-        
         return {
               api: api
             , getAccessToken: getAccessToken
             , setAccessToken: setAccessToken // this method does not exist in fb js sdk
-            , setMaxWait: setMaxWait         // this method does not exist in fb js sdk
         };
 
     })();
@@ -307,4 +293,3 @@
     module.exports = FB;
 
 })();
-
