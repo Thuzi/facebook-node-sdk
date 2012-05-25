@@ -7,11 +7,18 @@
             , graph
             , rest
             , oauthRequest
-            , accessToken
             , setAccessToken
             , getAccessToken
             , log
+            , has
+            , options
             , METHODS = ['get', 'post', 'delete', 'put']
+            , opts = {
+                  'accessToken': null
+                , 'appId': null
+                , 'appSecret': null
+                , 'timeout': null
+            }
             , readOnlyCalls = {
                   'admin.getallocation': true
                 , 'admin.getappproperties': true
@@ -206,10 +213,11 @@
             var   uri
                 , body
                 , key
-                , value;
+                , value
+                , requestOptions;
 
-            if(!params.access_token && accessToken) {
-                params.access_token = accessToken;
+            if(!params.access_token && options('accessToken')) {
+                params.access_token = options('accessToken');
             }
 
             if(domain === 'graph') {
@@ -254,14 +262,18 @@
                 uri = uri.substring(0, uri.length -1);
             };
 
-            request({
+            requestOptions = {
                   method: method
                 , uri: uri
                 , body: body
+            };
+            if(options('timeout')) {
+                requestOptions['timeout'] = options('timeout');
             }
+            request(requestOptions
             ,function(error, response, body) {
                 if(error !== null) {
-                    if(error === Object(error) && error.hasOwnProperty('error')) {
+                    if(error === Object(error) && has(error, 'error')) {
                         return cb(error);
                     }
                     return cb({error:error});
@@ -276,18 +288,38 @@
             console.log(d);
         };
 
-        getAccessToken = function () {
-            return accessToken || null;  
+        has = function (obj, key) {
+            return Object.prototype.hasOwnProperty.call(obj, key);
         };
 
-        setAccessToken = function (access_token) {
-            accessToken = access_token;
+        getAccessToken = function () {
+            return options('accessToken');
+        };
+
+        setAccessToken = function (accessToken) {
+            options({'accessToken': accessToken});
+        };
+
+        options = function (o) {
+            var k;
+            if(!o) {
+                return opts;
+            }
+            if(Object.prototype.toString.call(o) == '[object String]') {
+                return has(opts, o) ? opts[o] : null;
+            }
+            for(k in opts) {
+                if(has(opts, k) && has(o, k)) {
+                    opts[k] = o[k];
+                }
+            }
         };
         
         return {
               api: api
             , getAccessToken: getAccessToken
             , setAccessToken: setAccessToken // this method does not exist in fb js sdk
+            , options: options // this method does not exist in the fb js sdk
         };
 
     })();
