@@ -354,9 +354,11 @@ var accessToken = FB.getAccessToken();
 ```
 
 ## Configuration options
+
 *This is a non-standard api and does not exist in the official client side FB JS SDK.*
 
 ### options
+
 When this method is called with no parameters it will return all of the current options.
 
 ```js
@@ -379,8 +381,8 @@ var accessToken = FB.options('accessToken'); //will get the accessToken of 'XYZ'
 ```
 
 The existing options are:
-* `'accessToken'` this is identical to the `setAccessToken` and `getAccessToken` methods
-* `'timeout'` will requests that have not received a response in X ms. If set to null or 0 no timeout will exist. On timeout an error object will be returned to the api callback with the error code of `'ETIMEDOUT'` (example below)
+* `'accessToken'` string representing the facebook accessToken to be used for requests. This is the same option that is updated by the `setAccessToken` and `getAccessToken` methods.
+* `'timeout'` integer number of milliseconds to wait for a response. Requests that have not received a response in *X* ms. If set to null or 0 no timeout will exist. On timeout an error object will be returned to the api callback with the error code of `'ETIMEDOUT'` (example below).
 
 ## Error handling
 
