@@ -398,16 +398,16 @@ Some examples of various error codes you can check for:
 var FB = require('FB');
 FB.options({timeout: 1});
 FB.api('/me', function (res) {
-    if(r && r.error)
-        if(r.error.code === 'ETIMEDOUT') {
+    if(res && res.error)
+        if(res.error.code === 'ETIMEDOUT') {
             console.log('request timeout');
         }
         else {
-            console.log('error', r.error);
+            console.log('error', res.error);
         }
     }
     else {
-        console.log(r);
+        console.log(res);
     }
 });
 ```
