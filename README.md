@@ -353,6 +353,35 @@ FB.setAccessToken('access_token');
 var accessToken = FB.getAccessToken();
 ```
 
+## Configuration options
+*This is a non-standard api and does not exist in the official client side FB JS SDK.*
+
+### options
+When this method is called with no parameters it will return all of the current options.
+
+```js
+var FB = require('FB');
+var options = FB.options();
+```
+
+When this method is called with a string it will return the value of the option if exists, null if it does not.
+
+```js
+var timeout = FB.options('timeout');
+```
+
+When this method is called with an object it will merge the object onto the previous options object.
+```js
+FB.options({accessToken: 'abc'}); //equivalent to calling setAccessToken('abc')
+FB.options({timeout: 1000, accessToken: 'XYZ'}); //will set timeout and accessToken options
+var timeout = FB.options('timeout'); //will get a timeout of 1000
+var accessToken = FB.options('accessToken'); //will get the accessToken of 'XYZ'
+```
+
+The existing options are:
+* `'accessToken'` this is identical to the `setAccessToken` and `getAccessToken` methods
+* `'timeout'` will requests that have not received a response in X ms. If set to null or 0 no timeout will exist. On timeout an error object will be returned to the api callback with the error code of `'ETIMEDOUT'` (example below)
+
 ## Error handling
 
 *Note facebook is not consistent with their error format, and different systems can fail causing different error formats*
@@ -365,12 +394,18 @@ Some examples of various error codes you can check for:
 
 ```js
 var FB = require('FB');
+FB.options({timeout: 1});
 FB.api('/me', function (res) {
-    if(r && r.error && r.error.code === 'ETIMEDOUT') {
-        console.log('request timeout');
+    if(r && r.error)
+        if(r.error.code === 'ETIMEDOUT') {
+            console.log('request timeout');
+        }
+        else {
+            console.log('error', r.error);
+        }
     }
     else {
-        console.log(r.error);
+        console.log(r);
     }
 });
 ```
