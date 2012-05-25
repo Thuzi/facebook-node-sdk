@@ -396,6 +396,7 @@ Some examples of various error codes you can check for:
 
 ```js
 var FB = require('FB');
+FB.options({timeout: 1});
 FB.api('/me', function (res) {
     if(res && res.error) {
         if(res.error.code === 'ETIMEDOUT') {
