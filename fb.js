@@ -301,17 +301,17 @@
             options({'accessToken': accessToken});
         };
 
-        options = function (keyOptions) {
+        options = function (keyOrOptions) {
             var key;
-            if(!keyOptions) {
+            if(!keyOrOptions) {
                 return opts;
             }
-            if(Object.prototype.toString.call(keyOptions) == '[object String]') {
-                return has(opts, keyOptions) ? opts[keyOptions] : null;
+            if(Object.prototype.toString.call(keyOrOptions) == '[object String]') {
+                return has(opts, keyOrOptions) ? opts[keyOrOptions] : null;
             }
             for(key in opts) {
-                if(has(opts, key) && has(keyOptions, key)) {
-                    opts[key] = keyOptions[key];
+                if(has(opts, key) && has(keyOrOptions, key)) {
+                    opts[key] = keyOrOptions[key];
                 }
             }
         };
