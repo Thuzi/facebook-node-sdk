@@ -216,6 +216,7 @@
                 , value
                 , requestOptions;
 
+            cb = cb || function() {};
             if(!params.access_token && options('accessToken')) {
                 params.access_token = options('accessToken');
             }
