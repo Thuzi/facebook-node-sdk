@@ -261,8 +261,10 @@
             }
             ,function(error, response, body) {
                 if(error !== null) {
-                    console.log(error);
-                    return;
+                    if(error === Object(error) && error.hasOwnProperty('error')) {
+                        return cb(error);
+                    }
+                    return cb({error:error});
                 }
 
                 if(cb) cb(JSON.parse(body));
