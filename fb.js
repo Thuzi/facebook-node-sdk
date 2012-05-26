@@ -272,7 +272,7 @@
                 requestOptions['timeout'] = options('timeout');
             }
             request(requestOptions
-            ,function(error, response, body) {
+            , function(error, response, body) {
                 if(error !== null) {
                     if(error === Object(error) && has(error, 'error')) {
                         return cb(error);
