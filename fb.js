@@ -3,12 +3,15 @@
     var FB = (function() {
     
         var   request = require('request')
+            , crypto  = require('crypto')
             , api 
             , graph
             , rest
             , oauthRequest
             , setAccessToken
             , getAccessToken
+            , parseSignedRequest
+            , base64UrlDecode
             , log
             , has
             , options
@@ -301,6 +304,86 @@
             options({'accessToken': accessToken});
         };
 
+        /**
+         *
+         * @access public
+         * @param signedRequest {String} the signed request value
+         * @param appSecret {String} the application secret
+         * @return {Object} the parsed signed request or undefined if failed
+         *
+         * throws error if appSecret is not defined
+         *
+         * FB.parseSignedRequest('signedRequest', 'appSecret')
+         * FB.parseSignedRequest('signedRequest') // will use appSecret from options('appSecret')
+         *
+         */
+        parseSignedRequest = function () {
+            var   args = Array.prototype.slice.call(arguments)
+                , signedRequest = args.shift()
+                , appSecret = args.shift() || options('appSecret')
+                , split
+                , encodedSignature
+                , encodedEnvelope
+                , envelope
+                , hmac
+                , base64Digest
+                , base64UrlDigest;
+            
+            if(!signedRequest) {
+                return;
+            }
+
+            if(!appSecret) {
+                throw new Error('appSecret required');
+            }
+
+            split = signedRequest.split('.');
+
+            if(split.length !== 2) {
+                return;
+            }
+
+            encodedSignature = split.shift();
+            encodedEnvelope = split.shift();
+
+            if(!encodedSignature || !encodedEnvelope) {
+                return;
+            }
+
+            try {
+                envelope = JSON.parse(base64UrlDecode(encodedEnvelope));
+            } catch (ex) {
+                return;
+            }
+
+            if(!(envelope && has(envelope, 'algorithm') && envelope.algorithm.toUpperCase() === 'HMAC-SHA256')) {
+                return;
+            }
+
+            hmac = crypto.createHmac('sha256', appSecret);
+            hmac.update(encodedEnvelope);
+            console.log('a');
+            base64Digest = hmac.digest('base64');
+
+            // remove Base64 padding
+            base64UrlDigest = base64Digest.replace(/={1,3}$/, '');
+
+            // Replace illegal characters
+            base64UrlDigest = base64UrlDigest.replace(/\+/g, '-').replace(/\//g, '_');
+            
+            if(base64UrlDigest !== encodedSignature) {
+                return;
+            }
+
+            return envelope;
+        };
+
+        base64UrlDecode = function (str) {
+            var base64String = str.replace(/\-/g, '+').replace(/_/g, '/');
+            var buffer = new Buffer(base64String, 'base64');
+            return buffer.toString('utf8');
+        }
+
         options = function (keyOrOptions) {
             var key;
             if(!keyOrOptions) {
@@ -320,6 +403,7 @@
               api: api
             , getAccessToken: getAccessToken
             , setAccessToken: setAccessToken // this method does not exist in fb js sdk
+            , parseSignedRequest : parseSignedRequest // this method does not exist in fb js sdk
             , options: options // this method does not exist in the fb js sdk
         };
 

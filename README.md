@@ -383,9 +383,49 @@ The existing options are:
 * `'accessToken'` string representing the facebook accessToken to be used for requests. This is the same option that is updated by the `setAccessToken` and `getAccessToken` methods.
 * `'timeout'` integer number of milliseconds to wait for a response. Requests that have not received a response in *X* ms. If set to null or 0 no timeout will exist. On timeout an error object will be returned to the api callback with the error code of `'ETIMEDOUT'` (example below).
 
+## Parsing Signed Request
+
+### parseSignedRequest
+
+*This is a non-standard api and does not exist in the official client side FB JS SDK.*
+
+```js
+var FB = require('FB');
+
+var signedRequestValue = 'signed_request_value';
+var appSecret = 'app_secret';
+
+var signedRequest  = FB.parseSignedRequest(signedRequestValue, appSecret);
+if(signedRequest) {
+    var accessToken = signedRequest.oauth_token;
+    var userId = signedRequest.user_id;
+    var userCountry = signedRequest.user.country;
+}
+```
+
+*Note: parseSignedRequest will return undefined if validation fails. Always remember to check the result of parseSignedRequest before accessing the result.*
+
+If you already set the appSeceret in options, you can ignore the second parameter when calling parseSignedRequest. If you do pass the second parameter it will use the appSecret passed in parameter instead of using appSecret from options.
+
+If appSecret is absent, parseSignedRequest will throw an error.
+
+```js
+var FB = require('FB');
+FB.options({ 'appSecret': 'app_secret'});
+
+var signedRequestValue = 'signed_request_value';
+
+var signedRequest  = FB.parseSignedRequest(signedRequestValue);
+if(signedRequest) {
+    var accessToken = signedRequest.oauth_token;
+    var userId = signedRequest.user_id;
+    var userCountry = signedRequest.user.country;
+}
+```
+
 ## Error handling
 
-*Note facebook is not consistent with their error format, and different systems can fail causing different error formats*
+*Note: facebook is not consistent with their error format, and different systems can fail causing different error formats*
 
 Some examples of various error codes you can check for:
 * `'ECONNRESET'` - connection reset by peer

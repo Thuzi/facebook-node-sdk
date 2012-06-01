@@ -2,7 +2,11 @@
   "author": "Thuzi LLC <pshrestha@thuzi.com> (https://github.com/Thuzi)",
   "name": "fb",
   "description": "NodeJS Library for Facebook",
-  "keywords": ["facebook", "fb", "graph"],
+  "keywords": [
+    "facebook",
+    "fb",
+    "graph"
+  ],
   "version": "0.0.5",
   "homepage": "https://github.com/Thuzi/facebook-node-sdk",
   "repository": {
@@ -13,7 +17,8 @@
     "node": "~0.6.9"
   },
   "dependencies": {
-    "request": "2.9.x"
+    "request": "2.9.x",
+    "crypto": "0.0.3"
   },
   "devDependencies": {},
   "optionalDependencies": {},
