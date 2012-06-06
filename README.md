@@ -381,6 +381,7 @@ var accessToken = FB.options('accessToken'); //will get the accessToken of 'XYZ'
 
 The existing options are:
 * `'accessToken'` string representing the facebook accessToken to be used for requests. This is the same option that is updated by the `setAccessToken` and `getAccessToken` methods.
+* `'appSecret'` string representing the facebook application secret.
 * `'timeout'` integer number of milliseconds to wait for a response. Requests that have not received a response in *X* ms. If set to null or 0 no timeout will exist. On timeout an error object will be returned to the api callback with the error code of `'ETIMEDOUT'` (example below).
 
 ## Parsing Signed Request
