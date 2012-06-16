@@ -354,9 +354,9 @@ var accessToken = FB.getAccessToken();
 ```
 ## Configuration options
 
-*This is a non-standard api and does not exist in the official client side FB JS SDK.*
-
 ### options
+
+*This is a non-standard api and does not exist in the official client side FB JS SDK.*
 
 When this method is called with no parameters it will return all of the current options.
 
@@ -383,6 +383,17 @@ The existing options are:
 * `'accessToken'` string representing the facebook accessToken to be used for requests. This is the same option that is updated by the `setAccessToken` and `getAccessToken` methods.
 * `'appSecret'` string representing the facebook application secret.
 * `'timeout'` integer number of milliseconds to wait for a response. Requests that have not received a response in *X* ms. If set to null or 0 no timeout will exist. On timeout an error object will be returned to the api callback with the error code of `'ETIMEDOUT'` (example below).
+
+### version
+
+*This is a non-standard api and does not exist in the official client side FB JS SDK.*
+
+Gets the string representation of the facebook-node-sdk library version.
+
+```js
+var FB = require('FB');
+var version = FB.version;
+```
 
 ## Parsing Signed Request
 
