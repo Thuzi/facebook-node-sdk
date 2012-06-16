@@ -218,7 +218,11 @@
                 , body
                 , key
                 , value
-                , requestOptions;
+                , requestOptions
+                , isOAuthRequest
+                , oauthResult
+                , oauthKey
+                , oauthSplit;
 
             cb = cb || function() {};
             if(!params.access_token && options('accessToken')) {
@@ -227,6 +231,7 @@
 
             if(domain === 'graph') {
                 uri = 'https://graph.facebook.com/' + path;
+                isOAuthRequest = /^oauth.*/.test('oauth/');
             }
             else if(domain == 'api') {
                 uri = 'https://api.facebook.com/' + path;
@@ -284,7 +289,20 @@
                     return cb({error:error});
                 }
 
-                if(cb) cb(JSON.parse(body));
+                if(isOAuthRequest && response && response.statusCode === 200 &&
+                    response.headers && /.*text\/plain.*/.test(response.headers['content-type'])) {
+                    oauthResult = {};
+                    body = body.split('&');
+                    for(oauthKey in body) {
+                        oauthSplit = body[oauthKey].split('=');
+                        if(oauthSplit.length === 2) {
+                            oauthResult[oauthSplit[0]] = oauthSplit[1];
+                        }
+                    }
+                    if(cb) cb(oauthResult);
+                } else {
+                    if(cb) cb(JSON.parse(body));
+                }
             });
         };
 
