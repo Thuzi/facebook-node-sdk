@@ -4,6 +4,7 @@
     
         var   request = require('request')
             , crypto  = require('crypto')
+            , version = require(require('path').resolve(__dirname, 'package.json')).version
             , api 
             , graph
             , rest
@@ -405,6 +406,7 @@
             , setAccessToken: setAccessToken // this method does not exist in fb js sdk
             , parseSignedRequest : parseSignedRequest // this method does not exist in fb js sdk
             , options: options // this method does not exist in the fb js sdk
+            , version: version // this method does not exist in the fb js sdk
         };
 
     })();
