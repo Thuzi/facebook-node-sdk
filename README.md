@@ -21,7 +21,7 @@ var FB = require('fb');
 
 FB.api('4', function (res) {
   if(!res || res.error) {
-   console.log(res.error);
+   console.log(!res ? 'error occurred' : res.error);
    return;
   }
   console.log(res.id);
@@ -36,7 +36,7 @@ var FB = require('fb');
 
 FB.api('4', { fields: ['id', 'name'] }, function (res) {
   if(!res || res.error) {
-    console.log(res.error);
+    console.log(!res ? 'error occurred' : res.error);
     return;
   }
   console.log(res.id);
@@ -53,7 +53,7 @@ FB.setAccessToken('access_token');
 var body = 'My first post using facebook-node-sdk';
 FB.api('me/feed', 'post', { message: body}, function (res) {
   if(!res || res.error) {
-    console.log(res.error);
+    console.log(!res ? 'error occurred' : res.error);
     return;
   }
   console.log('Post Id: ' + res.id);
@@ -69,7 +69,7 @@ FB.setAccessToken('access_token');
 var postId = '1234567890';
 FB.api(postId, 'delete', function (res) {
   if(!res || res.error) {
-    console.log(res.error);
+    console.log(!res ? 'error occurred' : res.error);
     return;
   }
   console.log('Post was deleted');
@@ -86,7 +86,7 @@ FB.setAccessToken('access_token');
 
 FB.api('fql', { q: 'SELECT uid FROM user WHERE uid=me()' }, function (res) {
   if(!res || res.error) {
-    console.log(res.error);
+    console.log(!res ? 'error occurred' : res.error);
     return;
   }
   console.log(res.data);
@@ -104,7 +104,7 @@ FB.api('fql', { q: [
   'SELECT name FROM user WHERE uid=me()'
 ] }, function(res) {
   if(!res || res.error) {
-    console.log(res.error);
+    console.log(!res ? 'error occurred' : res.error);
     return;
   }
   console.log(res.data[0].fql_result_set);
@@ -123,7 +123,7 @@ FB.api('fql', { q : {
   name: 'SELECT name FROM user WHERE uid IN (SELECT uid FROM #id)'
 } }, function(res) {
   if(!res || res.error) {
-    console.log(res.error);
+    console.log(!res ? 'error occurred' : res.error);
     return;
   }
   console.log(res.data[0].fql_result_set);
@@ -160,7 +160,7 @@ FB.api('', 'post', {
         etag1;
 
     if(!res || res.error) {
-        console.log(res.error);
+        console.log(!res ? 'error occurred' : res.error);
         return;
     }
 
@@ -261,7 +261,7 @@ FB.api('', 'post', {
     var res0;
 
     if(!res || res.error) {
-        console.log(res.error);
+        console.log(!res ? 'error occurred' : res.error);
         return;
     }
 
@@ -292,7 +292,7 @@ FB.api('oauth/access_token', {
     grant_type: 'client_credentials'
 }, function (res) {
     if(!res || res.error) {
-        console.log(res.error);
+        console.log(!res ? 'error occurred' : res.error);
         return;
     }
     
@@ -312,7 +312,7 @@ FB.api('oauth/access_token', {
     code: 'code'
 }, function (res) {
     if(!res || res.error) {
-        console.log(res.error);
+        console.log(!res ? 'error occurred' : res.error);
         return;
     }
 
@@ -333,7 +333,7 @@ FB.api('oauth/access_token', {
     fb_exchange_token: 'existing_access_token'
 }, function (res) {
     if(!res || res.error) {
-        console.log(res.error);
+        console.log(!res ? 'error occurred' : res.error);
         return;
     }
     
@@ -353,12 +353,12 @@ var FB = require('fb');
 
 FB.api({ method: 'users.getInfo', uids: ['4'], fields: ['uid', 'name'] }, function (res) {
     if(!res || res.error_msg) {
-        console.log(res.error_msg);
+        console.log(!res ? 'error occurred' : res.error_msg);
+        return;
     }
-    else {
-        console.log('User Id: ' + res[0].uid);
-        console.log('Name: ' + res[0].name);
-    }
+
+    console.log('User Id: ' + res[0].uid);
+    console.log('Name: ' + res[0].name);
 });
 ```
 
@@ -371,11 +371,11 @@ FB.setAccessToken('access_token');
 var message = 'Hi from facebook-node-sdk';
 FB.api({ method: 'stream.publish', message: message }, function (res) {
     if(!res || res.error_msg) {
-        console.log(res.error_msg);
+        console.log(!res ? 'error occurred' : res.error_msg);
+        return;
     }
-    else {
-        console.log(res);
-    }
+    
+    console.log(res);
 });
 ```
 ### Delete
