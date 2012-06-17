@@ -273,6 +273,65 @@ FB.api('', 'post', {
 });
 ```
 
+## OAuth Requests
+
+*This is a non-standard behavior and does not work in the official client side FB JS SDK.*
+
+facebook-node-sdk is capable of handling oauth requests which return non-json responses. You can use it by calling `api` method.
+
+### Get facebook application access token
+
+```javascript
+var FB = require('fb');
+
+FB.api('oauth/access_token', {
+    client_id: 'app_id',
+    client_secret: 'app_secret',
+    grant_type: 'client_credentials'
+}, function (res) {
+    if(res && !res.error) {
+        var accessToken = res.access_token;
+        console.log(accessToken);
+    }
+});
+```
+
+### Exchange code for access token
+
+```javascript
+var FB = require('./fb');
+
+FB.api('oauth/access_token', {
+    client_id: 'app_id',
+    client_secret: 'app_secret',
+    redirect_uri: 'http://yoururl.com/callback',
+    code: 'code'
+}, function (res) {
+    if(res && !res.error) {
+        var accessToken = res.access_token;
+        var expires = res.expires ? res.expires : 0;
+    }
+});
+```
+
+### Extend expiry time of the access token
+
+```javascript
+var FB = require('./fb');
+
+FB.api('oauth/access_token', {
+    client_id: 'client_id',
+    client_secret: 'client_secret',
+    grant_type: 'fb_exchange_token',
+    fb_exchange_token: 'existing_access_token'
+}, function (res) {
+    if(res && !res.error) {
+        var accessToken = res.access_token;
+        var expires = res.expires ? res.expires : 0;
+    }
+});
+```
+
 ## Legacy REST Api
 
 __Although Legacy REST Api is supported by facebook-node-sdk, it is highly discouraged to be used, as Facebook is in the process of deprecating the Legacy REST Api.__
@@ -323,65 +382,6 @@ FB.api({ method: 'stream.remove', post_id: postId }, function (res) {
    else {
        console.log(res);
    }
-});
-```
-
-### OAuth Requests
-
-*This is a non-standard behavior and does not work in the official client side FB JS SDK.*
-
-facebook-node-sdk is capable of handling oauth requests which return non-json responses. You can use it by calling `api` method.
-
-#### Get facebook application access token
-
-```javascript
-var FB = require('fb');
-
-FB.api('oauth/access_token', {
-    client_id: 'app_id',
-    client_secret: 'app_secret',
-    grant_type: 'client_credentials'
-}, function (res) {
-    if(res && !res.error) {
-        var accessToken = res.access_token;
-        console.log(accessToken);
-    }
-});
-```
-
-#### Exchange code for access token
-
-```javascript
-var FB = require('./fb');
-
-FB.api('oauth/access_token', {
-    client_id: 'app_id',
-    client_secret: 'app_secret',
-    redirect_uri: 'http://yoururl.com/callback',
-    code: 'code'
-}, function (res) {
-    if(res && !res.error) {
-        var accessToken = res.access_token;
-        var expires = res.expires ? res.expires : 0;
-    }
-});
-```
-
-#### Extend expiry time of the access token
-
-```javascript
-var FB = require('./fb');
-
-FB.api('oauth/access_token', {
-    client_id: 'client_id',
-    client_secret: 'client_secret',
-    grant_type: 'fb_exchange_token',
-    fb_exchange_token: 'existing_access_token'
-}, function (res) {
-    if(res && !res.error) {
-        var accessToken = res.access_token;
-        var expires = res.expires ? res.expires : 0;
-    }
 });
 ```
 
