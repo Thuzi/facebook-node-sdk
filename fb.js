@@ -222,6 +222,7 @@
                 , isOAuthRequest
                 , oauthResult
                 , oauthKey
+                , oauthValue
                 , oauthSplit;
 
             cb = cb || function() {};
@@ -296,7 +297,12 @@
                     for(oauthKey in body) {
                         oauthSplit = body[oauthKey].split('=');
                         if(oauthSplit.length === 2) {
-                            oauthResult[oauthSplit[0]] = oauthSplit[1];
+                            oauthValue = oauthSplit[1];
+                            if(!isNaN(oauthValue)) {
+                                oauthResult[oauthSplit[0]] = parseInt(oauthValue);
+                            } else {
+                                oauthResult[oauthSplit[0]] = oauthValue;
+                            }
                         }
                     }
                     if(cb) cb(oauthResult);
