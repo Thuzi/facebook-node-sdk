@@ -6,7 +6,9 @@ With facebook-node-sdk you can now easily write the same code and share between 
 
 ```
 npm install fb
+```
 
+```javascript
 var FB = require('fb');
 ```
 
