@@ -6,7 +6,9 @@ With facebook-node-sdk you can now easily write the same code and share between 
 
 ```
 npm install fb
+```
 
+```javascript
 var FB = require('fb');
 ```
 
@@ -19,7 +21,7 @@ var FB = require('fb');
 
 FB.api('4', function (res) {
   if(!res || res.error) {
-   console.log(res.error);
+   console.log(!res ? 'error occurred' : res.error);
    return;
   }
   console.log(res.id);
@@ -34,7 +36,7 @@ var FB = require('fb');
 
 FB.api('4', { fields: ['id', 'name'] }, function (res) {
   if(!res || res.error) {
-    console.log(res.error);
+    console.log(!res ? 'error occurred' : res.error);
     return;
   }
   console.log(res.id);
@@ -51,7 +53,7 @@ FB.setAccessToken('access_token');
 var body = 'My first post using facebook-node-sdk';
 FB.api('me/feed', 'post', { message: body}, function (res) {
   if(!res || res.error) {
-    console.log(res.error);
+    console.log(!res ? 'error occurred' : res.error);
     return;
   }
   console.log('Post Id: ' + res.id);
@@ -67,7 +69,7 @@ FB.setAccessToken('access_token');
 var postId = '1234567890';
 FB.api(postId, 'delete', function (res) {
   if(!res || res.error) {
-    console.log(res.error);
+    console.log(!res ? 'error occurred' : res.error);
     return;
   }
   console.log('Post was deleted');
@@ -84,7 +86,7 @@ FB.setAccessToken('access_token');
 
 FB.api('fql', { q: 'SELECT uid FROM user WHERE uid=me()' }, function (res) {
   if(!res || res.error) {
-    console.log(res.error);
+    console.log(!res ? 'error occurred' : res.error);
     return;
   }
   console.log(res.data);
@@ -102,7 +104,7 @@ FB.api('fql', { q: [
   'SELECT name FROM user WHERE uid=me()'
 ] }, function(res) {
   if(!res || res.error) {
-    console.log(res.error);
+    console.log(!res ? 'error occurred' : res.error);
     return;
   }
   console.log(res.data[0].fql_result_set);
@@ -121,7 +123,7 @@ FB.api('fql', { q : {
   name: 'SELECT name FROM user WHERE uid IN (SELECT uid FROM #id)'
 } }, function(res) {
   if(!res || res.error) {
-    console.log(res.error);
+    console.log(!res ? 'error occurred' : res.error);
     return;
   }
   console.log(res.data[0].fql_result_set);
@@ -158,7 +160,7 @@ FB.api('', 'post', {
         etag1;
 
     if(!res || res.error) {
-        console.log(res.error);
+        console.log(!res ? 'error occurred' : res.error);
         return;
     }
 
@@ -259,7 +261,7 @@ FB.api('', 'post', {
     var res0;
 
     if(!res || res.error) {
-        console.log(res.error);
+        console.log(!res ? 'error occurred' : res.error);
         return;
     }
 
@@ -270,6 +272,97 @@ FB.api('', 'post', {
     } else {
         console.log('Post Id: ' + res0.id);
     }
+});
+```
+
+## OAuth Requests
+
+*This is a non-standard behavior and does not work in the official client side FB JS SDK.*
+
+facebook-node-sdk is capable of handling oauth requests which return non-json responses. You can use it by calling `api` method.
+
+### Get facebook application access token
+
+```javascript
+var FB = require('fb');
+
+FB.api('oauth/access_token', {
+    client_id: 'app_id',
+    client_secret: 'app_secret',
+    grant_type: 'client_credentials'
+}, function (res) {
+    if(!res || res.error) {
+        console.log(!res ? 'error occurred' : res.error);
+        return;
+    }
+    
+    var accessToken = res.access_token;
+});
+```
+
+### Exchange code for access token
+
+```javascript
+var FB = require('./fb');
+
+FB.api('oauth/access_token', {
+    client_id: 'app_id',
+    client_secret: 'app_secret',
+    redirect_uri: 'http://yoururl.com/callback',
+    code: 'code'
+}, function (res) {
+    if(!res || res.error) {
+        console.log(!res ? 'error occurred' : res.error);
+        return;
+    }
+
+    var accessToken = res.access_token;
+    var expires = res.expires ? res.expires : 0;
+});
+```
+
+You can safely extract the code from the url using the `url` module. Always make sure to handle invalid oauth callback as
+well as error.
+
+```javascript
+var url = require('url');
+var FB = require('./fb');
+
+var urlToParse = 'http://yoururl.com/callback?code=.....#_=_';
+var result = url.parse(urlToParse, true);
+if(result.query.error) {
+    if(result.query.error_description) {
+        console.log(result.query.error_description);
+    } else {
+        console.log(result.query.error);
+    }
+    return;
+} else if (!result.query.code) {
+    console.log('not a oauth callback');
+    return;
+}
+
+var code = result.query.code;
+```
+
+### Extend expiry time of the access token
+
+```javascript
+var FB = require('./fb');
+
+FB.api('oauth/access_token', {
+    client_id: 'client_id',
+    client_secret: 'client_secret',
+    grant_type: 'fb_exchange_token',
+    fb_exchange_token: 'existing_access_token'
+}, function (res) {
+    if(!res || res.error) {
+        console.log(!res ? 'error occurred' : res.error);
+        return;
+    }
+    
+    var accessToken = res.access_token;
+    var expires = res.expires ? res.expires : 0;
 });
 ```
 
@@ -284,12 +377,12 @@ var FB = require('fb');
 
 FB.api({ method: 'users.getInfo', uids: ['4'], fields: ['uid', 'name'] }, function (res) {
     if(!res || res.error_msg) {
-        console.log(res.error_msg);
+        console.log(!res ? 'error occurred' : res.error_msg);
+        return;
     }
-    else {
-        console.log('User Id: ' + res[0].uid);
-        console.log('Name: ' + res[0].name);
-    }
+
+    console.log('User Id: ' + res[0].uid);
+    console.log('Name: ' + res[0].name);
 });
 ```
 
@@ -302,11 +395,11 @@ FB.setAccessToken('access_token');
 var message = 'Hi from facebook-node-sdk';
 FB.api({ method: 'stream.publish', message: message }, function (res) {
     if(!res || res.error_msg) {
-        console.log(res.error_msg);
+        console.log(!res ? 'error occurred' : res.error_msg);
+        return;
     }
-    else {
-        console.log(res);
-    }
+    
+    console.log(res);
 });
 ```
 ### Delete
@@ -317,12 +410,12 @@ FB.setAccessToken('access_token');
 
 var postId = '.....';
 FB.api({ method: 'stream.remove', post_id: postId }, function (res) {
-   if(!res || res.error_msg) {
-       console.log(res.error_msg);
-   }
-   else {
-       console.log(res);
-   }
+    if(!res || res.error_msg) {
+        console.log(!res ? 'error occurred' : res.error_msg);
+        return;
+    }
+    
+    console.log(res);
 });
 ```
 
