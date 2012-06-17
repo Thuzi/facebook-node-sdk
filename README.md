@@ -291,7 +291,6 @@ FB.api('oauth/access_token', {
 }, function (res) {
     if(res && !res.error) {
         var accessToken = res.access_token;
-        console.log(accessToken);
     }
 });
 ```
