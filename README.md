@@ -349,6 +349,24 @@ FB.api('oauth/access_token', {
 });
 ```
 
+#### Exchange code for access token
+
+```javascript
+var FB = require('./fb');
+
+FB.api('oauth/access_token', {
+    client_id: 'app_id',
+    client_secret: 'app_secret',
+    redirect_uri: 'http://yoururl.com/callback',
+    code: 'code'
+}, function (res) {
+    if(res && !res.error) {
+        var accessToken = res.access_token;
+        var expires = res.expires ? res.expires : 0;
+    }
+});
+```
+
 ## Access Tokens
 
 ### setAccessToken
