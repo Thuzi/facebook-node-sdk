@@ -321,6 +321,30 @@ FB.api('oauth/access_token', {
 });
 ```
 
+You can safely extract the code from the url using the `url` module. Always make sure to handle invalid oauth callback as
+well as error.
+
+```javascript
+var url = require('url');
+var FB = require('./fb');
+
+var urlToParse = 'http://yoururl.com/callback?code=.....#_=_';
+var result = url.parse(urlToParse, true);
+if(result.query.error) {
+    if(result.query.error_description) {
+        console.log(result.query.error_description);
+    } else {
+        console.log(result.query.error);
+    }
+    return;
+} else if (!result.query.code) {
+    console.log('not a oauth callback');
+    return;
+}
+
+var code = result.query.code;
+```
+
 ### Extend expiry time of the access token
 
 ```javascript
@@ -386,12 +410,12 @@ FB.setAccessToken('access_token');
 
 var postId = '.....';
 FB.api({ method: 'stream.remove', post_id: postId }, function (res) {
-   if(!res || res.error_msg) {
-       console.log(res.error_msg);
-   }
-   else {
-       console.log(res);
-   }
+    if(!res || res.error_msg) {
+        console.log(!res ? 'error occurred' : res.error_msg);
+        return;
+    }
+    
+    console.log(res);
 });
 ```
 
