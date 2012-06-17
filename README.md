@@ -289,9 +289,12 @@ FB.api('oauth/access_token', {
     client_secret: 'app_secret',
     grant_type: 'client_credentials'
 }, function (res) {
-    if(res && !res.error) {
-        var accessToken = res.access_token;
+    if(!res || res.error) {
+        console.log(res.error);
+        return;
     }
+    
+    var accessToken = res.access_token;
 });
 ```
 
@@ -306,10 +309,13 @@ FB.api('oauth/access_token', {
     redirect_uri: 'http://yoururl.com/callback',
     code: 'code'
 }, function (res) {
-    if(res && !res.error) {
-        var accessToken = res.access_token;
-        var expires = res.expires ? res.expires : 0;
+    if(!res || res.error) {
+        console.log(res.error);
+        return;
     }
+
+    var accessToken = res.access_token;
+    var expires = res.expires ? res.expires : 0;
 });
 ```
 
@@ -324,10 +330,13 @@ FB.api('oauth/access_token', {
     grant_type: 'fb_exchange_token',
     fb_exchange_token: 'existing_access_token'
 }, function (res) {
-    if(res && !res.error) {
-        var accessToken = res.access_token;
-        var expires = res.expires ? res.expires : 0;
+    if(!res || res.error) {
+        console.log(res.error);
+        return;
     }
+    
+    var accessToken = res.access_token;
+    var expires = res.expires ? res.expires : 0;
 });
 ```
 
