@@ -326,6 +326,29 @@ FB.api({ method: 'stream.remove', post_id: postId }, function (res) {
 });
 ```
 
+### OAuth Requests
+
+*This is a non-standard behavior and does not work in the official client side FB JS SDK.*
+
+facebook-node-sdk is capable of handling oauth requests which return non-json responses. You can use it by calling `api` method.
+
+#### Get facebook application access token
+
+```javascript
+var FB = require('fb');
+
+FB.api('oauth/access_token', {
+    client_id: 'app_id',
+    client_secret: 'app_secret',
+    grant_type: 'client_credentials'
+}, function (res) {
+    if(res && !res.error) {
+        var accessToken = res.access_token;
+        console.log(accessToken);
+    }
+});
+```
+
 ## Access Tokens
 
 ### setAccessToken
