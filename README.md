@@ -367,6 +367,24 @@ FB.api('oauth/access_token', {
 });
 ```
 
+#### Extend expiry time of the access token
+
+```javascript
+var FB = require('./fb');
+
+FB.api('oauth/access_token', {
+    client_id: 'client_id',
+    client_secret: 'client_secret',
+    grant_type: 'fb_exchange_token',
+    fb_exchange_token: 'existing_access_token'
+}, function (res) {
+    if(res && !res.error) {
+        var accessToken = res.access_token;
+        var expires = res.expires ? res.expires : 0;
+    }
+});
+```
+
 ## Access Tokens
 
 ### setAccessToken
