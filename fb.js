@@ -23,6 +23,7 @@
                 , 'appSecret': null
                 , 'timeout': null
                 , 'scope':  null
+                , 'redirect_uri': null
             }
             , readOnlyCalls = {
                   'admin.getallocation': true
