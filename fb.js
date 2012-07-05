@@ -387,7 +387,6 @@
 
             hmac = crypto.createHmac('sha256', appSecret);
             hmac.update(encodedEnvelope);
-            console.log('a');
             base64Digest = hmac.digest('base64');
 
             // remove Base64 padding
