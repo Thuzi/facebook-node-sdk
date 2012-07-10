@@ -14,7 +14,7 @@
     "url": "git://github.com/Thuzi/facebook-node-sdk.git"
   },
   "engines": {
-    "node": "~0.6.9"
+    "node": ">=0.6.9"
   },
   "dependencies": {
     "request": "2.9.x",
