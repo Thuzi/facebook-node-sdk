@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/Thuzi/facebook-node-sdk.png)](http://travis-ci.org/Thuzi/facebook-node-sdk)
 # NodeJS Library for Facebook
 
 With facebook-node-sdk you can now easily write the same code and share between your server (nodejs) and the client ([Facebook Javascript SDK](https://developers.facebook.com/docs/reference/javascript/)).
