@@ -9,6 +9,7 @@
             , graph
             , rest
             , oauthRequest
+            , parseOAuthApiResponse
             , setAccessToken
             , getAccessToken
             , parseSignedRequest
@@ -221,11 +222,7 @@
                 , key
                 , value
                 , requestOptions
-                , isOAuthRequest
-                , oauthResult
-                , oauthKey
-                , oauthValue
-                , oauthSplit;
+                , isOAuthRequest;
 
             cb = cb || function() {};
             if(!params.access_token && options('accessToken')) {
@@ -294,24 +291,34 @@
 
                 if(isOAuthRequest && response && response.statusCode === 200 &&
                     response.headers && /.*text\/plain.*/.test(response.headers['content-type'])) {
-                    oauthResult = {};
-                    body = body.split('&');
-                    for(oauthKey in body) {
-                        oauthSplit = body[oauthKey].split('=');
-                        if(oauthSplit.length === 2) {
-                            oauthValue = oauthSplit[1];
-                            if(!isNaN(oauthValue)) {
-                                oauthResult[oauthSplit[0]] = parseInt(oauthValue);
-                            } else {
-                                oauthResult[oauthSplit[0]] = oauthValue;
-                            }
-                        }
-                    }
-                    if(cb) cb(oauthResult);
+                    if(cb) cb(parseOAuthApiResponse(body));
                 } else {
                     if(cb) cb(JSON.parse(body));
                 }
             });
+        };
+
+        parseOAuthApiResponse = function (body) {
+            var   result
+                , key
+                , value
+                , split;
+
+            result = {};
+            body = body.split('&');
+            for(key in body) {
+                split = body[key].split('=');
+                if(split.length === 2) {
+                    value = split[1];
+                    if(!isNaN(value)) {
+                        result[split[0]] = parseInt(value);
+                    } else {
+                        result[split[0]] = value;
+                    }
+                }
+            }
+
+            return result;
         };
 
         log = function(d) {
