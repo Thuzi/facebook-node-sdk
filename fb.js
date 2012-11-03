@@ -291,9 +291,9 @@
 
                 if(isOAuthRequest && response && response.statusCode === 200 &&
                     response.headers && /.*text\/plain.*/.test(response.headers['content-type'])) {
-                    if(cb) cb(parseOAuthApiResponse(body));
+                    cb(parseOAuthApiResponse(body));
                 } else {
-                    if(cb) cb(JSON.parse(body));
+                    cb(JSON.parse(body));
                 }
             });
         };
