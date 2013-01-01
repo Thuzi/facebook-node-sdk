@@ -293,7 +293,13 @@
                     response.headers && /.*text\/plain.*/.test(response.headers['content-type'])) {
                     cb(parseOAuthApiResponse(body));
                 } else {
-                    cb(JSON.parse(body));
+                    var parsed;
+                    try {
+                        parsed = JSON.parse(body);
+                    } catch (ex) {
+                        return cb({error:ex});
+                    }
+                    cb(parsed);
                 }
             });
         };
