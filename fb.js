@@ -294,7 +294,9 @@
                     cb(parseOAuthApiResponse(body));
                 } else {
                     try {
-                        // sometimes FB is dumb and returns HTML responses... so we try/catch here
+                        // sometimes FB is has API errors that return HTML and a message 
+                        // of "Sorry, something went wrong". These are infrequent and unpredictable but
+                        // let's not let them blow up our application.
                         cb(JSON.parse(body));
                     } catch (ex) {
                         cb({ error: "JSON Error:" + ex.message });
