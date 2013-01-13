@@ -293,7 +293,12 @@
                     response.headers && /.*text\/plain.*/.test(response.headers['content-type'])) {
                     cb(parseOAuthApiResponse(body));
                 } else {
-                    cb(JSON.parse(body));
+                    try {
+                        // sometimes FB is dumb and returns HTML responses... so we try/catch here
+                        cb(JSON.parse(body));
+                    } catch (ex) {
+                        cb({ error: "JSON Error:" + ex.message });
+                    }
                 }
             });
         };
