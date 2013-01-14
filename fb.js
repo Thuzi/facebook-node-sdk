@@ -302,7 +302,7 @@
                         cb({ error: {
                             code: 'JSONPARSE',
                             Error: ex
-                        }})
+                        }});
                     }
                 }
             });
