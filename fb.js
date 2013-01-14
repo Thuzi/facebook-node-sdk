@@ -301,8 +301,8 @@
                     } catch (ex) {
                         cb({ error: {
                             code: 'JSONPARSE',
-                            Error: new Error("JSON Error:" + ex.message)
-                        }});
+                            Error: ex
+                        }})
                     }
                 }
             });
