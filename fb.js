@@ -299,7 +299,10 @@
                         // let's not let them blow up our application.
                         cb(JSON.parse(body));
                     } catch (ex) {
-                        cb({ error: "JSON Error:" + ex.message });
+                        cb({ error: {
+                            code: 'JSONPARSE',
+                            Error: new Error("JSON Error:" + ex.message)
+                        }});
                     }
                 }
             });
