@@ -540,7 +540,7 @@ Some examples of various error codes you can check for:
 * `'ECONNRESET'` - connection reset by peer
 * `'ETIMEDOUT'` - connection timed out
 * `'ESOCKETTIMEDOUT'` - socket timed out
-
+* `'JSONPARSE'` - could not parse JSON response, happens when the FB API has availability issues. It sometimes returns HTML
 
 ```js
 var FB = require('FB');
