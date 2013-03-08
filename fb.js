@@ -442,6 +442,14 @@
             }
         };
 
+        function FacebookApiException(res) {
+            this.name = "FacebookApiException";
+            this.message = JSON.stringify(res || {});
+            this.response = res;
+        }
+
+        FacebookApiException.prototype = Error.prototype;
+
         return {
               api: api
             , getAccessToken: getAccessToken
@@ -449,6 +457,7 @@
             , parseSignedRequest : parseSignedRequest // this method does not exist in fb js sdk
             , options: options // this method does not exist in the fb js sdk
             , version: version // this method does not exist in the fb js sdk
+            , FacebookApiException: FacebookApiException // this Error does not exist in the fb js sdk
         };
 
     })();
