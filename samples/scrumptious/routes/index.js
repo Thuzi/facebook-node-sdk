@@ -56,3 +56,7 @@ exports.loginCallback = function (req, res, next) {
     });
 
 }
+
+exports.menu = function (req, res, next) {
+    req.send('menu');
+}
