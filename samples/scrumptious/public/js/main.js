@@ -362,21 +362,21 @@ function displayPlaces(places) {
 
 // Friends
 function getFriends() {
-  // Check for and use cached data
-  if (myFriends)
-    return;
+    // Check for and use cached data
+    if (myFriends)
+        return;
 
-  logResponse("[getFriends] get friend data.");
-  // Use the Graph API to get friends
-  FB.api('/me/friends', { fields: 'name, picture', limit: '50' }, function(response) {
-  	if (!response || response.error) {
-  		logResponse("Error fetching friend data.");
-  	} else {
-  		myFriends = response.data;
-  		logResponse(myFriends);
-  		displayFriends(myFriends);
-  	}
-  });
+    logResponse("[getFriends] get friend data.");
+
+    $.ajax({
+        url: '/friends'
+    }).success(function (response) {
+        myFriends = response.data;
+        logResponse(myFriends);
+        displayFriends(myFriends)
+    }).error(function (err) {
+        logResponse("Error fetching friend data.");
+    });
 }
 
 function displayFriends(friends) {
@@ -388,5 +388,5 @@ function displayFriends(friends) {
 }
 
 if (window.location.hash == '' || window.location.hash == '#_=_') {
-    window.location.hash = '#menu';
+    $.mobile.changePage('#menu');
 }
