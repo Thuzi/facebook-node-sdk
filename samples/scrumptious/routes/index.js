@@ -2,8 +2,8 @@
 var FB              = require('../../../fb');
 
 FB.options({
-    appId: ''
-    appSecret: ''
+    appId: '243756182406310',
+    appSecret: 'ccf26c901d9d99d523cf6121113a7f8f',
     scope: 'user_about_me,publish_stream',
     redirect_uri: 'http://localhost:3000/login/callback'
 });
@@ -58,5 +58,10 @@ exports.loginCallback = function (req, res, next) {
 }
 
 exports.menu = function (req, res, next) {
-    req.send('menu');
+    var accessToken = req.session.access_token;
+    if(!access_token) {
+        return res.redirect('/');
+    }
+    
+    res.send('menu');
 }
