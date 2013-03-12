@@ -31,6 +31,7 @@ app.get('/login/callback', routes.loginCallback);
 app.get('/logout', routes.logout);
 app.get('/search', routes.search);
 app.get('/friends', routes.friends);
+app.post('/announce', routes.announce);
 
 http.createServer(app).listen(app.get('port'), function() {
     console.log("Express server listening on port " + app.get('port'));

@@ -276,19 +276,29 @@ function publishOGAction(response) {
 	if (friendIDArrays.length > 0) {
 		params.tags = friendIDArrays.join();
 	}
-	logResponse("Publish params " + params);
-	FB.api("/me/scrumptiousios:eat",
-    	"POST",
-    	params,
-    	function (response) {
-    		logResponse(response);
-    		if (!response || response.error) {
-    			errorHandler(response.error);
-    		} else {
-    			handleOGSuccess(response);
-    		}
-    	}
-	);
+	logResponse("Publish params " + JSON.stringify(params));
+
+    $.ajax({
+        url: '/announce',
+        type: 'post',
+        data: params
+    }).success(function(result) {
+        handleOGSuccess(cresult);
+    }).error(function (err) {
+       // todo: handle error
+    });
+//	FB.api(";",
+//    	"POST",
+//    	params,
+//    	function (response) {
+//    		logResponse(response);
+//    		if (!response || response.error) {
+//    			errorHandler(response.error);
+//    		} else {
+//    			handleOGSuccess(response);
+//    		}
+//    	}
+//	);
 }
 
 function showPublishConfirmation() {

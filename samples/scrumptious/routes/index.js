@@ -91,3 +91,14 @@ exports.friends = function (req, res) {
         res.send(result);
     });
 }
+
+exports.announce = function (req, res) {
+    var parameters = req.body;
+    parameters.access_token = req.session.access_token;
+    FB.api('/me/nodescrumptious:eat', 'post', parameters , function (result) {
+        if(!result || result.error) {
+            return res.send(500, 'error');
+        }
+        res.send(result);
+    });
+}
