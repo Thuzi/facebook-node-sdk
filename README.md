@@ -425,7 +425,7 @@ FB.api({ method: 'stream.remove', post_id: postId }, function (res) {
 *This is a non-standard api and does not exist in the official client side FB JS SDK.*
 
 ```js
-var FB = require('FB');
+var FB = require('fb');
 FB.setAccessToken('access_token');
 ```
 
@@ -441,7 +441,7 @@ FB.api('me', { fields: ['id', 'name'], access_token: 'access_token' }, function 
 *Unlike `setAccessToken` this is a standard api and exists in FB JS SDK.*
 
 ```js
-var FB = require('FB');
+var FB = require('fb');
 FB.setAccessToken('access_token');
 var accessToken = FB.getAccessToken();
 ```
@@ -454,7 +454,7 @@ var accessToken = FB.getAccessToken();
 When this method is called with no parameters it will return all of the current options.
 
 ```js
-var FB = require('FB');
+var FB = require('fb');
 var options = FB.options();
 ```
 
@@ -488,7 +488,7 @@ using the same `FB` object.
 Gets the string representation of the facebook-node-sdk library version.
 
 ```js
-var FB = require('FB');
+var FB = require('fb');
 var version = FB.version;
 ```
 
@@ -499,7 +499,7 @@ var version = FB.version;
 *This is a non-standard api and does not exist in the official client side FB JS SDK.*
 
 ```js
-var FB = require('FB');
+var FB = require('fb');
 
 var signedRequestValue = 'signed_request_value';
 var appSecret = 'app_secret';
@@ -519,7 +519,7 @@ If you already set the appSeceret in options, you can ignore the second paramete
 If appSecret is absent, parseSignedRequest will throw an error.
 
 ```js
-var FB = require('FB');
+var FB = require('fb');
 FB.options({ 'appSecret': 'app_secret'});
 
 var signedRequestValue = 'signed_request_value';
@@ -543,7 +543,7 @@ Some examples of various error codes you can check for:
 * `'JSONPARSE'` - could not parse JSON response, happens when the FB API has availability issues. It sometimes returns HTML
 
 ```js
-var FB = require('FB');
+var FB = require('fb');
 FB.options({timeout: 1, accessToken: 'access_token'});
 
 FB.api('/me', function (res) {
