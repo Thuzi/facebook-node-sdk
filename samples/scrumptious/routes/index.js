@@ -2,8 +2,8 @@
 var FB              = require('../../../fb');
 
 FB.options({
-    appId: '243756182406310',
-    appSecret: 'ccf26c901d9d99d523cf6121113a7f8f',
+    appId: '',
+    appSecret: '',
     scope: 'user_about_me,publish_actions',
     redirect_uri: 'http://localhost:3000/login/callback'
 });
