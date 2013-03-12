@@ -534,7 +534,7 @@ dl dd ul li { border: none; }
 }
 
 .fb-login-button {
-    background: url(images/fblogin.png) ;
+    background: url(/images/fblogin.png);
     -moz-background-size: 776px 18px;
     -o-background-size: 776px 18px;
     -webkit-background-size: 776px 18px;
