@@ -16,7 +16,7 @@ function getFacebookLoginUrl () {
 }
 
 exports.index = function(req, res) {
-    res.render('index', { 
+    res.render('index', {
         title: 'Express',
         loginUrl: getFacebookLoginUrl()
     });
@@ -46,22 +46,26 @@ exports.loginCallback = function (req, res, next) {
             return next(result); // todo: handle error
         }
 
-        accessToken = result.access_token;
-        expires = result.expires ? result.expires : 0;
+        accessToken     = result.access_token;
+        expires         = result.expires ? result.expires : 0;
 
         // todo: extend access token
         req.session.access_token = accessToken;
         req.session.expires = expires;
         res.redirect('/menu');
     });
+};
 
-}
+exports.logout = function (req, res, next) {
+    req.session = null; // clear session
+    res.redirect('/');
+};
 
 exports.menu = function (req, res, next) {
     var accessToken = req.session.access_token;
-    if(!access_token) {
+    if(!accessToken) {
         return res.redirect('/');
     }
-    
+
     res.send('menu');
-}
+};

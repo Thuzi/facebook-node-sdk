@@ -15,7 +15,7 @@ app.configure(function() {
     app.use(express.favicon());
     app.use(express.logger('dev'));
     app.use(express.cookieParser());
-    app.use(express.session({ secret: 'secret' }));
+    app.use(express.cookieSession({ secret: 'secret'}));
     app.use(express.bodyParser());
     app.use(express.methodOverride());
     app.use(app.router);
@@ -28,6 +28,7 @@ app.configure('development', function() {
 
 app.get('/', routes.index);
 app.get('/login/callback', routes.loginCallback);
+app.get('/logout', routes.logout);
 app.get('/menu', routes.menu);
 
 http.createServer(app).listen(app.get('port'), function() {
