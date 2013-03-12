@@ -63,7 +63,18 @@ exports.loginCallback = function (req, res, next) {
     });
 };
 
-exports.logout = function (req, res, next) {
+exports.logout = function (req, res) {
     req.session = null; // clear session
     res.redirect('/');
 };
+
+exports.search = function (req, res) {
+    var parameters = req.query;
+    parameters.access_token = req.session.access_token;
+    FB.api('/search', req.query, function (result) {
+        if(!result || result.error) {
+            return res.send(500, 'error');
+        }
+        res.send(result);
+    });
+}

@@ -333,18 +333,22 @@ function getNearby() {
     //curLocation = location;
     logResponse(location);
 
-    // Use graph API to search nearby places
-    var path = '/search?type=place&q=restaurant&center=' + location.coords.latitude + ',' + location.coords.longitude + '&distance=1000&fields=id,name,picture';
-    
-    FB.api(path, function(response) {
-    	if (!response || response.error) {
-    		logResponse("Error fetching nearby place data.");
-    	} else {
-    		nearbyPlaces = response.data;
-    		logResponse(nearbyPlaces);
-    		displayPlaces(nearbyPlaces);
-    	}
-    });
+      $.ajax({
+          url: '/search',
+          data: {
+              type: 'place',
+              q: 'restaurant',
+              center: location.coords.latitude + ',' + location.coords.longitude,
+              distance: 1000,
+              fields: 'id,name,picture'
+          }
+      }).success(function (response) {
+          nearbyPlaces = response.data;
+          logResponse(nearbyPlaces);
+          displayPlaces(nearbyPlaces);
+      }).error(function(err) {
+          logResponse("Error fetching nearby place data.");
+      });
   });
 }
 
