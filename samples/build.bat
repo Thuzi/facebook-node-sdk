@@ -1,4 +1,4 @@
-cd ../
+cd ..\
 npm install
-cd samples/scrumptious
+cd samples\scrumptious
 npm install
