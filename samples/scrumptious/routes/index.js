@@ -67,5 +67,5 @@ exports.menu = function (req, res, next) {
         return res.redirect('/');
     }
 
-    res.send('menu');
+    res.render('menu');
 };
