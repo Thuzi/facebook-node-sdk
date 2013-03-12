@@ -63,11 +63,7 @@ $(function () {
 
           // Logout click handler
           $("#logout").click(function() {
-            FB.logout(
-              function (response) {
-                window.location.reload();
-              }
-              );
+            window.location = '/logout';
             return false;
           });
 
@@ -385,4 +381,8 @@ function displayFriends(friends) {
 	var tmpl = $("#friends_list_tmpl").html();
 	var output = Mustache.to_html(tmpl, friends);
 	$("#friends-list").html(output).listview('refresh');
+}
+
+if (window.location.hash == '' || window.location.hash == '#_=_') {
+    window.location.hash = '#menu';
 }

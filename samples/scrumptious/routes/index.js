@@ -4,7 +4,7 @@ var FB              = require('../../../fb');
 FB.options({
     appId: '243756182406310',
     appSecret: 'ccf26c901d9d99d523cf6121113a7f8f',
-    scope: 'user_about_me,publish_stream',
+    scope: 'user_about_me,publish_actions',
     redirect_uri: 'http://localhost:3000/login/callback'
 });
 
@@ -16,10 +16,17 @@ function getFacebookLoginUrl () {
 }
 
 exports.index = function(req, res) {
-    res.render('index', {
-        title: 'Express',
-        loginUrl: getFacebookLoginUrl()
-    });
+
+    var accessToken = req.session.access_token;
+    if(!accessToken) {
+        res.render('index', {
+            title: 'Express',
+            loginUrl: getFacebookLoginUrl()
+        });
+    } else {
+        res.render('menu');
+    }
+
 };
 
 exports.loginCallback = function (req, res, next) {
@@ -52,20 +59,11 @@ exports.loginCallback = function (req, res, next) {
         // todo: extend access token
         req.session.access_token = accessToken;
         req.session.expires = expires;
-        res.redirect('/menu');
+        res.redirect('/');
     });
 };
 
 exports.logout = function (req, res, next) {
     req.session = null; // clear session
     res.redirect('/');
-};
-
-exports.menu = function (req, res, next) {
-    var accessToken = req.session.access_token;
-    if(!accessToken) {
-        return res.redirect('/');
-    }
-
-    res.render('menu');
 };
