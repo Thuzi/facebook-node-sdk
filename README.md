@@ -303,7 +303,7 @@ FB.api('oauth/access_token', {
 ### Exchange code for access token
 
 ```javascript
-var FB = require('./fb');
+var FB = require('fb');
 
 FB.api('oauth/access_token', {
     client_id: 'app_id',
@@ -326,7 +326,7 @@ well as error.
 
 ```javascript
 var url = require('url');
-var FB = require('./fb');
+var FB = require('fb');
 
 var urlToParse = 'http://yoururl.com/callback?code=.....#_=_';
 var result = url.parse(urlToParse, true);
@@ -348,7 +348,7 @@ var code = result.query.code;
 ### Extend expiry time of the access token
 
 ```javascript
-var FB = require('./fb');
+var FB = require('fb');
 
 FB.api('oauth/access_token', {
     client_id: 'client_id',
