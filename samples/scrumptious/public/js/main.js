@@ -14,38 +14,38 @@ var meals = [
 	{
 		"id" : "cheeseburger",
 		"title" : "Cheeseburger",
-		"url" : "http://scrumpit.herokuapp.com/cheeseburger.html"
+		"url" : "http://nodescrumptious.azurewebsites.net/meals/cheeseburger"
 	},
 	{
 		"id" : "chinese",
 		"title" : "Chinese",
-		"url" : "http://scrumpit.herokuapp.com/chinese.html"
+		"url" : "http://nodescrumptious.azurewebsites.net/meals/chinese"
 	},
 	{
 		"id" : "french",
 		"title" : "French",
-		"url" : "http://scrumpit.herokuapp.com/french.html"
+		"url" : "http://nodescrumptious.azurewebsites.net/meals/french"
 	},
 	{
 		"id" : "hotdog",
 		"title" : "Hot Dog",
-		"url" : "http://scrumpit.herokuapp.com/hotdog.html"
+		"url" : "http://nodescrumptious.azurewebsites.net/meals/hotdog"
 	},
 	{
 		"id" : "indian",
 		"title" : "Indian",
-		"url" : "http://scrumpit.herokuapp.com/indian.html"
+		"url" : "http://nodescrumptious.azurewebsites.net/meals/indian"
 	},
 	{
 		"id" : "italian",
 		"title" : "Italian",
-		"url" : "http://scrumpit.herokuapp.com/italian.html"
+		"url" : "http://nodescrumptious.azurewebsites.net/meals/italian"
 	},
 	{
 		"id" : "pizza",
 		"title" : "Pizza",
-		"url" : "http://scrumpit.herokuapp.com/pizza.html"
-	},
+		"url" : "http://nodescrumptious.azurewebsites.net/meals/pizza"
+	}
 ];
 
 // UTILITIES
@@ -97,7 +97,7 @@ $(function () {
                 currentlySelectedPlaceElement.buttonMarkup({ icon: false });
               }
               // Place has been selected.
-              $(this).buttonMarkup({ icon: "check" });            
+              $(this).buttonMarkup({ icon: "check" });
               // Set the selected place info
               selectedPlaceID = selectionId;
               selectedPlaceIndex = $(this).index();
@@ -111,7 +111,7 @@ $(function () {
               selectedPlaceID = null;
               selectedPlaceIndex = -1;
               $('#select-location').html("Select one");
-            } 
+            }
           });
 
           // Friend selection click handler
@@ -130,7 +130,7 @@ $(function () {
               $(this).buttonMarkup({ icon: false });
               // Remove the friend id
               delete selectedFriends[selectionId];
-            } 
+            }
             var friendNameArray = [];
             for (var friendId in selectedFriends) {
               if (selectedFriends.hasOwnProperty(friendId)) {
@@ -148,19 +148,20 @@ $(function () {
             } else {
               $('#select-friends').html("Select friends");
             }
-            
+
             logResponse("Current select friends list: " + selectedFriends);
           });
 
   });
-    
+
 $( document ).delegate("#meals", "pageinit", function() {
   displayMealList();
 });
 
 $('body').bind('hideOpenMenus', function(){
     $("ul:jqmData(role='menu')").find('li > ul').hide();
-}); 
+});
+
 var menuHandler = function(e) {
     $('body').trigger('hideOpenMenus');
     $(this).find('li > ul').show();
@@ -189,7 +190,7 @@ function handleStatusChange(response) {
 }
 
 function updateUserInfo(response) {
-  FB.api('/me', 
+  FB.api('/me',
     {fields:"name,first_name,picture"},
     function(response) {
       logResponse(response);
@@ -383,7 +384,7 @@ function getFriends() {
     }).success(function (response) {
         myFriends = response.data;
         logResponse(myFriends);
-        displayFriends(myFriends)
+        displayFriends(myFriends);
     }).error(function (err) {
         logResponse("Error fetching friend data.");
     });
