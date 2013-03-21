@@ -1,22 +1,23 @@
 
-var FB              = require('../../../fb');
+var FB              = require('../../../fb'),
+
+    config          = require('../config');
 
 FB.options({
-    appId: '',
-    appSecret: '',
-    scope: 'user_about_me,publish_actions',
-    redirect_uri: 'http://localhost:3000/login/callback'
+    appId:          config.facebook.appId,
+    appSecret:      config.facebook.appSecret,
+    scope:          config.facebook.scope,
+    redirect_uri:   config.facebook.redirectUri
 });
 
 function getFacebookLoginUrl () {
-    return 'https://www.facebook.com/dialog/oauth' + 
-        '?client_id=' + FB.options('appId') +
+    return 'https://www.facebook.com/dialog/oauth' +
+        '?client_id='    + FB.options('appId') +
         '&redirect_uri=' + encodeURIComponent(FB.options('redirect_uri')) +
-        '&scope=' + encodeURIComponent(FB.options('scope'));
+        '&scope='        + encodeURIComponent(FB.options('scope'));
 }
 
 exports.index = function(req, res) {
-
     var accessToken = req.session.access_token;
     if(!accessToken) {
         res.render('index', {
@@ -26,7 +27,6 @@ exports.index = function(req, res) {
     } else {
         res.render('menu');
     }
-
 };
 
 exports.loginCallback = function (req, res, next) {
@@ -43,10 +43,10 @@ exports.loginCallback = function (req, res, next) {
 
     // exchange code for access token
     FB.api('oauth/access_token', {
-        client_id: FB.options('appId'),
-        client_secret: FB.options('appSecret'),
-        redirect_uri: FB.options('redirect_uri'),
-        code: code
+        client_id:      FB.options('appId'),
+        client_secret:  FB.options('appSecret'),
+        redirect_uri:   FB.options('redirect_uri'),
+        code:           code
     }, function (result) {
         if(!result || result.error) {
             console.log(!res ? 'error occurred' : res.error);
@@ -77,20 +77,20 @@ exports.search = function (req, res) {
         }
         res.send(result);
     });
-}
+};
 
 exports.friends = function (req, res) {
     FB.api('me/friends', {
-        fields: 'name,picture',
-        limit: 250,
-        access_token: req.session.access_token
+        fields:         'name,picture',
+        limit:          250,
+        access_token:   req.session.access_token
     }, function (result) {
         if(!result || result.error) {
             return res.send(500, 'error');
         }
         res.send(result);
     });
-}
+};
 
 exports.announce = function (req, res) {
     var parameters = req.body;
@@ -101,4 +101,4 @@ exports.announce = function (req, res) {
         }
         res.send(result);
     });
-}
+};

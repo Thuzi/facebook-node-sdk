@@ -4,9 +4,14 @@ var express       = require('express'),
     http          = require('http'),
     path          = require('path'),
 
+    config        = require('./config');
     routes        = require('./routes');
 
 var app = express();
+
+if(!config.facebook.appId || !config.facebook.appSecret) {
+    throw new Error('facebook appId and appSecret required in config.js');
+}
 
 app.configure(function() {
     app.set('port', process.env.PORT || 3000);
