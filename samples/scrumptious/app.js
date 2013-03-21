@@ -4,8 +4,10 @@ var express       = require('express'),
     http          = require('http'),
     path          = require('path'),
 
-    config        = require('./config');
-    routes        = require('./routes');
+    config        = require('./config'),
+
+    home          = require('./routes/home'),
+    meals         = require('./routes/meals');
 
 var app = express();
 
@@ -31,12 +33,14 @@ app.configure('development', function() {
     app.use(express.errorHandler());
 });
 
-app.get('/', routes.index);
-app.get('/login/callback', routes.loginCallback);
-app.get('/logout', routes.logout);
-app.get('/search', routes.search);
-app.get('/friends', routes.friends);
-app.post('/announce', routes.announce);
+app.get( '/',                home.index);
+app.get( '/login/callback',  home.loginCallback);
+app.get( '/logout',          home.logout);
+app.get( '/search',          home.search);
+app.get( '/friends',         home.friends);
+app.post('/announce',        home.announce);
+app.get( '/meals/:id',       meals.show);
+app.get( '/winjs/meals/:id', meals.showWinJs); // this is used for facebook-winjs-sdk sample and not required to actually run this sample
 
 http.createServer(app).listen(app.get('port'), function() {
     console.log("Express server listening on port " + app.get('port'));
