@@ -284,7 +284,7 @@ function publishOGAction(response) {
         type: 'post',
         data: params
     }).success(function(result) {
-        handleOGSuccess(cresult);
+        handleOGSuccess(result);
     }).error(function (err) {
        // todo: handle error
     });
