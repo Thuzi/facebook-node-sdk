@@ -12,6 +12,16 @@ npm install fb
 var FB = require('fb');
 ```
 
+# Running Samples
+Update `appId` and `appSecret` in `samples/scrumptious/config.js`
+
+```
+npm install
+cd samples/scrumptious
+npm install
+node app.js
+```
+
 ## Graph Api
 
 ### Get
