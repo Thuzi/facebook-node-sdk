@@ -570,3 +570,84 @@ FB.api('/me', function (res) {
     }
 });
 ```
+
+## Node style callback with FB.napi
+
+*This is a non-standard api and does not exist in the official client side FB JS SDK.*
+
+`FB.napi` takes the same input as `FB.api`. Only the callback parameters is different. In the original 
+`FB.api`, the callback expects one parameter which is the response. In `FB.napi` the callback expects two
+parameters instead of one and follows the node standards. The first parameter is an error which is always
+of type `FB.FacebookApiException` and the second parameter is the same response as in `FB.api`.
+Error response can be accessed using `error.response` which is the same response as the response when using
+`FB.api`
+
+```js
+var FB = require('fb');
+
+FB.napi('4', function(error, response) {
+    if(error) {
+        if(error.response.error.code === 'ETIMEDOUT') {
+            console.log('request timeout');
+        }
+        else {
+            console.log('error', error.message);
+        }
+    } else {
+        console.log(response);
+    }
+});
+```
+
+`FB.napi` was added especially to make it easier to work with async control flow libraries.
+
+Here are some examples of using facebook-node-sdk with [Step](https://npmjs.org/package/step).
+
+You will need to install `step`.
+
+```fb
+npm install step
+```
+
+### FB.api with Step
+
+```js
+var FB      = require('fb'),
+    Step    = require('step');
+
+Step(
+    function getUser() {
+        var self = this;
+        FB.api('4', function(res) {
+            if(!res || res.error) {
+                self(new Error('Error occured'));
+            } else {
+                self(null, res);
+            }
+        });
+    },
+    function processResult(err, res) {
+        if(err) throw err;
+        console.log(res);
+    }
+);
+```
+
+### FB.napi with Step
+
+Simplified version of facebook-node-sdk async callbacks using `FB.napi`.
+
+```js
+var FB      = require('fb'),
+    Step    = require('step');
+
+Step(
+    function getUser() {
+        FB.napi('4', this);
+    },
+    function processResult(err, res) {
+        if(err) throw err;
+        console.log(res);
+    }
+);
+```
