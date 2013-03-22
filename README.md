@@ -13,7 +13,7 @@ var FB = require('fb');
 ```
 
 # Running Samples
-Update `appId` and `appSecret` in `samples/scrumptious/routes/index.js`
+Update `appId` and `appSecret` in `samples/scrumptious/config.js`
 
 ```
 npm install
