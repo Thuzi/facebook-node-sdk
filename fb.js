@@ -1,11 +1,13 @@
 (function() {
-    
+
     var FB = (function() {
-    
+
         var   request = require('request')
             , crypto  = require('crypto')
             , version = require(require('path').resolve(__dirname, 'package.json')).version
-            , api 
+            , api
+            , napi
+            , nodeifyCallback
             , graph
             , rest
             , oauthRequest
@@ -450,8 +452,71 @@
 
         FacebookApiException.prototype = Error.prototype;
 
+        nodeifyCallback = function (originalCallback) {
+            // normalizes the callback parameters so that the
+            // first parameter is always error and second is response
+            return function (res) {
+                if(!res || res.error) {
+                    originalCallback(new FacebookApiException(res));
+                } else {
+                    originalCallback(null, res);
+                }
+            };
+        }
+
+        /**
+         *
+         * @access public
+         * @param path {String} the url path
+         * @param method {String} the http method (default: `"GET"`)
+         * @param params {Object} the parameters for the query
+         * @param cb {Function} the callback function to handle the error and response
+         */
+        napi = function () {
+            //
+            // normalizes to node style callback so can use the sdk with async control flow node libraries
+            //  first parameters:          error (always type of FacebookApiException)
+            //  second callback parameter: response
+            //
+            // FB.napi('/platform', function(err, response) {
+            //  console.log(response.company_overview);
+            // });
+            //
+            // FB.napi('/platform/posts', { limit: 3 }, function(err, response) {
+            // });
+            //
+            // FB.napi('/me/feed', 'post', { message: body }, function(error, response) {
+            //  if(error) {
+            //      console.log('Error occured');
+            //  } else {
+            //      console.log('Post ID:' + response.id);
+            //  }
+            // });
+            //
+            // var postId = '1234567890';
+            // FB.napi(postId, 'delete', function(error, response) {
+            //  if(error) {
+            //      console.log('Error occurred');
+            //  } else {
+            //      console.log('Post was deleted');
+            //  }
+            // });
+            //
+            //
+
+            var args = Array.prototype.slice.call(arguments);
+
+            if(args.length > 0) {
+                var originalCallback = args.pop();
+                args.push(typeof(originalCallback) == 'function' ? nodeifyCallback(originalCallback) : originalCallback);
+            }
+
+            api.apply(this, args);
+        };
+
         return {
               api: api
+            , napi: napi // this method does not exist in fb js sdk
             , getAccessToken: getAccessToken
             , setAccessToken: setAccessToken // this method does not exist in fb js sdk
             , parseSignedRequest : parseSignedRequest // this method does not exist in fb js sdk
