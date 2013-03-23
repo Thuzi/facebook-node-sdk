@@ -7,7 +7,7 @@ FB.options({
     appId:          config.facebook.appId,
     appSecret:      config.facebook.appSecret,
     scope:          config.facebook.scope,
-    redirect_uri:   config.facebook.redirectUri
+    redirectUri:    config.facebook.redirectUri
 });
 
 exports.search = function (req, res) {
