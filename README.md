@@ -487,7 +487,7 @@ The existing options are:
 * `'appSecret'` string representing the facebook application secret.
 * `'timeout'` integer number of milliseconds to wait for a response. Requests that have not received a response in *X* ms. If set to null or 0 no timeout will exist. On timeout an error object will be returned to the api callback with the error code of `'ETIMEDOUT'` (example below).
 
-`'scope'` and `'redirect_uri'` have been whitelisted in options for convenience. These value will not be automatically
+`'scope'` and `'redirectUri'` have been whitelisted in options for convenience. These value will not be automatically
 added when using any of the sdk apis unlike the above options. These are whitelisted so you can use it to pass values
 using the same `FB` object.
 

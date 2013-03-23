@@ -7,13 +7,13 @@ FB.options({
     appId:          config.facebook.appId,
     appSecret:      config.facebook.appSecret,
     scope:          config.facebook.scope,
-    redirect_uri:   config.facebook.redirectUri
+    redirectUri:    config.facebook.redirectUri
 });
 
 function getFacebookLoginUrl () {
     return 'https://www.facebook.com/dialog/oauth' +
         '?client_id='    + FB.options('appId') +
-        '&redirect_uri=' + encodeURIComponent(FB.options('redirect_uri')) +
+        '&redirect_uri=' + encodeURIComponent(FB.options('redirectUri')) +
         '&scope='        + encodeURIComponent(FB.options('scope'));
 }
 
@@ -45,7 +45,7 @@ exports.loginCallback = function (req, res, next) {
     FB.api('oauth/access_token', {
         client_id:      FB.options('appId'),
         client_secret:  FB.options('appSecret'),
-        redirect_uri:   FB.options('redirect_uri'),
+        redirect_uri:   FB.options('redirectUri'),
         code:           code
     }, function (result) {
         if(!result || result.error) {
