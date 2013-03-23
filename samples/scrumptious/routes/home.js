@@ -36,7 +36,7 @@ exports.loginCallback = function (req, res, next) {
 
     if(req.query.error) {
         // user disallowed the app
-        return res.render('login-error');
+        return res.send('login-error');
     } else if(!code) {
         return res.redirect('/');
     }
