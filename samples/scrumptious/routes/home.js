@@ -1,5 +1,6 @@
 
 var FB              = require('../../../fb'),
+    Step            = require('step'),
 
     config          = require('../config');
 
@@ -30,75 +31,45 @@ exports.index = function(req, res) {
 };
 
 exports.loginCallback = function (req, res, next) {
-    var code            = req.query.code,
-        accessToken     = '',
-        expires         = 0;
+    var code            = req.query.code;
 
     if(req.query.error) {
-        // user disallowed the app
-        return res.render('login-error');
+        // user might have disallowed the app
+        return res.send('login-error ' + req.query.error_description);
     } else if(!code) {
         return res.redirect('/');
     }
 
-    // exchange code for access token
-    FB.api('oauth/access_token', {
-        client_id:      FB.options('appId'),
-        client_secret:  FB.options('appSecret'),
-        redirect_uri:   FB.options('redirectUri'),
-        code:           code
-    }, function (result) {
-        if(!result || result.error) {
-            console.log(!res ? 'error occurred' : res.error);
-            return next(result); // todo: handle error
+    Step(
+        function exchangeCodeForAccessToken() {
+            FB.napi('oauth/access_token', {
+                client_id:      FB.options('appId'),
+                client_secret:  FB.options('appSecret'),
+                redirect_uri:   FB.options('redirectUri'),
+                code:           code
+            }, this);
+        },
+        function extendAccessToken(err, result) {
+            if(err) throw(err);
+            FB.napi('oauth/access_token', {
+                client_id:          FB.options('appId'),
+                client_secret:      FB.options('appSecret'),
+                grant_type:         'fb_exchange_token',
+                fb_exchange_token:  result.access_token
+            }, this);
+        },
+        function (err, result) {
+            if(err) return next(err);
+
+            req.session.access_token    = result.access_token;
+            req.session.expires         = result.expires || 0;
+
+            res.redirect('/');
         }
-
-        accessToken     = result.access_token;
-        expires         = result.expires ? result.expires : 0;
-
-        // todo: extend access token
-        req.session.access_token = accessToken;
-        req.session.expires = expires;
-        res.redirect('/');
-    });
+    );
 };
 
 exports.logout = function (req, res) {
     req.session = null; // clear session
     res.redirect('/');
-};
-
-exports.search = function (req, res) {
-    var parameters = req.query;
-    parameters.access_token = req.session.access_token;
-    FB.api('/search', req.query, function (result) {
-        if(!result || result.error) {
-            return res.send(500, 'error');
-        }
-        res.send(result);
-    });
-};
-
-exports.friends = function (req, res) {
-    FB.api('me/friends', {
-        fields:         'name,picture',
-        limit:          250,
-        access_token:   req.session.access_token
-    }, function (result) {
-        if(!result || result.error) {
-            return res.send(500, 'error');
-        }
-        res.send(result);
-    });
-};
-
-exports.announce = function (req, res) {
-    var parameters = req.body;
-    parameters.access_token = req.session.access_token;
-    FB.api('/me/' + config.facebook.appNamespace +':eat', 'post', parameters , function (result) {
-        if(!result || result.error) {
-            return res.send(500, 'error');
-        }
-        res.send(result);
-    });
 };
