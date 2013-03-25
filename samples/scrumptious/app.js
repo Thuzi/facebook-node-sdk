@@ -6,6 +6,7 @@ var express       = require('express'),
 
     config        = require('./config'),
 
+    api           = require('./routes/api'),
     home          = require('./routes/home'),
     meals         = require('./routes/meals');
 
@@ -36,9 +37,9 @@ app.configure('development', function() {
 app.get( '/',                home.index);
 app.get( '/login/callback',  home.loginCallback);
 app.get( '/logout',          home.logout);
-app.get( '/search',          home.search);
-app.get( '/friends',         home.friends);
-app.post('/announce',        home.announce);
+app.get( '/search',          api.search);
+app.get( '/friends',         api.friends);
+app.post('/announce',        api.announce);
 app.get( '/meals/:id',       meals.show);
 app.get( '/winjs/meals/:id', meals.showWinJs); // this is used for facebook-winjs-sdk sample and not required to actually run this sample
 
