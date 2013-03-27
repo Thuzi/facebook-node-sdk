@@ -295,17 +295,19 @@
                     response.headers && /.*text\/plain.*/.test(response.headers['content-type'])) {
                     cb(parseOAuthApiResponse(body));
                 } else {
+                    var json;
                     try {
-                        // sometimes FB is has API errors that return HTML and a message 
-                        // of "Sorry, something went wrong". These are infrequent and unpredictable but
-                        // let's not let them blow up our application.
-                        cb(JSON.parse(body));
+                        json = JSON.parse(body);
                     } catch (ex) {
-                        cb({ error: {
-                            code: 'JSONPARSE',
-                            Error: ex
-                        }});
+                      // sometimes FB is has API errors that return HTML and a message 
+                      // of "Sorry, something went wrong". These are infrequent and unpredictable but
+                      // let's not let them blow up our application.
+                      json =  { error: {
+                          code: 'JSONPARSE',
+                          Error: ex
+                      }};
                     }
+                    cb(json);
                 }
             });
         };
