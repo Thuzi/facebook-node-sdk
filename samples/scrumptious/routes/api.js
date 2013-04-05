@@ -3,13 +3,6 @@ var FB              = require('../../../fb'),
 
     config          = require('../config');
 
-FB.options({
-    appId:          config.facebook.appId,
-    appSecret:      config.facebook.appSecret,
-    scope:          config.facebook.scope,
-    redirectUri:    config.facebook.redirectUri
-});
-
 exports.search = function (req, res) {
     var parameters              = req.query;
     parameters.access_token     = req.session.access_token;
