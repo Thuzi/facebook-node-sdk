@@ -5,6 +5,8 @@
         var   request = require('request')
             , crypto  = require('crypto')
             , version = require(require('path').resolve(__dirname, 'package.json')).version
+            , getLoginUrl
+            , pingFacebook
             , api
             , napi
             , nodeifyCallback
@@ -442,6 +444,10 @@
             for(key in opts) {
                 if(has(opts, key) && has(keyOrOptions, key)) {
                     opts[key] = keyOrOptions[key];
+                    if(key == 'appId') {
+                        // ping Facebook for instrumentation requirement
+                        pingFacebook(opts[key]);
+                    }
                 }
             }
         };
@@ -516,12 +522,89 @@
             api.apply(this, args);
         };
 
+        /**
+         *
+         * @access public
+         * @param opt {Object} the parameters for appId and scope
+         */
+        getLoginUrl = function (opt) {
+            opt = opt || {};
+            var   clientId = opt.appId || opt.client_id || options('appId')
+                , redirectUri = opt.redirectUri || opt.redirect_uri || options('redirectUri') || 'https://www.facebook.com/connect/login_success.html'
+                , scope = opt.scope || options('scope')
+                , display = opt.display
+                , scopeQuery = ''
+                , displayQuery = ''
+                , loginUrl;
+
+            if (!clientId) {
+                throw new Error('client_id required');
+            }
+
+            if (scope) {
+                scopeQuery = '&scope=' + encodeURIComponent(scope);
+            }
+
+            if(display) {
+                displayQuery = '&display=' + display
+            }
+
+            return 'https://www.facebook.com/dialog/oauth'
+                + '?response_type=' + (opt.responseType || opt.response_type || 'code')
+                +  scopeQuery
+                +  displayQuery
+                + '&redirect_uri=' + encodeURIComponent(redirectUri)
+                + '&client_id=' + clientId;
+        };
+
+        /**
+         *
+         * @access private
+         * @param appId {String} the Facebook application id
+         */
+        //HTTP POST to:
+        //https://www.facebook.com/impression.php
+        //Parameters:
+        //plugin = "featured_resources"
+        //payload = <JSON_ENCODED_DATA>
+
+        //JSON_ENCODED_DATA
+        //resource "thuzi_winjssdk" for your Win JS SDK and "thuzi_nodejssdk" for your Node.js SDK
+        //appid (Facebook app ID)
+        //version (Your resource version. This is whatever versioning string you attribute to your resource.)
+
+        //Response: A pixel image.
+
+        pingFacebook = function (appId) {
+            try {
+
+                request({
+                      method: 'POST'
+                    , uri: 'https://www.facebook.com/impression.php'
+                    , json: {
+                        plugin: 'featured_resources',
+                        payload: {
+                            resource: 'thuzi_nodejssdk',
+                            appid: appId,
+                            version: version
+                        }
+                    }
+                }
+                , function(error, response, body) {
+                   // ignore error/response
+                });
+            } catch (e) {
+                // Eat the error
+            }
+        };
+
         return {
               api: api
             , napi: napi // this method does not exist in fb js sdk
             , getAccessToken: getAccessToken
             , setAccessToken: setAccessToken // this method does not exist in fb js sdk
             , parseSignedRequest : parseSignedRequest // this method does not exist in fb js sdk
+            , getLoginUrl: getLoginUrl // this method does not exist in fb js sdk
             , options: options // this method does not exist in the fb js sdk
             , version: version // this method does not exist in the fb js sdk
             , FacebookApiException: FacebookApiException // this Error does not exist in the fb js sdk

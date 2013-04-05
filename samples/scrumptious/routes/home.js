@@ -11,19 +11,12 @@ FB.options({
     redirectUri:    config.facebook.redirectUri
 });
 
-function getFacebookLoginUrl () {
-    return 'https://www.facebook.com/dialog/oauth' +
-        '?client_id='    + FB.options('appId') +
-        '&redirect_uri=' + encodeURIComponent(FB.options('redirectUri')) +
-        '&scope='        + encodeURIComponent(FB.options('scope'));
-}
-
 exports.index = function(req, res) {
     var accessToken = req.session.access_token;
     if(!accessToken) {
         res.render('index', {
             title: 'Express',
-            loginUrl: getFacebookLoginUrl()
+            loginUrl: FB.getLoginUrl()
         });
     } else {
         res.render('menu');
