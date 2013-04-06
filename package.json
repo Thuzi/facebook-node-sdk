@@ -20,7 +20,9 @@
     "request": "2.9.x",
     "crypto": "0.0.3"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "nock": "~0.17.2"
+  },
   "optionalDependencies": {},
   "main": "./fb.js"
 }
