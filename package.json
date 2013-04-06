@@ -21,7 +21,9 @@
     "crypto": "0.0.3"
   },
   "devDependencies": {
-    "nock": "~0.17.2"
+    "nock": "~0.17.2",
+    "mocha": "~1.9.0",
+    "should": "~1.2.2"
   },
   "optionalDependencies": {},
   "main": "./fb.js"
