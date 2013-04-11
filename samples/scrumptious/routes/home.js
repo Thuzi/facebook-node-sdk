@@ -65,7 +65,8 @@ exports.loginCallback = function (req, res, next) {
                 FB.api('/me/' + config.facebook.appNamespace +':eat', 'post', parameters , function (result) {
                     console.log(result);
                     if(!result || result.error) {
-                        return res.send(500, 'error');
+                        return res.send(500, result || 'error');
+                        // return res.send(500, 'error');
                     }
 
                     return res.redirect('/');
