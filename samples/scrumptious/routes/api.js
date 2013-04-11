@@ -31,9 +31,15 @@ exports.announce = function (req, res) {
     var parameters              = req.body;
     parameters.access_token     = req.session.access_token;
     FB.api('/me/' + config.facebook.appNamespace +':eat', 'post', parameters , function (result) {
-        if(!result || result.error) {
+        if(!result) {
             return res.send(500, 'error');
+        } else if(result.error) {
+            if(result.error.type == 'OAuthException') {
+                result.redirectUri = FB.getLoginUrl({ scope: 'user_about_me,publish_actions', state: encodeURIComponent(JSON.stringify(parameters)) });
+            }
+            return res.send(500, result);
         }
+
         res.send(result);
     });
 };

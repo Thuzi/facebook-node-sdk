@@ -102,7 +102,7 @@
          * @param cb {Function} the callback function to handle the response
          */
         api = function() {
-            // 
+            //
             // FB.api('/platform', function(response) {
             //  console.log(response.company_overview);
             // });
@@ -301,7 +301,7 @@
                     try {
                         json = JSON.parse(body);
                     } catch (ex) {
-                      // sometimes FB is has API errors that return HTML and a message 
+                      // sometimes FB is has API errors that return HTML and a message
                       // of "Sorry, something went wrong". These are infrequent and unpredictable but
                       // let's not let them blow up our application.
                       json =  { error: {
@@ -378,7 +378,7 @@
                 , hmac
                 , base64Digest
                 , base64UrlDigest;
-            
+
             if(!signedRequest) {
                 return;
             }
@@ -419,7 +419,7 @@
 
             // Replace illegal characters
             base64UrlDigest = base64UrlDigest.replace(/\+/g, '-').replace(/\//g, '_');
-            
+
             if(base64UrlDigest !== encodedSignature) {
                 return;
             }
@@ -533,8 +533,10 @@
                 , redirectUri = opt.redirectUri || opt.redirect_uri || options('redirectUri') || 'https://www.facebook.com/connect/login_success.html'
                 , scope = opt.scope || options('scope')
                 , display = opt.display
+                , state = opt.state
                 , scopeQuery = ''
                 , displayQuery = ''
+                , stateQuery = ''
                 , loginUrl;
 
             if (!clientId) {
@@ -549,10 +551,15 @@
                 displayQuery = '&display=' + display
             }
 
+            if(state) {
+                stateQuery = '&state=' + state;
+            }
+
             return 'https://www.facebook.com/dialog/oauth'
                 + '?response_type=' + (opt.responseType || opt.response_type || 'code')
                 +  scopeQuery
                 +  displayQuery
+                +  stateQuery
                 + '&redirect_uri=' + encodeURIComponent(redirectUri)
                 + '&client_id=' + clientId;
         };
