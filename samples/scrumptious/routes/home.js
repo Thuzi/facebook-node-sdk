@@ -7,7 +7,6 @@ var FB              = require('../../../fb'),
 FB.options({
     appId:          config.facebook.appId,
     appSecret:      config.facebook.appSecret,
-    scope:          config.facebook.scope,
     redirectUri:    config.facebook.redirectUri
 });
 
@@ -16,7 +15,7 @@ exports.index = function(req, res) {
     if(!accessToken) {
         res.render('index', {
             title: 'Express',
-            loginUrl: FB.getLoginUrl()
+            loginUrl: FB.getLoginUrl({ scope: 'user_about_me' })
         });
     } else {
         res.render('menu');
@@ -57,7 +56,23 @@ exports.loginCallback = function (req, res, next) {
             req.session.access_token    = result.access_token;
             req.session.expires         = result.expires || 0;
 
-            res.redirect('/');
+            if(req.query.state) {
+                var parameters              = JSON.parse(req.query.state);
+                parameters.access_token     = req.session.access_token;
+
+                console.log(parameters);
+
+                FB.api('/me/' + config.facebook.appNamespace +':eat', 'post', parameters , function (result) {
+                    console.log(result);
+                    if(!result || result.error) {
+                        return res.send(500, 'error');
+                    }
+
+                    return res.redirect('/');
+                });
+            } else {
+                return res.redirect('/');
+            }
         }
     );
 };

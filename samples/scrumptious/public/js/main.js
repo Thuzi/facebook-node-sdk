@@ -285,7 +285,14 @@ function publishOGAction(response) {
         data: params
     }).success(function(result) {
         handleOGSuccess(result);
-    }).error(function (err) {
+    }).error(function (xhr) {
+      try{
+        var response = JSON.parse(xhr.responseText);
+        if(response.error && response.redirectUri) {
+          window.location = response.redirectUri;
+        }
+      } catch(err) {
+      }
        // todo: handle error
     });
 //	FB.api(";",
