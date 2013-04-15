@@ -583,18 +583,19 @@
         //Response: A pixel image.
 
         pingFacebook = function (appId) {
-            try {
+            var payload = {
+                resource: 'thuzi_nodejssdk',
+                appid: appId,
+                version: version
+            };
 
+            try {
                 request({
                       method: 'POST'
                     , uri: 'https://www.facebook.com/impression.php'
-                    , json: {
+                    , form: {
                         plugin: 'featured_resources',
-                        payload: {
-                            resource: 'thuzi_nodejssdk',
-                            appid: appId,
-                            version: version
-                        }
+                        payload: encodeURIComponent(JSON.stringify(payload))
                     }
                 }
                 , function(error, response, body) {
