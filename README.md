@@ -2,6 +2,8 @@
 
 With facebook-node-sdk you can now easily write the same code and share between your server (nodejs) and the client ([Facebook Javascript SDK](https://developers.facebook.com/docs/reference/javascript/)).
 
+This SDK will report usage of which AppID is using it directly to Facebook.
+
 **Author:** [Thuzi](http://www.thuzi.com)
 
 **License:** Apache v2
