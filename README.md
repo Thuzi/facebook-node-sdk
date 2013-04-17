@@ -2,6 +2,10 @@
 
 With facebook-node-sdk you can now easily write the same code and share between your server (nodejs) and the client ([Facebook Javascript SDK](https://developers.facebook.com/docs/reference/javascript/)).
 
+**Author:** [Thuzi](http://www.thuzi.com)
+
+**License:** Apache v2
+
 # Installing facebook-node-sdk
 
 ```
