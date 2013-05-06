@@ -21,6 +21,10 @@
             , log
             , has
             , options
+            , throttle
+            , process
+            , running = false
+            , queue = []
             , METHODS = ['get', 'post', 'delete', 'put']
             , opts = {
                   'accessToken': null
@@ -29,6 +33,7 @@
                 , 'timeout': null
                 , 'scope':  null
                 , 'redirectUri': null
+                , 'throttle': null
             }
             , readOnlyCalls = {
                   'admin.getallocation': true
@@ -191,7 +196,9 @@
                 return;
             }
 
-            oauthRequest('graph', path, method, params, cb);
+            throttle(function () {
+                oauthRequest('graph', path, method, params, cb);
+            });
         };
 
         /**
@@ -206,7 +213,39 @@
 
             params.format = 'json-strings';
             var domain = readOnlyCalls[method] ? 'api_read' : 'api';
-            oauthRequest(domain, 'restserver.php', 'get', params, cb);
+
+            throttle(function () {
+                oauthRequest(domain, 'restserver.php', 'get', params, cb);
+            });
+        };
+
+        /**
+         * Throttles a request function, queuing its execution if it exceeds the number of
+         * permitted calls defined by the throttle option.
+         *
+         * @access private
+         * @param fn {Function} The function to throttle
+         */
+        throttle = function (fn) {
+            queue.push(fn);
+
+            if(!running) {
+                running = true;
+                process();
+            }
+        },
+
+        /**
+         * Recursive function for dequeuing and processing requests.
+         */
+        process = function() {
+            if(queue.length > 0) {
+                queue.shift().apply(this, arguments);
+                setTimeout(process, options('throttle') || -1);
+                return;
+            }
+
+            running = false;
         };
 
         /**
