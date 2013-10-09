@@ -29,6 +29,7 @@
                 , 'timeout': null
                 , 'scope':  null
                 , 'redirectUri': null
+                , 'proxy': null
             }
             , readOnlyCalls = {
                   'admin.getallocation': true
@@ -281,6 +282,9 @@
                 , uri: uri
                 , body: body
             };
+            if(options('proxy')) {
+                requestOptions['proxy'] = options('proxy');
+            }
             if(options('timeout')) {
                 requestOptions['timeout'] = options('timeout');
             }
@@ -590,17 +594,23 @@
             };
 
             try {
-                request({
-                      method: 'POST'
+                var requestOptions = {
+                    method: 'POST'
                     , uri: 'https://www.facebook.com/impression.php'
                     , form: {
                         plugin: 'featured_resources',
                         payload: encodeURIComponent(JSON.stringify(payload))
                     }
+                };
+                if(options('proxy')) {
+                    requestOptions['proxy'] = options('proxy');
                 }
-                , function(error, response, body) {
-                   // ignore error/response
-                });
+			
+                request(
+                    requestOptions
+                    , function(error, response, body) {
+                        // ignore error/response
+                    });
             } catch (e) {
                 // Eat the error
             }
