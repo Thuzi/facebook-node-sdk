@@ -23,7 +23,7 @@
             options,
             METHODS = ['get', 'post', 'delete', 'put'],
             opts = {
-                  'accessToken': null
+                'accessToken': null,
                 'appId': null,
                 'appSecret': null,
                 'timeout': null,
