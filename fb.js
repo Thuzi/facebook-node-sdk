@@ -2,95 +2,95 @@
 
     var FB = (function() {
 
-        var   request = require('request')
-            , crypto  = require('crypto')
-            , version = require(require('path').resolve(__dirname, 'package.json')).version
-            , getLoginUrl
-            , pingFacebook
-            , api
-            , napi
-            , nodeifyCallback
-            , graph
-            , rest
-            , oauthRequest
-            , parseOAuthApiResponse
-            , setAccessToken
-            , getAccessToken
-            , parseSignedRequest
-            , base64UrlDecode
-            , log
-            , has
-            , options
-            , METHODS = ['get', 'post', 'delete', 'put']
-            , opts = {
+        var request = require('request'),
+            crypto  = require('crypto'),
+            version = require(require('path').resolve(__dirname, 'package.json')).version,
+            getLoginUrl,
+            pingFacebook,
+            api,
+            napi,
+            nodeifyCallback,
+            graph,
+            rest,
+            oauthRequest,
+            parseOAuthApiResponse,
+            setAccessToken,
+            getAccessToken,
+            parseSignedRequest,
+            base64UrlDecode,
+            log,
+            has,
+            options,
+            METHODS = ['get', 'post', 'delete', 'put'],
+            opts = {
                   'accessToken': null
-                , 'appId': null
-                , 'appSecret': null
-                , 'timeout': null
-                , 'scope':  null
-                , 'redirectUri': null
-            }
-            , readOnlyCalls = {
-                  'admin.getallocation': true
-                , 'admin.getappproperties': true
-                , 'admin.getbannedusers': true
-                , 'admin.getlivestreamvialink': true
-                , 'admin.getmetrics': true
-                , 'admin.getrestrictioninfo': true
-                , 'application.getpublicinfo': true
-                , 'auth.getapppublickey': true
-                , 'auth.getsession': true
-                , 'auth.getsignedpublicsessiondata': true
-                , 'comments.get': true
-                , 'connect.getunconnectedfriendscount': true
-                , 'dashboard.getactivity': true
-                , 'dashboard.getcount': true
-                , 'dashboard.getglobalnews': true
-                , 'dashboard.getnews': true
-                , 'dashboard.multigetcount': true
-                , 'dashboard.multigetnews': true
-                , 'data.getcookies': true
-                , 'events.get': true
-                , 'events.getmembers': true
-                , 'fbml.getcustomtags': true
-                , 'feed.getappfriendstories': true
-                , 'feed.getregisteredtemplatebundlebyid': true
-                , 'feed.getregisteredtemplatebundles': true
-                , 'fql.multiquery': true
-                , 'fql.query': true
-                , 'friends.arefriends': true
-                , 'friends.get': true
-                , 'friends.getappusers': true
-                , 'friends.getlists': true
-                , 'friends.getmutualfriends': true
-                , 'gifts.get': true
-                , 'groups.get': true
-                , 'groups.getmembers': true
-                , 'intl.gettranslations': true
-                , 'links.get': true
-                , 'notes.get': true
-                , 'notifications.get': true
-                , 'pages.getinfo': true
-                , 'pages.isadmin': true
-                , 'pages.isappadded': true
-                , 'pages.isfan': true
-                , 'permissions.checkavailableapiaccess': true
-                , 'permissions.checkgrantedapiaccess': true
-                , 'photos.get': true
-                , 'photos.getalbums': true
-                , 'photos.gettags': true
-                , 'profile.getinfo': true
-                , 'profile.getinfooptions': true
-                , 'stream.get': true
-                , 'stream.getcomments': true
-                , 'stream.getfilters': true
-                , 'users.getinfo': true
-                , 'users.getloggedinuser': true
-                , 'users.getstandardinfo': true
-                , 'users.hasapppermission': true
-                , 'users.isappuser': true
-                , 'users.isverified': true
-                , 'video.getuploadlimits': true
+                'appId': null,
+                'appSecret': null,
+                'timeout': null,
+                'scope':  null,
+                'redirectUri': null
+            },
+            readOnlyCalls = {
+                'admin.getallocation': true,
+                'admin.getappproperties': true,
+                'admin.getbannedusers': true,
+                'admin.getlivestreamvialink': true,
+                'admin.getmetrics': true,
+                'admin.getrestrictioninfo': true,
+                'application.getpublicinfo': true,
+                'auth.getapppublickey': true,
+                'auth.getsession': true,
+                'auth.getsignedpublicsessiondata': true,
+                'comments.get': true,
+                'connect.getunconnectedfriendscount': true,
+                'dashboard.getactivity': true,
+                'dashboard.getcount': true,
+                'dashboard.getglobalnews': true,
+                'dashboard.getnews': true,
+                'dashboard.multigetcount': true,
+                'dashboard.multigetnews': true,
+                'data.getcookies': true,
+                'events.get': true,
+                'events.getmembers': true,
+                'fbml.getcustomtags': true,
+                'feed.getappfriendstories': true,
+                'feed.getregisteredtemplatebundlebyid': true,
+                'feed.getregisteredtemplatebundles': true,
+                'fql.multiquery': true,
+                'fql.query': true,
+                'friends.arefriends': true,
+                'friends.get': true,
+                'friends.getappusers': true,
+                'friends.getlists': true,
+                'friends.getmutualfriends': true,
+                'gifts.get': true,
+                'groups.get': true,
+                'groups.getmembers': true,
+                'intl.gettranslations': true,
+                'links.get': true,
+                'notes.get': true,
+                'notifications.get': true,
+                'pages.getinfo': true,
+                'pages.isadmin': true,
+                'pages.isappadded': true,
+                'pages.isfan': true,
+                'permissions.checkavailableapiaccess': true,
+                'permissions.checkgrantedapiaccess': true,
+                'photos.get': true,
+                'photos.getalbums': true,
+                'photos.gettags': true,
+                'profile.getinfo': true,
+                'profile.getinfooptions': true,
+                'stream.get': true,
+                'stream.getcomments': true,
+                'stream.getfilters': true,
+                'users.getinfo': true,
+                'users.getloggedinuser': true,
+                'users.getstandardinfo': true,
+                'users.hasapppermission': true,
+                'users.isappuser': true,
+                'users.isverified': true,
+                'video.getuploadlimits': true
             };
 
         /**
@@ -156,12 +156,12 @@
          *
          */
         graph = function() {
-            var   args = Array.prototype.slice.call(arguments)
-                , path = args.shift()
-                , next = args.shift()
-                , method
-                , params
-                , cb;
+            var args = Array.prototype.slice.call(arguments),
+                path = args.shift(),
+                next = args.shift(),
+                method,
+                params,
+                cb;
 
             while(next) {
                 var type = typeof next;
@@ -221,12 +221,12 @@
          * @param cb {Function}     the callback function to handle the response
          */
         oauthRequest = function(domain, path, method, params, cb) {
-            var   uri
-                , body
-                , key
-                , value
-                , requestOptions
-                , isOAuthRequest;
+            var uri,
+                body,
+                key,
+                value,
+                requestOptions,
+                isOAuthRequest;
 
             cb = cb || function() {};
             if(!params.access_token && options('accessToken')) {
@@ -277,20 +277,20 @@
             };
 
             requestOptions = {
-                  method: method
-                , uri: uri
-                , body: body
+                method: method,
+                uri: uri,
+                body: body
             };
             if(options('timeout')) {
                 requestOptions['timeout'] = options('timeout');
             }
-            request(requestOptions
-            , function(error, response, body) {
-                if(error !== null) {
-                    if(error === Object(error) && has(error, 'error')) {
-                        return cb(error);
-                    }
-                    return cb({error:error});
+            request(requestOptions,
+                function(error, response, body) {
+                    if(error !== null) {
+                        if(error === Object(error) && has(error, 'error')) {
+                            return cb(error);
+                        }
+                        return cb({error:error});
                 }
 
                 if(isOAuthRequest && response && response.statusCode === 200 &&
@@ -315,10 +315,10 @@
         };
 
         parseOAuthApiResponse = function (body) {
-            var   result
-                , key
-                , value
-                , split;
+            var result,
+                key,
+                value,
+                split;
 
             result = {};
             body = body.split('&');
@@ -368,16 +368,16 @@
          *
          */
         parseSignedRequest = function () {
-            var   args = Array.prototype.slice.call(arguments)
-                , signedRequest = args.shift()
-                , appSecret = args.shift() || options('appSecret')
-                , split
-                , encodedSignature
-                , encodedEnvelope
-                , envelope
-                , hmac
-                , base64Digest
-                , base64UrlDigest;
+            var args = Array.prototype.slice.call(arguments),
+                signedRequest = args.shift(),
+                appSecret = args.shift() || options('appSecret'),
+                split,
+                encodedSignature,
+                encodedEnvelope,
+                envelope,
+                hmac,
+                base64Digest,
+                base64UrlDigest;
 
             if(!signedRequest) {
                 return;
@@ -529,15 +529,15 @@
          */
         getLoginUrl = function (opt) {
             opt = opt || {};
-            var   clientId = opt.appId || opt.client_id || options('appId')
-                , redirectUri = opt.redirectUri || opt.redirect_uri || options('redirectUri') || 'https://www.facebook.com/connect/login_success.html'
-                , scope = opt.scope || options('scope')
-                , display = opt.display
-                , state = opt.state
-                , scopeQuery = ''
-                , displayQuery = ''
-                , stateQuery = ''
-                , loginUrl;
+            var clientId = opt.appId || opt.client_id || options('appId'),
+                redirectUri = opt.redirectUri || opt.redirect_uri || options('redirectUri') || 'https://www.facebook.com/connect/login_success.html',
+                scope = opt.scope || options('scope'),
+                display = opt.display,
+                state = opt.state,
+                scopeQuery = '',
+                displayQuery = '',
+                stateQuery = '',
+                loginUrl;
 
             if (!clientId) {
                 throw new Error('client_id required');
@@ -591,14 +591,14 @@
 
             try {
                 request({
-                      method: 'POST'
-                    , uri: 'https://www.facebook.com/impression.php'
-                    , form: {
+                    method: 'POST',
+                    uri: 'https://www.facebook.com/impression.php',
+                    form: {
                         plugin: 'featured_resources',
                         payload: encodeURIComponent(JSON.stringify(payload))
                     }
-                }
-                , function(error, response, body) {
+                },
+                function(error, response, body) {
                    // ignore error/response
                 });
             } catch (e) {
@@ -607,15 +607,15 @@
         };
 
         return {
-              api: api
-            , napi: napi // this method does not exist in fb js sdk
-            , getAccessToken: getAccessToken
-            , setAccessToken: setAccessToken // this method does not exist in fb js sdk
-            , parseSignedRequest : parseSignedRequest // this method does not exist in fb js sdk
-            , getLoginUrl: getLoginUrl // this method does not exist in fb js sdk
-            , options: options // this method does not exist in the fb js sdk
-            , version: version // this method does not exist in the fb js sdk
-            , FacebookApiException: FacebookApiException // this Error does not exist in the fb js sdk
+            api: api,
+            napi: napi, // this method does not exist in fb js sdk
+            getAccessToken: getAccessToken,
+            setAccessToken: setAccessToken, // this method does not exist in fb js sdk
+            parseSignedRequest : parseSignedRequest, // this method does not exist in fb js sdk
+            getLoginUrl: getLoginUrl, // this method does not exist in fb js sdk
+            options: options, // this method does not exist in the fb js sdk
+            version: version, // this method does not exist in the fb js sdk
+            FacebookApiException: FacebookApiException // this Error does not exist in the fb js sdk
         };
 
     })();
