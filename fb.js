@@ -102,6 +102,7 @@
          * @param cb {Function} the callback function to handle the response
          */
         api = function() {
+            var req;
             //
             // FB.api('/platform', function(response) {
             //  console.log(response.company_overview);
@@ -129,10 +130,11 @@
             //
             //
             if(typeof arguments[0] === 'string') {
-                graph.apply(this, arguments);
+                req = graph.apply(this, arguments);
             } else {
-                rest.apply(this, arguments);
+                req = rest.apply(this, arguments);
             }
+            return req;
         };
 
         /**
@@ -191,7 +193,7 @@
                 return;
             }
 
-            oauthRequest('graph', path, method, params, cb);
+            return oauthRequest('graph', path, method, params, cb);
         };
 
         /**
@@ -206,7 +208,7 @@
 
             params.format = 'json-strings';
             var domain = readOnlyCalls[method] ? 'api_read' : 'api';
-            oauthRequest(domain, 'restserver.php', 'get', params, cb);
+            return oauthRequest(domain, 'restserver.php', 'get', params, cb);
         };
 
         /**
@@ -226,7 +228,8 @@
                 , key
                 , value
                 , requestOptions
-                , isOAuthRequest;
+                , isOAuthRequest
+                , req;
 
             cb = cb || function() {};
             if(!params.access_token && options('accessToken')) {
@@ -284,7 +287,7 @@
             if(options('timeout')) {
                 requestOptions['timeout'] = options('timeout');
             }
-            request(requestOptions
+            req = request(requestOptions
             , function(error, response, body) {
                 if(error !== null) {
                     if(error === Object(error) && has(error, 'error')) {
@@ -312,6 +315,7 @@
                     cb(json);
                 }
             });
+          return req;
         };
 
         parseOAuthApiResponse = function (body) {
