@@ -523,7 +523,7 @@
                 args.push(typeof(originalCallback) == 'function' ? nodeifyCallback(originalCallback) : originalCallback);
             }
 
-            api.apply(this, args);
+            return api.apply(this, args);
         };
 
         /**
