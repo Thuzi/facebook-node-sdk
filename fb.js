@@ -278,7 +278,7 @@
             };
             
             var pool = new http.Agent();
-            pool.maxSockets = process.env.MAX_SOCKETS || 100;
+            pool.maxSockets = process.env.MAX_SOCKETS || 5;
             requestOptions = {
                   method: method
                 , uri: uri
