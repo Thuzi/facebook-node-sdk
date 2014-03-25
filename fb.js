@@ -5,6 +5,7 @@
         var   request = require('request')
             , crypto  = require('crypto')
             , version = require(require('path').resolve(__dirname, 'package.json')).version
+            , http    = require('http')
             , getLoginUrl
             , pingFacebook
             , api
@@ -275,11 +276,14 @@
                 }
                 uri = uri.substring(0, uri.length -1);
             };
-
+            
+            var pool = new http.Agent();
+            pool.maxSockets = process.env.MAX_SOCKETS || 100;
             requestOptions = {
                   method: method
                 , uri: uri
                 , body: body
+                , pool: pool
             };
             if(options('timeout')) {
                 requestOptions['timeout'] = options('timeout');
