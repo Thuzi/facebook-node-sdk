@@ -247,7 +247,7 @@
             if(method === 'post') {
                 body = '';
                 if(params.access_token) {
-				    if((uri.indexOf("?") != -1)){
+                    if((uri.indexOf("?") !== -1)) {
                         uri += '&';
                     }
                     else {
@@ -271,7 +271,7 @@
                     body = body.substring(0, body.length - 1);
                 }
             } else {
-                if((uri.indexOf("?") != -1)){
+                if((uri.indexOf("?") !== -1)) {
                     uri += '&';
                 }
                 else {
