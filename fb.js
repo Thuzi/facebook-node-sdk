@@ -227,7 +227,8 @@
                 , key
                 , value
                 , requestOptions
-                , isOAuthRequest;
+                , isOAuthRequest
+                , pool;
 
             cb = cb || function() {};
             if(!params.access_token && options('accessToken')) {
@@ -277,7 +278,7 @@
                 uri = uri.substring(0, uri.length -1);
             };
             
-            var pool = { maxSockets : Number(process.env.MAX_SOCKETS) || 5 };
+            pool = { maxSockets : Number(process.env.MAX_SOCKETS) || 5 };
             requestOptions = {
                   method: method
                 , uri: uri
