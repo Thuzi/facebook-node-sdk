@@ -277,7 +277,7 @@
                 uri = uri.substring(0, uri.length -1);
             };
             
-            pool = { maxSockets : Number(process.env.MAX_SOCKETS) || 5 };
+            pool = { maxSockets : options('maxSockets') || Number(process.env.MAX_SOCKETS) || 5 };
             requestOptions = {
                   method: method
                 , uri: uri
