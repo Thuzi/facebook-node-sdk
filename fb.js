@@ -326,7 +326,7 @@
 
             result = {};
             body = body.split('&');
-            for(key in body) {
+            for(var key=0, l=body.length; key<l; key++) {
                 split = body[key].split('=');
                 if(split.length === 2) {
                     value = split[1];
