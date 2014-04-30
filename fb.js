@@ -462,7 +462,8 @@
             this.response = res;
         }
 
-        FacebookApiException.prototype = Error.prototype;
+        FacebookApiException.prototype = Object.create(Error.prototype);
+        FacebookApiException.prototype.constructor = FacebookApiException;
 
         nodeifyCallback = function (originalCallback) {
             // normalizes the callback parameters so that the
