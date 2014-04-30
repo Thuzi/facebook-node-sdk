@@ -189,7 +189,7 @@
             params = params || {};
             
             var defaultOptions = {
-                contentType: 'json'
+                contentType: 'application/json'
             };
             reqOptions = reqOptions || {};
             for(key in defaultOptions){
@@ -321,7 +321,7 @@
                 } else {
                     var ret;
                     // special treatment for (expected) json responses : decode them
-                    if(reqOptions.contentType == 'json'){
+                    if(reqOptions.contentType == 'application/json'){
                         try {
                             ret = JSON.parse(body);
                         } catch (ex) {

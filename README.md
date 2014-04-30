@@ -65,9 +65,12 @@ __Expecting a non-JSON response__
 ```js
 var FB = require('fb');
 
-// by default, the library expects a JSON response and will return an error otherwise.
-// a contentType option can be provided in the fourth parameter to prevent this.
-// for example, set contentType to 'image/jpeg', ['image/jpeg', 'image/gif'] or just 'any'
+/* By default, the library expects a JSON response and will try to parse
+*  it before it is returned to you. An error is returned if this cannot be performed.
+*  A contentType option (which defaults to 'application/json') can be provided
+*  through the fourth parameter to prevent this. For example, set contentType
+*  to 'image/jpeg', ['image/jpeg', 'image/gif'] or just 'any'.
+*/
 FB.api('4/picture', { redirect: 1 }, { contentType: 'any' }, function (res) {
   if(!res || res.error) {
     console.log(!res ? 'error occurred' : res.error);
