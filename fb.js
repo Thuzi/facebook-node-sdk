@@ -142,8 +142,8 @@
          * Make a api call to Graph server.
          *
          * Except the path, all arguments to this function are optional.
-		 * Only if reqOptions is defined, then params must be provided (an object or null)
-		 * So any of these are valid:
+         * Only if reqOptions is defined, then params must be provided (an object or null)
+         * So any of these are valid:
          *
          *  FB.api('/me') // throw away the response
          *  FB.api('/me', function(r) { console.log(r) })
@@ -187,16 +187,16 @@
 
             method = method || 'get';
             params = params || {};
-			
-			var defaultOptions = {
-				contentType: 'json'
-			};
+            
+            var defaultOptions = {
+                contentType: 'json'
+            };
             reqOptions = reqOptions || {};
-			for(key in defaultOptions){
-				if(typeof reqOptions[key] == 'undefined'){
-					reqOptions[key] = defaultOptions[key];
-				}
-			}
+            for(key in defaultOptions){
+                if(typeof reqOptions[key] == 'undefined'){
+                    reqOptions[key] = defaultOptions[key];
+                }
+            }
 
             // remove prefix slash if one is given, as it's already in the base url
             if(path[0] === '/') {
@@ -319,41 +319,41 @@
                     response.headers && /.*text\/plain.*/.test(response.headers['content-type'])) {
                     cb(parseOAuthApiResponse(body));
                 } else {
-					var ret;
-					// special treatment for (expected) json responses : decode them
-					if(reqOptions.contentType == 'json'){
-						try {
-							ret = JSON.parse(body);
-						} catch (ex) {
-						  // sometimes FB is has API errors that return HTML and a message
-						  // of "Sorry, something went wrong". These are infrequent and unpredictable but
-						  // let's not let them blow up our application.
-						  ret =  { error: {
-							  code: 'JSONPARSE',
-							  Error: ex
-						  }};
-						}
-					}
-					else {
-						// check that the content is of expected type(s)
-						if(		reqOptions.contentType == 'any'
-							||	(	response.headers
-								&&	(
-										(typeof reqOptions.contentType == 'string' && reqOptions.contentType == response.headers['content-type'])
-									||	(Array.isArray(reqOptions.contentType) && reqOptions.contentType.indexOf(response.headers['content-type']) !== -1)
-								)
-							)
-						){
-							ret = body;
-						}
-						else {
-							ret =  { error: {
-								code: 'UNEXPECTED_CONTENT-TYPE',
-								expected: reqOptions.contentType,
-								received: response.headers['content-type']
-							}};
-						}
-					}
+                    var ret;
+                    // special treatment for (expected) json responses : decode them
+                    if(reqOptions.contentType == 'json'){
+                        try {
+                            ret = JSON.parse(body);
+                        } catch (ex) {
+                          // sometimes FB is has API errors that return HTML and a message
+                          // of "Sorry, something went wrong". These are infrequent and unpredictable but
+                          // let's not let them blow up our application.
+                          ret =  { error: {
+                              code: 'JSONPARSE',
+                              Error: ex
+                          }};
+                        }
+                    }
+                    else {
+                        // check that the content is of expected type(s)
+                        if(        reqOptions.contentType == 'any'
+                            ||    (    response.headers
+                                &&    (
+                                        (typeof reqOptions.contentType == 'string' && reqOptions.contentType == response.headers['content-type'])
+                                    ||    (Array.isArray(reqOptions.contentType) && reqOptions.contentType.indexOf(response.headers['content-type']) !== -1)
+                                )
+                            )
+                        ){
+                            ret = body;
+                        }
+                        else {
+                            ret =  { error: {
+                                code: 'UNEXPECTED_CONTENT-TYPE',
+                                expected: reqOptions.contentType,
+                                received: response.headers['content-type']
+                            }};
+                        }
+                    }
                     cb(ret);
                 }
             });
@@ -646,7 +646,7 @@
                 if(options('proxy')) {
                     requestOptions['proxy'] = options('proxy');
                 }
-			
+            
                 request(
                     requestOptions
                     , function(error, response, body) {
