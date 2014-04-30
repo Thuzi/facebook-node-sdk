@@ -99,7 +99,8 @@
          * @access public
          * @param path {String} the url path
          * @param method {String} the http method (default: `"GET"`)
-         * @param params {Object} the parameters for the query
+         * @param params {Object} the query parameters sent to Facebook
+         * @param reqOptions {Object} options for the handling of the request
          * @param cb {Function} the callback function to handle the response
          */
         api = function() {
@@ -140,12 +141,14 @@
          *
          * Make a api call to Graph server.
          *
-         * Except the path, all arguments to this function are optiona. So any of
-         * these are valid:
+         * Except the path, all arguments to this function are optional.
+		 * Only if reqOptions is defined, then params must be provided (an object or null)
+		 * So any of these are valid:
          *
          *  FB.api('/me') // throw away the response
          *  FB.api('/me', function(r) { console.log(r) })
          *  FB.api('/me', { fields: 'email' }); // throw away response
+         *  FB.api('/123456789/picture', null, { content-type: 'image/jpg' });
          *  FB.api('/me', { fields: 'email' }, function(r) { console.log(r) });
          *  FB.api('/123456789', 'delete', function(r) { console.log(r) } );
          *  FB.api(
@@ -162,6 +165,7 @@
                 , next = args.shift()
                 , method
                 , params
+                , reqOptions
                 , cb;
 
             while(next) {
@@ -170,8 +174,10 @@
                     method = next.toLowerCase();
                 } else if(type === 'function' && !cb) {
                     cb = next;
-                } else if(type === 'object' && !params) {
+                } else if(type === 'object' && typeof params == 'undefined') {
                     params = next;
+                } else if(type === 'object' && !reqOptions) {
+                    reqOptions = next;
                 } else {
                     log('Invalid argument passed to FB.api(): ' + next);
                     return;
@@ -181,6 +187,16 @@
 
             method = method || 'get';
             params = params || {};
+			
+			var defaultOptions = {
+				contentType: 'json'
+			};
+            reqOptions = reqOptions || {};
+			for(key in defaultOptions){
+				if(typeof reqOptions[key] == 'undefined'){
+					reqOptions[key] = defaultOptions[key];
+				}
+			}
 
             // remove prefix slash if one is given, as it's already in the base url
             if(path[0] === '/') {
@@ -192,7 +208,7 @@
                 return;
             }
 
-            oauthRequest('graph', path, method, params, cb);
+            oauthRequest('graph', path, method, params, reqOptions, cb);
         };
 
         /**
@@ -219,9 +235,10 @@
          * @param path {String}     the request path
          * @param method {String}   the http method
          * @param params {Object}   the parameters for the query
+         * @param reqOptions {Object}   the options for the query
          * @param cb {Function}     the callback function to handle the response
          */
-        oauthRequest = function(domain, path, method, params, cb) {
+        oauthRequest = function(domain, path, method, params, reqOptions, cb) {
             var   uri
                 , body
                 , key
@@ -279,6 +296,7 @@
 
             requestOptions = {
                   method: method
+                , encoding: 'binary'
                 , uri: uri
                 , body: body
             };
@@ -301,19 +319,42 @@
                     response.headers && /.*text\/plain.*/.test(response.headers['content-type'])) {
                     cb(parseOAuthApiResponse(body));
                 } else {
-                    var json;
-                    try {
-                        json = JSON.parse(body);
-                    } catch (ex) {
-                      // sometimes FB is has API errors that return HTML and a message
-                      // of "Sorry, something went wrong". These are infrequent and unpredictable but
-                      // let's not let them blow up our application.
-                      json =  { error: {
-                          code: 'JSONPARSE',
-                          Error: ex
-                      }};
-                    }
-                    cb(json);
+					var ret;
+					// special treatment for (expected) json responses : decode them
+					if(reqOptions.contentType == 'json'){
+						try {
+							ret = JSON.parse(body);
+						} catch (ex) {
+						  // sometimes FB is has API errors that return HTML and a message
+						  // of "Sorry, something went wrong". These are infrequent and unpredictable but
+						  // let's not let them blow up our application.
+						  ret =  { error: {
+							  code: 'JSONPARSE',
+							  Error: ex
+						  }};
+						}
+					}
+					else {
+						// check that the content is of expected type(s)
+						if(		reqOptions.contentType == 'any'
+							||	(	response.headers
+								&&	(
+										(typeof reqOptions.contentType == 'string' && reqOptions.contentType == response.headers['content-type'])
+									||	(Array.isArray(reqOptions.contentType) && reqOptions.contentType.indexOf(response.headers['content-type']) !== -1)
+								)
+							)
+						){
+							ret = body;
+						}
+						else {
+							ret =  { error: {
+								code: 'UNEXPECTED_CONTENT-TYPE',
+								expected: reqOptions.contentType,
+								received: response.headers['content-type']
+							}};
+						}
+					}
+                    cb(ret);
                 }
             });
         };
