@@ -67,14 +67,13 @@ var FB = require('fb');
 
 // by default, the library expects a JSON response and will return an error otherwise.
 // a contentType option can be provided in the fourth parameter to prevent this.
-// for example, set content type to 'image/jpeg', ['image/jpeg', 'image/gif'] or just 'any'
-FB.api('4/picture', { redirect: 1 }, { contentType: 'any'}, function (res) {
+// for example, set contentType to 'image/jpeg', ['image/jpeg', 'image/gif'] or just 'any'
+FB.api('4/picture', { redirect: 1 }, { contentType: 'any' }, function (res) {
   if(!res || res.error) {
     console.log(!res ? 'error occurred' : res.error);
     return;
   }
-  console.log(res.id);
-  console.log(res.name);
+  console.log('Picture fetched. "Res" can be written in a file on disk.');
 });
 ```
 
