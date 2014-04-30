@@ -461,6 +461,11 @@ var FB = require('fb');
 FB.setAccessToken('access_token');
 var accessToken = FB.getAccessToken();
 ```
+
+### AppSecret Proof
+For improved security, as soon as you provide an app secret and an access token, the
+library automatically computes and adds the appsecret_proof parameter to your requests.
+
 ## Configuration options
 
 ### options
