@@ -227,7 +227,8 @@
                 , key
                 , value
                 , requestOptions
-                , isOAuthRequest;
+                , isOAuthRequest
+                , pool;
 
             cb = cb || function() {};
             if(!params.access_token && options('accessToken')) {
@@ -276,11 +277,13 @@
                 }
                 uri = uri.substring(0, uri.length -1);
             };
-
+            
+            pool = { maxSockets : options('maxSockets') || Number(process.env.MAX_SOCKETS) || 5 };
             requestOptions = {
                   method: method
                 , uri: uri
                 , body: body
+                , pool: pool
             };
             if(options('proxy')) {
                 requestOptions['proxy'] = options('proxy');
