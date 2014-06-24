@@ -16,6 +16,7 @@
             , parseOAuthApiResponse
             , setAccessToken
             , getAccessToken
+            , getAppSecretProof
             , parseSignedRequest
             , base64UrlDecode
             , log
@@ -26,6 +27,7 @@
                   'accessToken': null
                 , 'appId': null
                 , 'appSecret': null
+                , 'appSecretProof': null
                 , 'timeout': null
                 , 'scope':  null
                 , 'redirectUri': null
@@ -231,8 +233,16 @@
                 , pool;
 
             cb = cb || function() {};
-            if(!params.access_token && options('accessToken')) {
-                params.access_token = options('accessToken');
+            if(!params.access_token) {
+                if(opts.accessToken) {
+                    params.access_token = opts.accessToken;
+                    if(opts.appSecret) {
+                        params.appsecret_proof = opts.appSecretProof;
+                    }
+                }
+            }
+            else if(!params.appsecret_proof && opts.appSecret) {
+                params.appsecret_proof = getAppSecretProof(params.access_token, opts.appSecret);
             }
 
             if(domain === 'graph') {
@@ -251,6 +261,11 @@
                 if(params.access_token) {
                     uri += '?access_token=' + encodeURIComponent(params.access_token);
                     delete params['access_token'];
+                    
+                    if(params.appsecret_proof) {
+                        uri += '&appsecret_proof=' + encodeURIComponent(params.appsecret_proof);
+                        delete params['appsecret_proof'];
+                    }
                 }
 
                 for(key in params) {
@@ -360,6 +375,12 @@
         setAccessToken = function (accessToken) {
             options({'accessToken': accessToken});
         };
+        
+        getAppSecretProof = function (accessToken, appSecret) {
+            var hmac = crypto.createHmac('sha256', appSecret);
+            hmac.update(accessToken);
+            return hmac.digest('hex');
+        };
 
         /**
          *
@@ -451,9 +472,19 @@
             for(key in opts) {
                 if(has(opts, key) && has(keyOrOptions, key)) {
                     opts[key] = keyOrOptions[key];
-                    if(key == 'appId') {
-                        // ping Facebook for instrumentation requirement
-                        pingFacebook(opts[key]);
+                    switch(key){
+                        case 'appId':
+                            // ping Facebook for instrumentation requirement
+                            pingFacebook(opts[key]);
+                            break;
+                        
+                        case 'appSecret':
+                        case 'accessToken':
+                            opts.appSecretProof =
+                                (opts.appSecret && opts.accessToken) ?
+                                getAppSecretProof(opts[key], opts.appSecret) :
+                                null;
+                            break;
                     }
                 }
             }
