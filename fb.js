@@ -493,7 +493,7 @@
                         case 'accessToken':
                             opts.appSecretProof =
                                 (opts.appSecret && opts.accessToken) ?
-                                getAppSecretProof(opts[key], opts.appSecret) :
+                                getAppSecretProof(opts.accessToken, opts.appSecret) :
                                 null;
                             break;
                     }
