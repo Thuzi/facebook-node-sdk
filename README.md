@@ -60,6 +60,26 @@ FB.api('4', { fields: ['id', 'name'] }, function (res) {
 });
 ```
 
+__Expecting a non-JSON response__
+
+```js
+var FB = require('fb');
+
+/* By default, the library expects a JSON response and will try to parse
+*  it before it is returned to you. An error is returned if this cannot be performed.
+*  A contentType option (which defaults to 'application/json') can be provided
+*  through the fourth parameter to prevent this. For example, set contentType
+*  to 'image/jpeg', ['image/jpeg', 'image/gif'] or just 'any'.
+*/
+FB.api('4/picture', { redirect: 1 }, { contentType: 'any' }, function (res) {
+  if(!res || res.error) {
+    console.log(!res ? 'error occurred' : res.error);
+    return;
+  }
+  console.log('Picture fetched. "Res" can be written in a file on disk.');
+});
+```
+
 ### Post
 
 ```js
