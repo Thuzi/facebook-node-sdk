@@ -55,12 +55,18 @@ describe('FB.api', function () {
             });
         });
 
-        describe.skip("FB.api(4, cb)", function () {
+        describe("FB.api(4, cb)", function (done) {
             // this is the default behavior of client side js sdk
             it('should throw synchronously: Expression is of type number, not object', function (done) {
-                // TODO
-                FB.api(4, function (result) {
-                });
+                try {
+                    FB.api(4, function (result) {
+                    });
+
+                    done('Passing in a number should throw an exception');
+                }
+                catch (e) {
+                    done();
+                }
             });
         });
 
@@ -109,9 +115,9 @@ describe('FB.api', function () {
             });
         });
 
-        describe.skip("FB.api('/4?fields=name', { fields: 'id,first_name' }, cb)", function () {
+        describe("FB.api('/4?fields=name', { fields: 'id, name' }, cb)", function () {
             it("should return { id: '4', name: 'Mark Zuckerberg' } object", function (done) {
-                FB.api('4?fields=name', { fields: 'id,first_name' }, function (result) {
+                FB.api('4?fields=name', { fields: 'id, name' }, function (result) {
                     result.should.include({id: '4', name: 'Mark Zuckerberg'});
                     done();
                 });

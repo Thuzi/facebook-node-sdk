@@ -28,6 +28,7 @@
                 , 'appId': null
                 , 'appSecret': null
                 , 'appSecretProof': null
+                , 'beta': false
                 , 'timeout': null
                 , 'scope':  null
                 , 'redirectUri': null
@@ -246,11 +247,11 @@
             }
 
             if(domain === 'graph') {
-                uri = 'https://graph.facebook.com/' + path;
+                uri = 'https://graph.' + (options('beta') ? 'beta.' : '') + 'facebook.com/' + path;
                 isOAuthRequest = /^oauth.*/.test('oauth/');
             }
             else if(domain == 'api') {
-                uri = 'https://api.facebook.com/' + path;
+                uri = 'https://api.' + (options('beta') ? 'beta.' : '') + 'facebook.com/' + path;
             }
             else if(domain == 'api_read') {
                 uri = 'https://api-read.facebook.com/' + path;
