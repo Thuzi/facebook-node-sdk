@@ -132,9 +132,9 @@
             //
             //
             if(typeof arguments[0] === 'string') {
-                graph.apply(this, arguments);
+                return graph.apply(this, arguments);
             } else {
-                rest.apply(this, arguments);
+                return rest.apply(this, arguments);
             }
         };
 
@@ -194,7 +194,7 @@
                 return;
             }
 
-            oauthRequest('graph', path, method, params, cb);
+            return oauthRequest('graph', path, method, params, cb);
         };
 
         /**
@@ -209,7 +209,7 @@
 
             params.format = 'json-strings';
             var domain = readOnlyCalls[method] ? 'api_read' : 'api';
-            oauthRequest(domain, 'restserver.php', 'get', params, cb);
+            return oauthRequest(domain, 'restserver.php', 'get', params, cb);
         };
 
         /**
@@ -317,7 +317,7 @@
             if(options('timeout')) {
                 requestOptions['timeout'] = options('timeout');
             }
-            request(requestOptions
+            return request(requestOptions
             , function(error, response, body) {
                 if(error !== null) {
                     if(error === Object(error) && has(error, 'error')) {
@@ -651,7 +651,7 @@
                 if(options('proxy')) {
                     requestOptions['proxy'] = options('proxy');
                 }
-			
+            
                 request(
                     requestOptions
                     , function(error, response, body) {
