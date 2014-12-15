@@ -4,8 +4,11 @@
 
         var   request = require('request')
             , crypto  = require('crypto')
+            , passport = require('passport')
+            , FacebookStrategy = require('passport-facebook').Strategy
             , version = require(require('path').resolve(__dirname, 'package.json')).version
             , getLoginUrl
+            , getAdsAPIAccessToken
             , pingFacebook
             , api
             , napi
@@ -265,9 +268,10 @@
                     else {
                         uri += '?';
                     }
-                    uri += 'access_token=' + encodeURIComponent(params.access_token);
+                    //DO NOT encode access tokens.
+                    uri += 'access_token=' + params.access_token;
                     delete params['access_token'];
-                    
+
                     if(params.appsecret_proof) {
                         uri += '&appsecret_proof=' + encodeURIComponent(params.appsecret_proof);
                         delete params['appsecret_proof'];
@@ -299,11 +303,12 @@
                     if(typeof value !== 'string') {
                         value = JSON.stringify(value);
                     }
-                    uri += encodeURIComponent(key) + '=' + encodeURIComponent(value) + '&';
+                     //DO NOT encode access tokens.
+                     uri += encodeURIComponent(key) + '=' + (key === 'access_token'?
+                                value : encodeURIComponent(value)) + '&';
                 }
                 uri = uri.substring(0, uri.length -1);
             };
-            
             pool = { maxSockets : options('maxSockets') || Number(process.env.MAX_SOCKETS) || 5 };
             requestOptions = {
                   method: method
@@ -662,6 +667,48 @@
             }
         };
 
+        /**
+         * access: public
+         * @param permissionsModel
+         * Generate a new access_token for the Facebook app.
+         * <form id="login_form" action="/login.php?login_attempt=1&amp;next=https%3A%2F%2Fwww.facebook.com%2Fv2.1%2Fdialog%2Foauth%3Fredirect_uri%3Dhttp%253A%252F%252Finsidesocial.com%252F%26scope%3Dads_management%26response_type%3Dcode%26client_id%3D1469840583294558%26ret%3Dlogin" method="post" onsubmit="return window.Event &amp;&amp; Event.__inlineSubmit &amp;&amp; Event.__inlineSubmit(this,event)">
+         */
+
+        getAdsAPIAccessToken = function(permissionsModel){
+            var params
+                , access_code
+            ;
+
+            //Generally, the first step is to generate an access code, using the login dialog. This code can be used to
+            //generate an access token. The process to generate an access code is manual, since it involves the user to
+            //be logged in from the login dialog. For the time being, I've generated this code already, and use it in
+            //the request below, to get the access token.
+
+            /*
+            GET an access token.
+            TODO: persist the access token in DB, and check periodically if it has expired. If it
+                    expires, generate a new access token.
+             */
+
+            access_code = getAccessCode(permissionsModel);
+
+            params = {
+                client_id: permissionsModel.facebookAppId,
+                client_secret: permissionsModel.facebookAppSecret,
+                grant_type: 'client_credentials'
+
+            };
+            passport.authenticate('facebook', { scope: 'ads_management' });
+        };
+
+        /**
+         * @access: private
+         *  @param permissionsModel
+         */
+        getAccessCode = function(permissionsModel){
+
+        };
+
         return {
               api: api
             , napi: napi // this method does not exist in fb js sdk
@@ -669,6 +716,7 @@
             , setAccessToken: setAccessToken // this method does not exist in fb js sdk
             , parseSignedRequest : parseSignedRequest // this method does not exist in fb js sdk
             , getLoginUrl: getLoginUrl // this method does not exist in fb js sdk
+            , getAdsAPIAccessToken: getAdsAPIAccessToken // method to get long lived token for Ads API
             , options: options // this method does not exist in the fb js sdk
             , version: version // this method does not exist in the fb js sdk
             , FacebookApiException: FacebookApiException // this Error does not exist in the fb js sdk
