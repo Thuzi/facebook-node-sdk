@@ -32,6 +32,7 @@
                 , 'scope':  null
                 , 'redirectUri': null
                 , 'proxy': null
+                , 'version': null
             }
             , readOnlyCalls = {
                   'admin.getallocation': true
@@ -246,7 +247,7 @@
             }
 
             if(domain === 'graph') {
-                uri = 'https://graph.facebook.com/' + path;
+                uri = getUrlWithVersion('https://graph.facebook.com/') + path;
                 isOAuthRequest = /^oauth.*/.test('oauth/');
             }
             else if(domain == 'api') {
@@ -500,6 +501,10 @@
                 }
             }
         };
+        
+        function getUrlWithVersion(baseUrl){
+            return baseUrl + (opts.version ? opts.version + "/": "");
+        }
 
         function FacebookApiException(res) {
             this.name = "FacebookApiException";
