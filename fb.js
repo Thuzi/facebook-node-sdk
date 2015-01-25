@@ -503,7 +503,7 @@
         };
         
         function getUrlWithVersion(baseUrl){
-            return baseUrl + (this.opts.version ? this.opts.version + "/": "");
+            return baseUrl + (opts.version ? opts.version + "/": "");
         }
 
         function FacebookApiException(res) {
