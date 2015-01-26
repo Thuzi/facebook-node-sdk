@@ -536,7 +536,7 @@ if(signedRequest) {
 
 *Note: parseSignedRequest will return undefined if validation fails. Always remember to check the result of parseSignedRequest before accessing the result.*
 
-If you already set the appSeceret in options, you can ignore the second parameter when calling parseSignedRequest. If you do pass the second parameter it will use the appSecret passed in parameter instead of using appSecret from options.
+If you already set the appSecret in options, you can ignore the second parameter when calling parseSignedRequest. If you do pass the second parameter it will use the appSecret passed in parameter instead of using appSecret from options.
 
 If appSecret is absent, parseSignedRequest will throw an error.
 
