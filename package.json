@@ -8,10 +8,10 @@
     "graph"
   ],
   "version": "0.7.3",
-  "homepage": "https://github.com/Thuzi/facebook-node-sdk",
+  "homepage": "https://github.com/node-facebook/facebook-node-sdk",
   "repository": {
     "type": "git",
-    "url": "git://github.com/Thuzi/facebook-node-sdk.git"
+    "url": "https://github.com/node-facebook/facebook-node-sdk.git"
   },
   "engines": {
     "node": ">=0.6.9"
