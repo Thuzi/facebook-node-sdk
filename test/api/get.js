@@ -55,12 +55,18 @@ describe('FB.api', function () {
             });
         });
 
-        describe.skip("FB.api(4, cb)", function () {
+        describe("FB.api(4, cb)", function (done) {
             // this is the default behavior of client side js sdk
             it('should throw synchronously: Expression is of type number, not object', function (done) {
-                // TODO
-                FB.api(4, function (result) {
-                });
+                try {
+                    FB.api(4, function (result) {
+                    });
+
+                    done(new Error('Passing in a number should throw an exception'));
+                }
+                catch (e) {
+                    done();
+                }
             });
         });
 
