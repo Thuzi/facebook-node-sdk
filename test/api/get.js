@@ -1,6 +1,5 @@
 var nock        = require('nock'),
-    should      = require('should'),
-
+    should      = require('chai').should(),
     FB;
 
 beforeEach(function () {

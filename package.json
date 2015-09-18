@@ -18,13 +18,12 @@
     "node": ">=0.6.9"
   },
   "dependencies": {
-    "request": "2.9.x",
-    "crypto": "0.0.3"
+    "request": "^2.62.0"
   },
   "devDependencies": {
-    "nock": "~0.17.2",
-    "mocha": "~1.9.0",
-    "should": "~1.2.2"
+    "chai": "^3.2.0",
+    "mocha": "^2.3.2",
+    "nock": "^2.12.0"
   },
   "optionalDependencies": {},
   "main": "./fb.js",

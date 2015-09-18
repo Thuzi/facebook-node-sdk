@@ -1,6 +1,6 @@
 var FB = require('../..'),
     nock = require('nock'),
-    should = require('should');
+    should = require('chai').should();
 
 describe('FB.options', function () {
 
