@@ -18,9 +18,16 @@ describe('FB.api', function () {
             beforeEach(function () {
                 nock('https://graph.facebook.com:443')
                     .get('/4')
-                    .reply(200, "{\"id\":\"4\",\"name\":\"Mark Zuckerberg\",\"first_name\":\"Mark\",\"last_name\":\"Zuckerberg\",\"link\":\"http:\\/\\/www.facebook.com\\/zuck\",\"username\":\"zuck\",\"gender\":\"male\",\"locale\":\"en_US\"}", { 'access-control-allow-origin': '*',
-                        'content-type': 'text/javascript; charset=UTF-8',
-                        'content-length': '172' });
+                    .reply(200, {
+                        id: "4",
+                        name: "Mark Zuckerberg",
+                        first_name: "Mark",
+                        last_name: "Zuckerberg",
+                        link: "http://www.facebook.com/zuck",
+                        username: "zuck",
+                        gender: "male",
+                        locale: "en_US"
+                    });
             });
 
             it('should have id 4', function (done) {
@@ -43,9 +50,16 @@ describe('FB.api', function () {
             it('should have id 4', function (done) {
                 nock('https://graph.facebook.com:443')
                     .get('/4')
-                    .reply(200, "{\"id\":\"4\",\"name\":\"Mark Zuckerberg\",\"first_name\":\"Mark\",\"last_name\":\"Zuckerberg\",\"link\":\"http:\\/\\/www.facebook.com\\/zuck\",\"username\":\"zuck\",\"gender\":\"male\",\"locale\":\"en_US\"}", { 'access-control-allow-origin': '*',
-                        'content-type': 'text/javascript; charset=UTF-8',
-                        'content-length': '172' });
+                    .reply(200, {
+                        id: "4",
+                        name: "Mark Zuckerberg",
+                        first_name: "Mark",
+                        last_name: "Zuckerberg",
+                        link: "http://www.facebook.com/zuck",
+                        username: "zuck",
+                        gender: "male",
+                        locale: "en_US"
+                    });
 
                 FB.api('/4', function (result) {
                     result.should.have.property('id', '4');
@@ -73,9 +87,9 @@ describe('FB.api', function () {
             it("should return { id: '4' } object", function (done) {
                 nock('https://graph.facebook.com:443')
                     .get('/4?fields=id')
-                    .reply(200, "{\"id\":\"4\"}", {
-                        'content-type': 'text/javascript; charset=UTF-8',
-                        'content-length': '10' });
+                    .reply(200, {
+                        id: "4"
+                    });
 
                 FB.api('4', { fields: 'id'}, function (result) {
                     result.should.include({id: '4'});
@@ -88,9 +102,10 @@ describe('FB.api', function () {
             it("should return { id: '4' } object", function (done) {
                 nock('https://graph.facebook.com:443')
                     .get('/4?fields=name')
-                    .reply(200, "{\"name\":\"Mark Zuckerberg\",\"id\":\"4\"}", {
-                        'content-type': 'text/javascript; charset=UTF-8',
-                        'content-length': '10' });
+                    .reply(200, {
+                        name: "Mark Zuckerberg",
+                        id: "4"
+                    });
 
                 FB.api('4?fields=name', function (result) {
                     result.should.include({id: '4', name: 'Mark Zuckerberg'});
@@ -103,9 +118,10 @@ describe('FB.api', function () {
             it("should return { id: '4', name: 'Mark Zuckerberg' } object", function (done) {
                 nock('https://graph.facebook.com:443')
                     .get('/4?fields=name')
-                    .reply(200, "{\"name\":\"Mark Zuckerberg\",\"id\":\"4\"}", {
-                        'content-type': 'text/javascript; charset=UTF-8',
-                        'content-length': '10' });
+                    .reply(200, {
+                        name: "Mark Zuckerberg",
+                        id: "4"
+                    });
 
                 FB.api('4?fields=name', function (result) {
                     result.should.include({id: '4', name: 'Mark Zuckerberg'});
