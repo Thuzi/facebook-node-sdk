@@ -62,7 +62,7 @@ describe('FB.api', function () {
                     FB.api(4, function (result) {
                     });
 
-                    done('Passing in a number should throw an exception');
+                    done(new Error('Passing in a number should throw an exception'));
                 }
                 catch (e) {
                     done();
@@ -115,9 +115,9 @@ describe('FB.api', function () {
             });
         });
 
-        describe("FB.api('/4?fields=name', { fields: 'id, name' }, cb)", function () {
+        describe.skip("FB.api('/4?fields=name', { fields: 'id,first_name' }, cb)", function () {
             it("should return { id: '4', name: 'Mark Zuckerberg' } object", function (done) {
-                FB.api('4?fields=name', { fields: 'id, name' }, function (result) {
+                FB.api('4?fields=name', { fields: 'id,first_name' }, function (result) {
                     result.should.include({id: '4', name: 'Mark Zuckerberg'});
                     done();
                 });

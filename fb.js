@@ -254,7 +254,7 @@
                 uri = 'https://api.' + (options('beta') ? 'beta.' : '') + 'facebook.com/' + path;
             }
             else if(domain == 'api_read') {
-                uri = 'https://api-read.facebook.com/' + path;
+                uri = 'https://api-read.' + (options('beta') ? 'beta.' : '') + 'facebook.com/' + path;
             }
 
             if(method === 'post') {
