@@ -154,7 +154,7 @@ var FB = require('fb');
 FB.setAccessToken('access_token');
 
 var extractEtag;
-FB.api('', 'post', { 
+FB.api('', 'post', {
     batch: [
         { method: 'get', relative_url: '4' },
         { method: 'get', relative_url: 'me/friends?limit=50' },
@@ -238,7 +238,7 @@ FB.api('', 'post', {
         console.log('no updates');
     }
 
-    // check if dependency executed successfully    
+    // check if dependency executed successfully
     if(res[6] === null) {
         // then check if the result it self doesn't have any errors.
         if(res7.error) {
@@ -311,7 +311,7 @@ FB.api('oauth/access_token', {
         console.log(!res ? 'error occurred' : res.error);
         return;
     }
-    
+
     var accessToken = res.access_token;
 });
 ```
@@ -376,7 +376,7 @@ FB.api('oauth/access_token', {
         console.log(!res ? 'error occurred' : res.error);
         return;
     }
-    
+
     var accessToken = res.access_token;
     var expires = res.expires ? res.expires : 0;
 });
@@ -414,7 +414,7 @@ FB.api({ method: 'stream.publish', message: message }, function (res) {
         console.log(!res ? 'error occurred' : res.error_msg);
         return;
     }
-    
+
     console.log(res);
 });
 ```
@@ -430,7 +430,7 @@ FB.api({ method: 'stream.remove', post_id: postId }, function (res) {
         console.log(!res ? 'error occurred' : res.error_msg);
         return;
     }
-    
+
     console.log(res);
 });
 ```
@@ -461,6 +461,11 @@ var FB = require('fb');
 FB.setAccessToken('access_token');
 var accessToken = FB.getAccessToken();
 ```
+
+### AppSecret Proof
+For improved security, as soon as you provide an app secret and an access token, the
+library automatically computes and adds the appsecret_proof parameter to your requests.
+
 ## Configuration options
 
 ### options
@@ -491,11 +496,10 @@ var accessToken = FB.options('accessToken'); //will get the accessToken of 'XYZ'
 The existing options are:
 * `'accessToken'` string representing the facebook accessToken to be used for requests. This is the same option that is updated by the `setAccessToken` and `getAccessToken` methods.
 * `'appSecret'` string representing the facebook application secret.
+* `'proxy'` string representing an HTTP proxy to be used. Support proxy Auth with Basic Auth, embedding the auth info in the uri: 'http://[username:password@]proxy[:port]' (parameters in brackets are optional).
 * `'timeout'` integer number of milliseconds to wait for a response. Requests that have not received a response in *X* ms. If set to null or 0 no timeout will exist. On timeout an error object will be returned to the api callback with the error code of `'ETIMEDOUT'` (example below).
-
-`'scope'` and `'redirectUri'` have been whitelisted in options for convenience. These value will not be automatically
-added when using any of the sdk apis unlike the above options. These are whitelisted so you can use it to pass values
-using the same `FB` object.
+* `'scope'` string representing the facebook scope to use in `getLoginUrl`.
+* `'redirectUri'` string representing the facebook redirect_uri to use in `getLoginUrl`.
 
 ### version
 
@@ -530,13 +534,13 @@ if(signedRequest) {
 
 *Note: parseSignedRequest will return undefined if validation fails. Always remember to check the result of parseSignedRequest before accessing the result.*
 
-If you already set the appSeceret in options, you can ignore the second parameter when calling parseSignedRequest. If you do pass the second parameter it will use the appSecret passed in parameter instead of using appSecret from options.
+If you already set the appSecret in options, you can ignore the second parameter when calling parseSignedRequest. If you do pass the second parameter it will use the appSecret passed in parameter instead of using appSecret from options.
 
 If appSecret is absent, parseSignedRequest will throw an error.
 
 ```js
 var FB = require('fb');
-FB.options({ 'appSecret': 'app_secret'});
+FB.options({'appSecret': 'app_secret'});
 
 var signedRequestValue = 'signed_request_value';
 
@@ -547,6 +551,31 @@ if(signedRequest) {
     var userCountry = signedRequest.user.country;
 }
 ```
+
+## Manual Login Flow
+
+### getLoginUrl
+*This is a non-standard api and does not exist in the official client side FB JS SDK.*
+
+This returns the redirect url for a [manual login flow](https://developers.facebook.com/docs/facebook-login/manually-build-a-login-flow).
+
+```js
+var FB = require('fb');
+FB.getLoginUrl({
+    scope: 'email,user_likes',
+    redirect_uri: 'http://example.com/'
+});
+```
+
+These options are accepted and all correspond to url parameters documented in Facebook's manual login flow documentation.
+
+* `'appId'`/`'client_id'` [default=`FB.options('appId')`] The ID of your app, found in your app's dashboard.
+* `'redirectUri'`/`'redirect_uri'` [default=`FB.options('redirectUri')`] The URL that you want to redirect the person logging in back to. This URL will capture the response from the Login Dialog.
+* `'scope'` [default=`FB.options('scope')`] A comma separated list of Permissions to request from the person using your app.
+* `'display'` Can be set to 'popup'.
+* `'state'` An arbitrary unique string created by your app to guard against Cross-site Request Forgery.
+* `'responseType'`/`'response_type'` [default=`'code'`] Determines whether the response data included when the redirect back to the app occurs is in URL parameters or fragments.
+
 
 ## Error handling
 
