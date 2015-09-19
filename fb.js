@@ -269,7 +269,7 @@
                     }
                     uri += 'access_token=' + encodeURIComponent(params.access_token);
                     delete params['access_token'];
-                    
+
                     if(params.appsecret_proof) {
                         uri += '&appsecret_proof=' + encodeURIComponent(params.appsecret_proof);
                         delete params['appsecret_proof'];
@@ -305,7 +305,7 @@
                 }
                 uri = uri.substring(0, uri.length -1);
             };
-            
+
             pool = { maxSockets : options('maxSockets') || Number(process.env.MAX_SOCKETS) || 5 };
             requestOptions = {
                 method: method,
@@ -354,7 +354,7 @@
             });
         };
 
-        parseOAuthApiResponse = function (body) {
+        parseOAuthApiResponse = function(body) {
             var result,
                 key,
                 value,
@@ -382,19 +382,19 @@
             console.log(d);
         };
 
-        has = function (obj, key) {
+        has = function(obj, key) {
             return Object.prototype.hasOwnProperty.call(obj, key);
         };
 
-        getAccessToken = function () {
+        getAccessToken = function() {
             return options('accessToken');
         };
 
-        setAccessToken = function (accessToken) {
+        setAccessToken = function(accessToken) {
             options({'accessToken': accessToken});
         };
-        
-        getAppSecretProof = function (accessToken, appSecret) {
+
+        getAppSecretProof = function(accessToken, appSecret) {
             var hmac = crypto.createHmac('sha256', appSecret);
             hmac.update(accessToken);
             return hmac.digest('hex');
@@ -413,7 +413,7 @@
          * FB.parseSignedRequest('signedRequest') // will use appSecret from options('appSecret')
          *
          */
-        parseSignedRequest = function () {
+        parseSignedRequest = function() {
             var args = Array.prototype.slice.call(arguments),
                 signedRequest = args.shift(),
                 appSecret = args.shift() || options('appSecret'),
@@ -473,13 +473,13 @@
             return envelope;
         };
 
-        base64UrlDecode = function (str) {
+        base64UrlDecode = function(str) {
             var base64String = str.replace(/\-/g, '+').replace(/_/g, '/');
             var buffer = new Buffer(base64String, 'base64');
             return buffer.toString('utf8');
         }
 
-        options = function (keyOrOptions) {
+        options = function(keyOrOptions) {
             var key;
             if(!keyOrOptions) {
                 return opts;
@@ -495,7 +495,7 @@
                             // ping Facebook for instrumentation requirement
                             pingFacebook(opts[key]);
                             break;
-                        
+
                         case 'appSecret':
                         case 'accessToken':
                             opts.appSecretProof =
@@ -517,10 +517,10 @@
         FacebookApiException.prototype = Object.create(Error.prototype);
         FacebookApiException.prototype.constructor = FacebookApiException;
 
-        nodeifyCallback = function (originalCallback) {
+        nodeifyCallback = function(originalCallback) {
             // normalizes the callback parameters so that the
             // first parameter is always error and second is response
-            return function (res) {
+            return function(res) {
                 if(!res || res.error) {
                     originalCallback(new FacebookApiException(res));
                 } else {
@@ -537,7 +537,7 @@
          * @param params {Object} the parameters for the query
          * @param cb {Function} the callback function to handle the error and response
          */
-        napi = function () {
+        napi = function() {
             //
             // normalizes to node style callback so can use the sdk with async control flow node libraries
             //  first parameters:          error (always type of FacebookApiException)
@@ -584,7 +584,7 @@
          * @access public
          * @param opt {Object} the parameters for appId and scope
          */
-        getLoginUrl = function (opt) {
+        getLoginUrl = function(opt) {
             opt = opt || {};
             var clientId = opt.appId || opt.client_id || options('appId'),
                 redirectUri = opt.redirectUri || opt.redirect_uri || options('redirectUri') || 'https://www.facebook.com/connect/login_success.html',
@@ -639,7 +639,7 @@
 
         //Response: A pixel image.
 
-        pingFacebook = function (appId) {
+        pingFacebook = function(appId) {
             var payload = {
                 resource: 'thuzi_nodejssdk',
                 appid: appId,
@@ -658,7 +658,7 @@
                 if(options('proxy')) {
                     requestOptions['proxy'] = options('proxy');
                 }
-			
+
                 request(
                     requestOptions,
                     function(error, response, body) {

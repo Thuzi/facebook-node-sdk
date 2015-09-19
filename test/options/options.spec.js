@@ -6,16 +6,16 @@ var FB = require('../..'),
 
 nock.disableNetConnect();
 
-beforeEach(function () {
+beforeEach(function() {
     FB.options(defaultOptions);
 });
 
-afterEach(function () {
+afterEach(function() {
     nock.cleanAll();
     FB.options(defaultOptions);
 });
 
-describe('FB.options', function () {
+describe('FB.options', function() {
 
     describe('beta', function() {
         it('Should default beta to false', function() {
@@ -32,24 +32,24 @@ describe('FB.options', function () {
             FB.options('beta').should.be.false;
         });
 
-        it('Should make use graph.facebook when beta is false', function (done) {
+        it('Should make use graph.facebook when beta is false', function(done) {
             var expectedRequest = nock('https://graph.facebook.com:443').get('/4').reply(200);
 
             FB.options({ beta: false });
 
-            FB.api('/4', function (result) {
+            FB.api('/4', function(result) {
                 expectedRequest.done(); // verify non-beta request was made
 
                 done();
             });
         });
 
-        it('Should make use graph.beta.facebook when beta is true', function (done) {
+        it('Should make use graph.beta.facebook when beta is true', function(done) {
             var expectedRequest = nock('https://graph.beta.facebook.com:443').get('/4').reply(200);
 
             FB.options({ beta: true });
 
-            FB.api('/4', function (result) {
+            FB.api('/4', function(result) {
                 expectedRequest.done(); // verify beta request was made
 
                 done();
@@ -57,31 +57,31 @@ describe('FB.options', function () {
         });
     });
 
-    describe("userAgent", function (done) {
-        beforeEach(function () {
+    describe("userAgent", function(done) {
+        beforeEach(function() {
             nock('https://graph.facebook.com:443')
                 .get('/4')
-                .reply(function () {
+                .reply(function() {
                     return {
                         userAgent: this.req.headers['user-agent']
                     };
                 });
         });
 
-        it("Should default to thuzi_nodejssdk/"+FB.version, function () {
+        it("Should default to thuzi_nodejssdk/"+FB.version, function() {
             FB.options('userAgent').should.equal("thuzi_nodejssdk/"+FB.version);
         });
 
-        it("Should default the userAgent for FB.api requests to thuzi_nodejssdk/"+FB.version, function () {
-            FB.api('/4', function (result) {
+        it("Should default the userAgent for FB.api requests to thuzi_nodejssdk/"+FB.version, function() {
+            FB.api('/4', function(result) {
                 result.userAgent.should.equal("thuzi_nodejssdk/"+FB.version);
             });
         });
 
-        it("Should be used as the userAgent for FB.api requests", function () {
+        it("Should be used as the userAgent for FB.api requests", function() {
             FB.options({userAgent: 'faux/0.0.1'});
 
-            FB.api('/4', function (result) {
+            FB.api('/4', function(result) {
                 result.userAgent.should.equal('faux/0.0.1');
             });
         });

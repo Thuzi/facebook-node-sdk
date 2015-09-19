@@ -17,61 +17,61 @@ var expect = require('chai').expect,
 	},
 	signedRequest = signature + '.' + payload;
 
-beforeEach(function () {
+beforeEach(function() {
     FB.options(defaultOptions);
 });
 
-afterEach(function () {
+afterEach(function() {
     FB.options(defaultOptions);
 });
 
-describe("FB.parseSignedRequest", function () {
-	describe("FB.parseSignedRequest(signedRequest, app_secret)", function () {
-		describe("when app_secret is defined", function () {
-			it("should decode the correct payload", function () {
+describe("FB.parseSignedRequest", function() {
+	describe("FB.parseSignedRequest(signedRequest, app_secret)", function() {
+		describe("when app_secret is defined", function() {
+			it("should decode the correct payload", function() {
 				expect(FB.parseSignedRequest(signedRequest, app_secret)).to.exist
 					.and.include(payloadData);
 			});
 
-			it("should prefer the app_secret argument over the appSecret option", function () {
+			it("should prefer the app_secret argument over the appSecret option", function() {
 				FB.options({appSecret: 'wrong_secret'});
 				expect(FB.parseSignedRequest(signedRequest, app_secret)).to.exist
 					.and.include(payloadData);
 			});
 		});
 
-		describe("when signedRequest is undefined", function () {
-			it("should return undefined", function () {
+		describe("when signedRequest is undefined", function() {
+			it("should return undefined", function() {
 				expect(FB.parseSignedRequest(undefined, app_secret)).to.be.undefined;
 			});
 		});
 
-		describe("when signedRequest is not two pieces separated by a .", function () {
-			it("should return undefined", function () {
+		describe("when signedRequest is not two pieces separated by a .", function() {
+			it("should return undefined", function() {
 				expect(FB.parseSignedRequest('wrong', app_secret)).to.be.undefined;
 			});
 		});
 
-		describe("when signedRequest is not base64 encoded", function () {
-			it("should return undefined", function () {
+		describe("when signedRequest is not base64 encoded", function() {
+			it("should return undefined", function() {
 				expect(FB.parseSignedRequest('wrong.token', app_secret)).to.be.undefined;
 			});
 		});
 
-		describe("when signature is incorrect", function () {
-			it("should return undefined", function () {
+		describe("when signature is incorrect", function() {
+			it("should return undefined", function() {
 				expect(FB.parseSignedRequest('YmFkc2ln.' + payload, app_secret)).to.be.undefined;
 			});
 		});
 
-		describe("when app_secret is undefined", function () {
-			it("should use the appSecret option to decode the payload", function () {
+		describe("when app_secret is undefined", function() {
+			it("should use the appSecret option to decode the payload", function() {
 				FB.options({appSecret: app_secret});
 				expect(FB.parseSignedRequest(signedRequest)).to.exist
 					.and.include(payloadData);
 			});
 
-			it("should throw when the appSecret option is not defined", function () {
+			it("should throw when the appSecret option is not defined", function() {
 				expect(function() { return FB.parseSignedRequest(signedRequest) }).to.throw;
 			});
 		});

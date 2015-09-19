@@ -7,19 +7,19 @@ var nock = require('nock'),
 
 nock.disableNetConnect();
 
-beforeEach(function () {
+beforeEach(function() {
     FB.options(defaultOptions);
 });
 
-afterEach(function () {
+afterEach(function() {
     nock.cleanAll();
     FB.options(defaultOptions);
 });
 
-describe('access_token', function () {
+describe('access_token', function() {
 
-    describe("FB.setAccessToken('access_token')", function () {
-        it("should set an access_token used by api calls", function (done) {
+    describe("FB.setAccessToken('access_token')", function() {
+        it("should set an access_token used by api calls", function(done) {
             FB.setAccessToken('access_token');
 
             var expectedRequest = nock('https://graph.facebook.com:443')
@@ -32,7 +32,7 @@ describe('access_token', function () {
                     name: "Mark Zuckerberg"
                 });
 
-            FB.api('/me', function (result) {
+            FB.api('/me', function(result) {
                 expectedRequest.done();
                 done();
             });
@@ -40,8 +40,8 @@ describe('access_token', function () {
         });
     });
 
-    describe("FB.api('/me', { access_token: 'access_token' }, cb)", function () {
-        it('should override an access_token set with FB.setAccessToken()', function (done) {
+    describe("FB.api('/me', { access_token: 'access_token' }, cb)", function() {
+        it('should override an access_token set with FB.setAccessToken()', function(done) {
             FB.setAccessToken('wrong_token');
 
             var expectedRequest = nock('https://graph.facebook.com:443')
@@ -54,22 +54,22 @@ describe('access_token', function () {
                     name: "Mark Zuckerberg"
                 });
 
-            FB.api('/me', { access_token: 'access_token' }, function (result) {
+            FB.api('/me', { access_token: 'access_token' }, function(result) {
                 expectedRequest.done();
                 done();
             });
         });
     });
 
-    describe("FB.getAccessToken()", function () {
-        describe("when accessToken is not set", function () {
-            it("should return null", function () {
+    describe("FB.getAccessToken()", function() {
+        describe("when accessToken is not set", function() {
+            it("should return null", function() {
                 expect(FB.getAccessToken()).to.be.null;
             });
         });
 
-        describe("when accessToken is set", function () {
-            it("should return the access_token", function () {
+        describe("when accessToken is set", function() {
+            it("should return the access_token", function() {
                 FB.setAccessToken('access_token');
                 should.exist(FB.getAccessToken())
                 FB.getAccessToken().should.equal('access_token');
@@ -77,8 +77,8 @@ describe('access_token', function () {
         });
     })
 
-    describe("FB.api('/me', { access_token: 'access_token' }, cb)", function () {
-        it('should include the correct appsecret_proof in the query', function (done) {
+    describe("FB.api('/me', { access_token: 'access_token' }, cb)", function() {
+        it('should include the correct appsecret_proof in the query', function(done) {
             FB.options({ appSecret: 'app_secret' });
 
             var expectedRequest = nock('https://graph.facebook.com:443')
@@ -92,7 +92,7 @@ describe('access_token', function () {
                     name: "Mark Zuckerberg"
                 });
 
-            FB.api('/me', { access_token: 'access_token' }, function (result) {
+            FB.api('/me', { access_token: 'access_token' }, function(result) {
                 expectedRequest.done();
                 done();
             });
