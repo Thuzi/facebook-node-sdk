@@ -1,6 +1,7 @@
 var nock = require('nock'),
-    should = require('chai').should(),
+    expect = require('chai').expect,
     FB = require('../..'),
+    notError = require('../_supports/notError'),
     omit = require('lodash.omit'),
     defaultOptions = omit(FB.options(), 'appId');
 
@@ -77,10 +78,10 @@ describe('FB.api', function() {
                         { method: 'get', relative_url: 'me/friends?limit=50' }
                     ]
                 }, function (result) {
-                    should.not.exist(result.error && result.error.Error);
-                    result.should.be.a('array');
-                    result[0].should.have.property('code', 200);
-                    result[1].should.have.property('code', 200);
+                    notError(result);
+                    expect(result).to.be.a('array');
+                    expect(result[0]).to.have.property('code', 200);
+                    expect(result[1]).to.have.property('code', 200);
                     done();
                 });
             });

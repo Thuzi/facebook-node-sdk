@@ -1,6 +1,6 @@
 var nock = require('nock'),
     expect = require('chai').expect,
-    should = require('chai').should(),
+    notError = require('../_supports/notError'),
     FB = require('../..'),
     omit = require('lodash.omit'),
     defaultOptions = omit(FB.options(), 'appId');
@@ -33,6 +33,7 @@ describe('access_token', function() {
                 });
 
             FB.api('/me', function(result) {
+                notError(result);
                 expectedRequest.done();
                 done();
             });
@@ -55,6 +56,7 @@ describe('access_token', function() {
                 });
 
             FB.api('/me', { access_token: 'access_token' }, function(result) {
+                notError(result);
                 expectedRequest.done();
                 done();
             });
@@ -71,8 +73,9 @@ describe('access_token', function() {
         describe("when accessToken is set", function() {
             it("should return the access_token", function() {
                 FB.setAccessToken('access_token');
-                should.exist(FB.getAccessToken())
-                FB.getAccessToken().should.equal('access_token');
+                expect(FB.getAccessToken())
+                    .to.exist
+                    .and.equal('access_token');
             });
         });
     })
@@ -93,6 +96,7 @@ describe('access_token', function() {
                 });
 
             FB.api('/me', { access_token: 'access_token' }, function(result) {
+                notError(result);
                 expectedRequest.done();
                 done();
             });

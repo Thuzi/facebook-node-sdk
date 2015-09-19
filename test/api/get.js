@@ -1,5 +1,6 @@
 var nock = require('nock'),
-    should = require('chai').should(),
+    expect = require('chai').expect,
+    notError = require('../_supports/notError'),
     FB = require('../..'),
     omit = require('lodash.omit'),
     defaultOptions = omit(FB.options(), 'appId');
@@ -35,8 +36,8 @@ describe('FB.api', function() {
 
             it('should have id 4', function(done) {
                 FB.api('4', function(result) {
-                    should.not.exist(result.error && result.error.Error);
-                    result.should.have.property('id', '4');
+                    notError(result);
+                    expect(result).to.have.property('id', '4');
                     done();
                 });
             });
@@ -58,8 +59,8 @@ describe('FB.api', function() {
                     });
 
                 FB.api('/4', function(result) {
-                    should.not.exist(result.error && result.error.Error);
-                    result.should.have.property('id', '4');
+                    notError(result);
+                    expect(result).to.have.property('id', '4');
                     done();
                 });
             });
@@ -89,8 +90,8 @@ describe('FB.api', function() {
                     });
 
                 FB.api('4', { fields: 'id'}, function(result) {
-                    should.not.exist(result.error && result.error.Error);
-                    result.should.include({id: '4'});
+                    notError(result);
+                    expect(result).to.include({id: '4'});
                     done();
                 });
             });
@@ -106,8 +107,8 @@ describe('FB.api', function() {
                     });
 
                 FB.api('/4?fields=name', function(result) {
-                    should.not.exist(result.error && result.error.Error);
-                    result.should.have.keys('id', 'name')
+                    notError(result);
+                    expect(result).to.have.keys('id', 'name')
                         .and.include({id: '4', name: 'Mark Zuckerberg'});
                     done();
                 });
@@ -124,9 +125,9 @@ describe('FB.api', function() {
                     });
 
                 FB.api('4?fields=name', { fields: 'id,name' }, function(result) {
-                    should.not.exist(result.error && result.error.Error);
+                    notError(result);
                     expectedRequest.done();
-                    result.should.include({id: '4', name: 'Mark Zuckerberg'});
+                    expect(result).to.include({id: '4', name: 'Mark Zuckerberg'});
                     done();
                 });
             });
@@ -153,8 +154,8 @@ describe('FB.api', function() {
                     client_secret: 'app_secret',
                     grant_type: 'client_credentials'
                 }, function(result) {
-                    should.not.exist(result.error && result.error.Error);
-                    result.should.have.keys('access_token')
+                    notError(result);
+                    expect(result).to.have.keys('access_token')
                         .and.include({ access_token: '...' });
                     done();
                 });
@@ -183,8 +184,8 @@ describe('FB.api', function() {
                     });
 
                 FB.napi('/4', function(err, result) {
-                    should.not.exist(result.error && result.error.Error);
-                    result.should.have.property('id', '4');
+                    notError(result);
+                    expect(result).to.have.property('id', '4');
                     done();
                 });
             });

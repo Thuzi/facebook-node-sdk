@@ -1,6 +1,7 @@
 var FB = require('../..'),
     nock = require('nock'),
-    should = require('chai').should(),
+    expect = require('chai').expect,
+    notError = require('../_supports/notError'),
     omit = require('lodash.omit'),
     defaultOptions = omit(FB.options(), 'appId');
 
@@ -19,17 +20,17 @@ describe('FB.options', function() {
 
     describe('beta', function() {
         it('Should default beta to false', function() {
-            FB.options('beta').should.be.false;
+            expect(FB.options('beta')).to.be.false;
         });
 
         it('Should allow beta option to be set', function() {
             FB.options({ beta: true });
 
-            FB.options('beta').should.be.true;
+            expect(FB.options('beta')).to.be.true;
 
             FB.options({ beta: false });
 
-            FB.options('beta').should.be.false;
+            expect(FB.options('beta')).to.be.false;
         });
 
         it('Should make use graph.facebook when beta is false', function(done) {
@@ -38,7 +39,7 @@ describe('FB.options', function() {
             FB.options({ beta: false });
 
             FB.api('/4', function(result) {
-                should.not.exist(result.error && result.error.Error);
+                notError(result);
                 expectedRequest.done(); // verify non-beta request was made
 
                 done();
@@ -51,7 +52,7 @@ describe('FB.options', function() {
             FB.options({ beta: true });
 
             FB.api('/4', function(result) {
-                should.not.exist(result.error && result.error.Error);
+                notError(result);
                 expectedRequest.done(); // verify beta request was made
 
                 done();
@@ -71,13 +72,13 @@ describe('FB.options', function() {
         });
 
         it("Should default to thuzi_nodejssdk/"+FB.version, function() {
-            FB.options('userAgent').should.equal("thuzi_nodejssdk/"+FB.version);
+            expect(FB.options('userAgent')).to.equal("thuzi_nodejssdk/"+FB.version);
         });
 
         it("Should default the userAgent for FB.api requests to thuzi_nodejssdk/"+FB.version, function() {
             FB.api('/4', function(result) {
-                should.not.exist(result.error && result.error.Error);
-                result.userAgent.should.equal("thuzi_nodejssdk/"+FB.version);
+                notError(result);
+                expect(result.userAgent).to.equal("thuzi_nodejssdk/"+FB.version);
             });
         });
 
@@ -85,15 +86,15 @@ describe('FB.options', function() {
             FB.options({userAgent: 'faux/0.0.1'});
 
             FB.api('/4', function(result) {
-                should.not.exist(result.error && result.error.Error);
-                result.userAgent.should.equal('faux/0.0.1');
+                notError(result);
+                expect(result.userAgent).to.equal('faux/0.0.1');
             });
         });
     });
 
     describe("version", function() {
         it("Should default version to v2.0", function() {
-            FB.options('version').should.equal('v2.0');
+            expect(FB.options('version')).to.equal('v2.0');
         });
 
         it("Should change the version used in FB.api requests", function(done) {
@@ -112,7 +113,7 @@ describe('FB.options', function() {
                 });
 
             FB.api('4', function(result) {
-                should.not.exist(result.error && result.error.Error);
+                notError(result);
                 expectedRequest.done();
                 done();
             });
@@ -134,7 +135,7 @@ describe('FB.options', function() {
                 });
 
             FB.api('/v2.3/4', function(result) {
-                should.not.exist(result.error && result.error.Error);
+                notError(result);
                 expectedRequest.done();
                 done();
             });
@@ -142,8 +143,8 @@ describe('FB.options', function() {
 
         it("Should change the version used in FB.getLoginUrl", function() {
             FB.options({version: 'v2.4'});
-            FB.getLoginUrl({ appId: 'app_id' })
-                .should.equal('https://www.facebook.com/v2.4/dialog/oauth?response_type=code&redirect_uri=https%3A%2F%2Fwww.facebook.com%2Fconnect%2Flogin_success.html&client_id=app_id');
+            expect(FB.getLoginUrl({ appId: 'app_id' }))
+                .to.equal('https://www.facebook.com/v2.4/dialog/oauth?response_type=code&redirect_uri=https%3A%2F%2Fwww.facebook.com%2Fconnect%2Flogin_success.html&client_id=app_id');
         });
     });
 
