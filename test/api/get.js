@@ -110,9 +110,17 @@ describe('FB.api', function() {
             });
         });
 
-        describe.skip("FB.api('/4?fields=name', { fields: 'id,first_name' }, cb)", function() {
+        describe("FB.api('/4?fields=name', { fields: 'id,first_name' }, cb)", function() {
             it("should return { id: '4', name: 'Mark Zuckerberg' } object", function(done) {
-                FB.api('4?fields=name', { fields: 'id,first_name' }, function(result) {
+                var expectedRequest = nock('https://graph.facebook.com:443')
+                    .get('/v2.0/4?fields=id%2Cname')
+                    .reply(200, {
+                        id: "4",
+                        name: "Mark Zuckerberg"
+                    });
+
+                FB.api('4?fields=name', { fields: 'id,name' }, function(result) {
+                    expectedRequest.done();
                     result.should.include({id: '4', name: 'Mark Zuckerberg'});
                     done();
                 });

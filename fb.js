@@ -3,6 +3,8 @@
     var FB = (function() {
 
         var request = require('request'),
+            URL     = require('url'),
+            QS      = require('querystring'),
             crypto  = require('crypto'),
             version = require('./package.json').version,
             getLoginUrl,
@@ -232,6 +234,8 @@
          */
         oauthRequest = function(domain, path, method, params, cb) {
             var uri,
+                parsedUri,
+                query,
                 body,
                 key,
                 value,
@@ -298,20 +302,18 @@
                     body = body.substring(0, body.length - 1);
                 }
             } else {
-                if((uri.indexOf("?") !== -1)) {
-                    uri += '&';
-                }
-                else {
-                    uri += '?';
-                }
+                parsedUri = URL.parse(uri);
+                query = QS.parse(parsedUri.query);
                 for(key in params) {
                     value = params[key];
                     if(typeof value !== 'string') {
                         value = JSON.stringify(value);
                     }
-                    uri += encodeURIComponent(key) + '=' + encodeURIComponent(value) + '&';
+                    query[key] = value;
                 }
-                uri = uri.substring(0, uri.length -1);
+                delete parsedUri.search;
+                parsedUri.query = query;
+                uri = URL.format(parsedUri);
             };
 
             pool = { maxSockets: options('maxSockets') || Number(process.env.MAX_SOCKETS) || 5 };
