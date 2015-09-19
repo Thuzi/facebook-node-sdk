@@ -1,6 +1,19 @@
 var FB = require('../..'),
     nock = require('nock'),
-    should = require('chai').should();
+    should = require('chai').should(),
+    omit = require('lodash.omit'),
+    defaultOptions = omit(FB.options(), 'appId');
+
+nock.disableNetConnect();
+
+beforeEach(function () {
+    FB.options(defaultOptions);
+});
+
+afterEach(function () {
+    nock.cleanAll();
+    FB.options(defaultOptions);
+});
 
 describe('FB.options', function () {
 
