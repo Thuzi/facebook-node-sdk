@@ -145,9 +145,7 @@ describe('FB.api', function() {
                         client_secret: 'app_secret',
                         grant_type: 'client_credentials'
                     })
-                    .reply(200, {
-                        access_token: '...'
-                    });
+                    .reply(200, 'access_token=...', {'Content-Type': 'text/plain'});
 
                 FB.api('oauth/access_token', {
                     client_id: 'app_id',
@@ -161,6 +159,34 @@ describe('FB.api', function() {
                 });
             });
         });
+
+        describe("FB.api('oauth/access_token', { grant_type: 'fb_exchange_token', ..., fb_exchange_token: ... }, cb)", function() {
+            it("should return an object with expires as a number", function(done) {
+                nock('https://graph.facebook.com:443')
+                    .get('/v2.0/oauth/access_token')
+                    .query({
+                        grant_type: 'fb_exchange_token',
+                        client_id: 'app_id',
+                        client_secret: 'app_secret',
+                        fb_exchange_token: 'access_token'
+                    })
+                    .reply(200, 'access_token=...&expires=99999', {'Content-Type': 'text/plain'});
+
+                FB.api('oauth/access_token', {
+                    grant_type: 'fb_exchange_token',
+                    client_id: 'app_id',
+                    client_secret: 'app_secret',
+                    fb_exchange_token: 'access_token'
+                }, function(result) {
+                    notError(result);
+                    expect(result).to.have.property('expires')
+                        .and.be.a('number')
+                        .and.equal(99999);
+                    done();
+                });
+            });
+        });
+
     });
 
 });
