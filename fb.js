@@ -135,7 +135,8 @@
             //
             if(typeof arguments[0] === 'string') {
                 graph.apply(this, arguments);
-            } else {
+            }
+            else {
                 rest.apply(this, arguments);
             }
         };
@@ -172,11 +173,14 @@
                 var type = typeof next;
                 if(type === 'string' && !method) {
                     method = next.toLowerCase();
-                } else if(type === 'function' && !cb) {
+                }
+                else if(type === 'function' && !cb) {
                     cb = next;
-                } else if(type === 'object' && !params) {
+                }
+                else if(type === 'object' && !params) {
                     params = next;
-                } else {
+                }
+                else {
                     log('Invalid argument passed to FB.api(): ' + next);
                     return;
                 }
@@ -306,7 +310,7 @@
                 uri = uri.substring(0, uri.length -1);
             };
 
-            pool = { maxSockets : options('maxSockets') || Number(process.env.MAX_SOCKETS) || 5 };
+            pool = { maxSockets: options('maxSockets') || Number(process.env.MAX_SOCKETS) || 5 };
             requestOptions = {
                 method: method,
                 uri: uri,
@@ -336,18 +340,22 @@
                 if(isOAuthRequest && response && response.statusCode === 200 &&
                     response.headers && /.*text\/plain.*/.test(response.headers['content-type'])) {
                     cb(parseOAuthApiResponse(body));
-                } else {
+                }
+                else {
                     var json;
-                    try {
+                    try{
                         json = JSON.parse(body);
-                    } catch (ex) {
-                      // sometimes FB is has API errors that return HTML and a message
-                      // of "Sorry, something went wrong". These are infrequent and unpredictable but
-                      // let's not let them blow up our application.
-                      json =  { error: {
-                          code: 'JSONPARSE',
-                          Error: ex
-                      }};
+                    }
+                    catch(ex) {
+                        // sometimes FB is has API errors that return HTML and a message
+                        // of "Sorry, something went wrong". These are infrequent and unpredictable but
+                        // let's not let them blow up our application.
+                        json =  {
+                            error: {
+                                code: 'JSONPARSE',
+                                Error: ex
+                            }
+                        };
                     }
                     cb(json);
                 }
@@ -368,7 +376,8 @@
                     value = split[1];
                     if(!isNaN(value)) {
                         result[split[0]] = parseInt(value);
-                    } else {
+                    }
+                    else {
                         result[split[0]] = value;
                     }
                 }
@@ -446,9 +455,10 @@
                 return;
             }
 
-            try {
+            try{
                 envelope = JSON.parse(base64UrlDecode(encodedEnvelope));
-            } catch (ex) {
+            }
+            catch(ex) {
                 return;
             }
 
@@ -523,7 +533,8 @@
             return function(res) {
                 if(!res || res.error) {
                     originalCallback(new FacebookApiException(res));
-                } else {
+                }
+                else {
                     originalCallback(null, res);
                 }
             };
@@ -596,11 +607,11 @@
                 stateQuery = '',
                 loginUrl;
 
-            if (!clientId) {
+            if(!clientId) {
                 throw new Error('client_id required');
             }
 
-            if (scope) {
+            if(scope) {
                 scopeQuery = '&scope=' + encodeURIComponent(scope);
             }
 
@@ -646,7 +657,7 @@
                 version: version
             };
 
-            try {
+            try{
                 var requestOptions = {
                     method: 'POST',
                     uri: 'https://www.facebook.com/impression.php',
@@ -655,7 +666,7 @@
                         payload: encodeURIComponent(JSON.stringify(payload))
                     }
                 };
-                if(options('proxy')) {
+                if(options('proxy')){
                     requestOptions['proxy'] = options('proxy');
                 }
 
@@ -664,7 +675,7 @@
                     function(error, response, body) {
                         // ignore error/response
                     });
-            } catch (e) {
+            }catch(e) {
                 // Eat the error
             }
         };
@@ -674,7 +685,7 @@
             napi: napi, // this method does not exist in fb js sdk
             getAccessToken: getAccessToken,
             setAccessToken: setAccessToken, // this method does not exist in fb js sdk
-            parseSignedRequest : parseSignedRequest, // this method does not exist in fb js sdk
+            parseSignedRequest: parseSignedRequest, // this method does not exist in fb js sdk
             getLoginUrl: getLoginUrl, // this method does not exist in fb js sdk
             options: options, // this method does not exist in the fb js sdk
             version: version, // this method does not exist in the fb js sdk
