@@ -253,7 +253,7 @@
             }
 
             if(domain === 'graph') {
-                if(!/v\d+\.\d+\/|fql\//.test(path)) {
+                if(!/^v\d+\.\d+\/|^fql(?:\/|$)/.test(path)) {
                     path = options('version') + '/' + path;
                 }
                 uri = 'https://graph.' + (options('beta') ? 'beta.' : '') + 'facebook.com/' + path;
