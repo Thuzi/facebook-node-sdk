@@ -29,6 +29,7 @@
                 'appSecret': null,
                 'appSecretProof': null,
                 'beta': false,
+                'version': 'v2.0',
                 'timeout': null,
                 'scope':  null,
                 'redirectUri': null,
@@ -252,6 +253,9 @@
             }
 
             if(domain === 'graph') {
+                if(!/v\d+\.\d+\/|fql\//.test(path)) {
+                    path = options('version') + '/' + path;
+                }
                 uri = 'https://graph.' + (options('beta') ? 'beta.' : '') + 'facebook.com/' + path;
                 isOAuthRequest = /^oauth.*/.test('oauth/');
             }
@@ -623,7 +627,7 @@
                 stateQuery = '&state=' + state;
             }
 
-            return 'https://www.facebook.com/dialog/oauth'
+            return 'https://www.facebook.com/' + options('version' ) + '/dialog/oauth'
                 + '?response_type=' + (opt.responseType || opt.response_type || 'code')
                 +  scopeQuery
                 +  displayQuery

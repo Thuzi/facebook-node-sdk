@@ -67,7 +67,7 @@ var FB = require('fb');
 FB.setAccessToken('access_token');
 
 var body = 'My first post using facebook-node-sdk';
-FB.api('me/feed', 'post', { message: body}, function (res) {
+FB.api('me/feed', 'post', { message: body }, function (res) {
   if(!res || res.error) {
     console.log(!res ? 'error occurred' : res.error);
     return;
@@ -262,6 +262,7 @@ extractETag = function(res) {
     return etag;
 };
 ```
+
 ### Post
 
 ```js
@@ -496,6 +497,7 @@ var accessToken = FB.options('accessToken'); //will get the accessToken of 'XYZ'
 The existing options are:
 * `'accessToken'` string representing the facebook accessToken to be used for requests. This is the same option that is updated by the `setAccessToken` and `getAccessToken` methods.
 * `'appSecret'` string representing the facebook application secret.
+* `'version'` [default=`'v2.0'`] string representing the facebook api version to use. Defaults to the oldest available version of the api.
 * `'proxy'` string representing an HTTP proxy to be used. Support proxy Auth with Basic Auth, embedding the auth info in the uri: 'http://[username:password@]proxy[:port]' (parameters in brackets are optional).
 * `'timeout'` integer number of milliseconds to wait for a response. Requests that have not received a response in *X* ms. If set to null or 0 no timeout will exist. On timeout an error object will be returned to the api callback with the error code of `'ETIMEDOUT'` (example below).
 * `'scope'` string representing the facebook scope to use in `getLoginUrl`.

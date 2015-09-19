@@ -19,17 +19,15 @@ describe('FB.api', function() {
     describe('GET', function() {
 
         describe("FB.api('4', cb)", function() {
-
             beforeEach(function() {
                 nock('https://graph.facebook.com:443')
-                    .get('/4')
+                    .get('/v2.0/4')
                     .reply(200, {
                         id: "4",
                         name: "Mark Zuckerberg",
                         first_name: "Mark",
                         last_name: "Zuckerberg",
                         link: "http://www.facebook.com/zuck",
-                        username: "zuck",
                         gender: "male",
                         locale: "en_US"
                     });
@@ -41,20 +39,12 @@ describe('FB.api', function() {
                     done();
                 });
             });
-
-            it('should have username as zuck', function(done) {
-                FB.api('4', function(result) {
-                    result.should.have.property('username', 'zuck');
-                    done();
-                });
-            });
-
         });
 
         describe("FB.api('/4', cb)", function() {
             it('should have id 4', function(done) {
                 nock('https://graph.facebook.com:443')
-                    .get('/4')
+                    .get('/v2.0/4')
                     .reply(200, {
                         id: "4",
                         name: "Mark Zuckerberg",
@@ -91,7 +81,7 @@ describe('FB.api', function() {
         describe("FB.api('4', { fields: 'id' }), cb)", function() {
             it("should return { id: '4' } object", function(done) {
                 nock('https://graph.facebook.com:443')
-                    .get('/4?fields=id')
+                    .get('/v2.0/4?fields=id')
                     .reply(200, {
                         id: "4"
                     });
@@ -106,7 +96,7 @@ describe('FB.api', function() {
         describe("FB.api('/4?fields=name', cb)", function() {
             it("should return { id: '4', name: 'Mark Zuckerberg' } object", function(done) {
                 nock('https://graph.facebook.com:443')
-                    .get('/4?fields=name')
+                    .get('/v2.0/4?fields=name')
                     .reply(200, {
                         name: "Mark Zuckerberg",
                         id: "4"
@@ -135,7 +125,7 @@ describe('FB.api', function() {
         describe("FB.api('oauth/access_token', { ..., grant_type: 'client_credentials' }, cb)", function() {
             it("should return an { access_token: '...' } object", function(done) {
                 nock('https://graph.facebook.com:443')
-                    .get('/oauth/access_token')
+                    .get('/v2.0/oauth/access_token')
                     .query({
                         client_id: 'app_id',
                         client_secret: 'app_secret',
@@ -166,7 +156,7 @@ describe('FB.api', function() {
         describe("FB.napi('/4', cb)", function() {
             it('should have id 4', function(done) {
                 nock('https://graph.facebook.com:443')
-                    .get('/4')
+                    .get('/v2.0/4')
                     .reply(200, {
                         id: "4",
                         name: "Mark Zuckerberg",

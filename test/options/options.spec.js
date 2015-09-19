@@ -33,7 +33,7 @@ describe('FB.options', function() {
         });
 
         it('Should make use graph.facebook when beta is false', function(done) {
-            var expectedRequest = nock('https://graph.facebook.com:443').get('/4').reply(200);
+            var expectedRequest = nock('https://graph.facebook.com:443').get('/v2.0/4').reply(200);
 
             FB.options({ beta: false });
 
@@ -45,7 +45,7 @@ describe('FB.options', function() {
         });
 
         it('Should make use graph.beta.facebook when beta is true', function(done) {
-            var expectedRequest = nock('https://graph.beta.facebook.com:443').get('/4').reply(200);
+            var expectedRequest = nock('https://graph.beta.facebook.com:443').get('/v2.0/4').reply(200);
 
             FB.options({ beta: true });
 
@@ -57,10 +57,10 @@ describe('FB.options', function() {
         });
     });
 
-    describe("userAgent", function(done) {
+    describe("userAgent", function() {
         beforeEach(function() {
             nock('https://graph.facebook.com:443')
-                .get('/4')
+                .get('/v2.0/4')
                 .reply(function() {
                     return {
                         userAgent: this.req.headers['user-agent']
@@ -84,6 +84,60 @@ describe('FB.options', function() {
             FB.api('/4', function(result) {
                 result.userAgent.should.equal('faux/0.0.1');
             });
+        });
+    });
+
+    describe("version", function() {
+        it("Should default version to v2.0", function() {
+            FB.options('version').should.equal('v2.0');
+        });
+
+        it("Should change the version used in FB.api requests", function(done) {
+            FB.options({version: 'v2.4'});
+
+            var expectedRequest = nock('https://graph.facebook.com:443')
+                .get('/v2.4/4')
+                .reply(200, {
+                    id: "4",
+                    name: "Mark Zuckerberg",
+                    first_name: "Mark",
+                    last_name: "Zuckerberg",
+                    link: "http://www.facebook.com/zuck",
+                    gender: "male",
+                    locale: "en_US"
+                });
+
+            FB.api('4', function(result) {
+                expectedRequest.done();
+                done();
+            });
+        });
+
+        it("Should not prepend a version to FB.api('/v2.3/4', cb) style requests", function(done) {
+            FB.options({version: 'v2.4'});
+
+            var expectedRequest = nock('https://graph.facebook.com:443')
+                .get('/v2.3/4')
+                .reply(200, {
+                    id: "4",
+                    name: "Mark Zuckerberg",
+                    first_name: "Mark",
+                    last_name: "Zuckerberg",
+                    link: "http://www.facebook.com/zuck",
+                    gender: "male",
+                    locale: "en_US"
+                });
+
+            FB.api('/v2.3/4', function(result) {
+                expectedRequest.done();
+                done();
+            });
+        });
+
+        it("Should change the version used in FB.getLoginUrl", function() {
+            FB.options({version: 'v2.4'});
+            FB.getLoginUrl({ appId: 'app_id' })
+                .should.equal('https://www.facebook.com/v2.4/dialog/oauth?response_type=code&redirect_uri=https%3A%2F%2Fwww.facebook.com%2Fconnect%2Flogin_success.html&client_id=app_id');
         });
     });
 
