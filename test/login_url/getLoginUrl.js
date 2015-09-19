@@ -16,7 +16,7 @@ afterEach(function() {
 });
 
 describe("FB.getLoginUrl", function() {
-	var base = 'https://www.facebook.com/dialog/oauth';
+	var base = 'https://www.facebook.com/v2.0/dialog/oauth';
 	describe("when no options are set", function() {
 		describe("FB.getLoginUrl({}})", function() {
 			it("should throw", function() {
