@@ -33,6 +33,7 @@
                 , 'scope':  null
                 , 'redirectUri': null
                 , 'proxy': null
+                , 'userAgent': 'thuzi_nodejssdk/' + version
             }
             , readOnlyCalls = {
                   'admin.getallocation': true
@@ -317,6 +318,11 @@
             }
             if(options('timeout')) {
                 requestOptions['timeout'] = options('timeout');
+            }
+            if(options('userAgent')) {
+                requestOptions['headers'] = {
+                    'User-Agent': options('userAgent')
+                };
             }
             request(requestOptions
             , function(error, response, body) {

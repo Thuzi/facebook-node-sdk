@@ -57,4 +57,34 @@ describe('FB.options', function () {
         });
     });
 
+    describe("userAgent", function (done) {
+        beforeEach(function () {
+            nock('https://graph.facebook.com:443')
+                .get('/4')
+                .reply(function () {
+                    return {
+                        userAgent: this.req.headers['user-agent']
+                    };
+                });
+        });
+
+        it("Should default to thuzi_nodejssdk/"+FB.version, function () {
+            FB.options('userAgent').should.equal("thuzi_nodejssdk/"+FB.version);
+        });
+
+        it("Should default the userAgent for FB.api requests to thuzi_nodejssdk/"+FB.version, function () {
+            FB.api('/4', function (result) {
+                result.userAgent.should.equal("thuzi_nodejssdk/"+FB.version);
+            });
+        });
+
+        it("Should be used as the userAgent for FB.api requests", function () {
+            FB.options({userAgent: 'faux/0.0.1'});
+
+            FB.api('/4', function (result) {
+                result.userAgent.should.equal('faux/0.0.1');
+            });
+        });
+    });
+
 });
