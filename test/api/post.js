@@ -29,6 +29,7 @@ describe('FB.api', function() {
 
             it('should have id 4_14', function(done) {
                 FB.api('me/feed', 'post', { message: 'My first post using facebook-node-sdk' }, function (result) {
+                    should.not.exist(result.error && result.error.Error);
                     result.should.have.property('id', '4_14');
                     done();
                 });

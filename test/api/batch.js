@@ -77,6 +77,7 @@ describe('FB.api', function() {
                         { method: 'get', relative_url: 'me/friends?limit=50' }
                     ]
                 }, function (result) {
+                    should.not.exist(result.error && result.error.Error);
                     result.should.be.a('array');
                     result[0].should.have.property('code', 200);
                     result[1].should.have.property('code', 200);

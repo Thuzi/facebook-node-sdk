@@ -33,11 +33,12 @@ describe('FB.options', function() {
         });
 
         it('Should make use graph.facebook when beta is false', function(done) {
-            var expectedRequest = nock('https://graph.facebook.com:443').get('/v2.0/4').reply(200);
+            var expectedRequest = nock('https://graph.facebook.com:443').get('/v2.0/4').reply(200, {});
 
             FB.options({ beta: false });
 
             FB.api('/4', function(result) {
+                should.not.exist(result.error && result.error.Error);
                 expectedRequest.done(); // verify non-beta request was made
 
                 done();
@@ -45,11 +46,12 @@ describe('FB.options', function() {
         });
 
         it('Should make use graph.beta.facebook when beta is true', function(done) {
-            var expectedRequest = nock('https://graph.beta.facebook.com:443').get('/v2.0/4').reply(200);
+            var expectedRequest = nock('https://graph.beta.facebook.com:443').get('/v2.0/4').reply(200, {});
 
             FB.options({ beta: true });
 
             FB.api('/4', function(result) {
+                should.not.exist(result.error && result.error.Error);
                 expectedRequest.done(); // verify beta request was made
 
                 done();
@@ -74,6 +76,7 @@ describe('FB.options', function() {
 
         it("Should default the userAgent for FB.api requests to thuzi_nodejssdk/"+FB.version, function() {
             FB.api('/4', function(result) {
+                should.not.exist(result.error && result.error.Error);
                 result.userAgent.should.equal("thuzi_nodejssdk/"+FB.version);
             });
         });
@@ -82,6 +85,7 @@ describe('FB.options', function() {
             FB.options({userAgent: 'faux/0.0.1'});
 
             FB.api('/4', function(result) {
+                should.not.exist(result.error && result.error.Error);
                 result.userAgent.should.equal('faux/0.0.1');
             });
         });
@@ -108,6 +112,7 @@ describe('FB.options', function() {
                 });
 
             FB.api('4', function(result) {
+                should.not.exist(result.error && result.error.Error);
                 expectedRequest.done();
                 done();
             });
@@ -129,6 +134,7 @@ describe('FB.options', function() {
                 });
 
             FB.api('/v2.3/4', function(result) {
+                should.not.exist(result.error && result.error.Error);
                 expectedRequest.done();
                 done();
             });

@@ -35,6 +35,7 @@ describe('FB.api', function() {
 
             it('should have id 4', function(done) {
                 FB.api('4', function(result) {
+                    should.not.exist(result.error && result.error.Error);
                     result.should.have.property('id', '4');
                     done();
                 });
@@ -57,6 +58,7 @@ describe('FB.api', function() {
                     });
 
                 FB.api('/4', function(result) {
+                    should.not.exist(result.error && result.error.Error);
                     result.should.have.property('id', '4');
                     done();
                 });
@@ -87,6 +89,7 @@ describe('FB.api', function() {
                     });
 
                 FB.api('4', { fields: 'id'}, function(result) {
+                    should.not.exist(result.error && result.error.Error);
                     result.should.include({id: '4'});
                     done();
                 });
@@ -103,6 +106,7 @@ describe('FB.api', function() {
                     });
 
                 FB.api('/4?fields=name', function(result) {
+                    should.not.exist(result.error && result.error.Error);
                     result.should.have.keys('id', 'name')
                         .and.include({id: '4', name: 'Mark Zuckerberg'});
                     done();
@@ -120,6 +124,7 @@ describe('FB.api', function() {
                     });
 
                 FB.api('4?fields=name', { fields: 'id,name' }, function(result) {
+                    should.not.exist(result.error && result.error.Error);
                     expectedRequest.done();
                     result.should.include({id: '4', name: 'Mark Zuckerberg'});
                     done();
@@ -148,6 +153,7 @@ describe('FB.api', function() {
                     client_secret: 'app_secret',
                     grant_type: 'client_credentials'
                 }, function(result) {
+                    should.not.exist(result.error && result.error.Error);
                     result.should.have.keys('access_token')
                         .and.include({ access_token: '...' });
                     done();
@@ -177,7 +183,7 @@ describe('FB.api', function() {
                     });
 
                 FB.napi('/4', function(err, result) {
-                    should.not.exist(err);
+                    should.not.exist(result.error && result.error.Error);
                     result.should.have.property('id', '4');
                     done();
                 });

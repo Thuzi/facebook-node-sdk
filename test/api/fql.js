@@ -30,6 +30,7 @@ describe('FB.api', function() {
                     });
 
                 FB.api('fql', { q: 'SELECT uid FROM user WHERE uid=me()' }, function (res) {
+                    should.not.exist(res.error && res.error.Error);
                     expectedRequest.done();
                     res.should.have.deep.property('data[0].uid', '4');
                     done();
@@ -67,6 +68,7 @@ describe('FB.api', function() {
                     'SELECT uid FROM user WHERE uid=me()',
                     'SELECT name FROM user WHERE uid=me()'
                 ] }, function(res) {
+                    should.not.exist(res.error && res.error.Error);
                     expectedRequest.done();
                     res.should.have.deep.property('data[0].name', 0);
                     res.should.have.deep.property('data[1].name', 1);
@@ -107,6 +109,7 @@ describe('FB.api', function() {
                     id: 'SELECT uid FROM user WHERE uid=me()',
                     name: 'SELECT name FROM user WHERE uid IN (SELECT uid FROM #id)'
                 } }, function(res) {
+                    should.not.exist(res.error && res.error.Error);
                     expectedRequest.done();
                     res.should.have.deep.property('data[0].name', 'id');
                     res.should.have.deep.property('data[1].name', 'name');
