@@ -3,6 +3,8 @@
     var FB = (function() {
 
         var request = require('request'),
+            URL     = require('url'),
+            QS      = require('querystring'),
             crypto  = require('crypto'),
             version = require('./package.json').version,
             getLoginUrl,
@@ -14,6 +16,7 @@
             rest,
             oauthRequest,
             parseOAuthApiResponse,
+            stringifyParams,
             setAccessToken,
             getAccessToken,
             getAppSecretProof,
@@ -232,6 +235,8 @@
          */
         oauthRequest = function(domain, path, method, params, cb) {
             var uri,
+                parsedUri,
+                query,
                 body,
                 key,
                 value,
@@ -266,53 +271,30 @@
                 uri = 'https://api-read.' + (options('beta') ? 'beta.' : '') + 'facebook.com/' + path;
             }
 
+            parsedUri = URL.parse(uri);
+            delete parsedUri.search;
+            parsedQuery = QS.parse(parsedUri.query);
+
             if(method === 'post') {
-                body = '';
                 if(params.access_token) {
-                    if((uri.indexOf("?") !== -1)) {
-                        uri += '&';
-                    }
-                    else {
-                        uri += '?';
-                    }
-                    uri += 'access_token=' + encodeURIComponent(params.access_token);
-                    delete params['access_token'];
+                    parsedQuery.access_token = params.access_token;
+                    delete params.access_token;
 
                     if(params.appsecret_proof) {
-                        uri += '&appsecret_proof=' + encodeURIComponent(params.appsecret_proof);
-                        delete params['appsecret_proof'];
+                        parsedQuery.appsecret_proof = params.appsecret_proof;
+                        delete params.appsecret_proof;
                     }
                 }
 
-                for(key in params) {
-                    value = params[key];
-                    if(typeof value !== 'string') {
-                        value = JSON.stringify(value);
-                    }
-                    if(value !== undefined) {
-                        body += encodeURIComponent(key) + '=' + encodeURIComponent(value) + '&';
-                    }
-                }
-
-                if(body.length > 0) {
-                    body = body.substring(0, body.length - 1);
-                }
+                body = stringifyParams(params);
             } else {
-                if((uri.indexOf("?") !== -1)) {
-                    uri += '&';
-                }
-                else {
-                    uri += '?';
-                }
                 for(key in params) {
-                    value = params[key];
-                    if(typeof value !== 'string') {
-                        value = JSON.stringify(value);
-                    }
-                    uri += encodeURIComponent(key) + '=' + encodeURIComponent(value) + '&';
+                    parsedQuery[key] = params[key];
                 }
-                uri = uri.substring(0, uri.length -1);
-            };
+            }
+
+            parsedUri.search = stringifyParams(parsedQuery);
+            uri = URL.format(parsedUri);
 
             pool = { maxSockets: options('maxSockets') || Number(process.env.MAX_SOCKETS) || 5 };
             requestOptions = {
@@ -368,26 +350,34 @@
 
         parseOAuthApiResponse = function(body) {
             var result,
-                key,
-                value,
-                split;
+                key;
 
-            result = {};
-            body = body.split('&');
-            for(var key=0, l=body.length; key<l; key++) {
-                split = body[key].split('=');
-                if(split.length === 2) {
-                    value = split[1];
-                    if(!isNaN(value)) {
-                        result[split[0]] = parseInt(value);
-                    }
-                    else {
-                        result[split[0]] = value;
-                    }
+            result = QS.parse(body);
+            for(key in result) {
+                if(!isNaN(result[key])) {
+                    result[key] = parseInt(result[key]);
                 }
             }
 
             return result;
+        };
+
+        stringifyParams = function(params) {
+            var data = {},
+                key,
+                value;
+
+            for(key in params) {
+                value = params[key];
+                if(value && typeof value !== 'string') {
+                    value = JSON.stringify(value);
+                }
+                if(value !== undefined) {
+                    data[key] = value;
+                }
+            }
+
+            return QS.stringify(data);
         };
 
         log = function(d) {

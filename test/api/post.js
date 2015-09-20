@@ -1,5 +1,6 @@
 var nock = require('nock'),
-    should = require('chai').should(),
+    expect = require('chai').expect,
+    notError = require('../_supports/notError'),
     FB = require('../..'),
     omit = require('lodash.omit'),
     defaultOptions = omit(FB.options(), 'appId');
@@ -29,7 +30,8 @@ describe('FB.api', function() {
 
             it('should have id 4_14', function(done) {
                 FB.api('me/feed', 'post', { message: 'My first post using facebook-node-sdk' }, function (result) {
-                    result.should.have.property('id', '4_14');
+                    notError(result);
+                    expect(result).to.have.property('id', '4_14');
                     done();
                 });
             });

@@ -1,5 +1,6 @@
 var nock = require('nock'),
-    should = require('chai').should(),
+    expect = require('chai').expect,
+    notError = require('../_supports/notError'),
     FB = require('../..'),
     omit = require('lodash.omit'),
     defaultOptions = omit(FB.options(), 'appId');
@@ -35,7 +36,8 @@ describe('FB.api', function() {
 
             it('should have id 4', function(done) {
                 FB.api('4', function(result) {
-                    result.should.have.property('id', '4');
+                    notError(result);
+                    expect(result).to.have.property('id', '4');
                     done();
                 });
             });
@@ -57,7 +59,8 @@ describe('FB.api', function() {
                     });
 
                 FB.api('/4', function(result) {
-                    result.should.have.property('id', '4');
+                    notError(result);
+                    expect(result).to.have.property('id', '4');
                     done();
                 });
             });
@@ -87,7 +90,8 @@ describe('FB.api', function() {
                     });
 
                 FB.api('4', { fields: 'id'}, function(result) {
-                    result.should.include({id: '4'});
+                    notError(result);
+                    expect(result).to.include({id: '4'});
                     done();
                 });
             });
@@ -103,17 +107,27 @@ describe('FB.api', function() {
                     });
 
                 FB.api('/4?fields=name', function(result) {
-                    result.should.have.keys('id', 'name')
+                    notError(result);
+                    expect(result).to.have.keys('id', 'name')
                         .and.include({id: '4', name: 'Mark Zuckerberg'});
                     done();
                 });
             });
         });
 
-        describe.skip("FB.api('/4?fields=name', { fields: 'id,first_name' }, cb)", function() {
+        describe("FB.api('/4?fields=name', { fields: 'id,first_name' }, cb)", function() {
             it("should return { id: '4', name: 'Mark Zuckerberg' } object", function(done) {
-                FB.api('4?fields=name', { fields: 'id,first_name' }, function(result) {
-                    result.should.include({id: '4', name: 'Mark Zuckerberg'});
+                var expectedRequest = nock('https://graph.facebook.com:443')
+                    .get('/v2.0/4?fields=id%2Cname')
+                    .reply(200, {
+                        id: "4",
+                        name: "Mark Zuckerberg"
+                    });
+
+                FB.api('4?fields=name', { fields: 'id,name' }, function(result) {
+                    notError(result);
+                    expectedRequest.done();
+                    expect(result).to.include({id: '4', name: 'Mark Zuckerberg'});
                     done();
                 });
             });
@@ -131,21 +145,48 @@ describe('FB.api', function() {
                         client_secret: 'app_secret',
                         grant_type: 'client_credentials'
                     })
-                    .reply(200, {
-                        access_token: '...'
-                    });
+                    .reply(200, 'access_token=...', {'Content-Type': 'text/plain'});
 
                 FB.api('oauth/access_token', {
                     client_id: 'app_id',
                     client_secret: 'app_secret',
                     grant_type: 'client_credentials'
                 }, function(result) {
-                    result.should.have.keys('access_token')
+                    notError(result);
+                    expect(result).to.have.keys('access_token')
                         .and.include({ access_token: '...' });
                     done();
                 });
             });
         });
+
+        describe("FB.api('oauth/access_token', { grant_type: 'fb_exchange_token', ..., fb_exchange_token: ... }, cb)", function() {
+            it("should return an object with expires as a number", function(done) {
+                nock('https://graph.facebook.com:443')
+                    .get('/v2.0/oauth/access_token')
+                    .query({
+                        grant_type: 'fb_exchange_token',
+                        client_id: 'app_id',
+                        client_secret: 'app_secret',
+                        fb_exchange_token: 'access_token'
+                    })
+                    .reply(200, 'access_token=...&expires=99999', {'Content-Type': 'text/plain'});
+
+                FB.api('oauth/access_token', {
+                    grant_type: 'fb_exchange_token',
+                    client_id: 'app_id',
+                    client_secret: 'app_secret',
+                    fb_exchange_token: 'access_token'
+                }, function(result) {
+                    notError(result);
+                    expect(result).to.have.property('expires')
+                        .and.be.a('number')
+                        .and.equal(99999);
+                    done();
+                });
+            });
+        });
+
     });
 
 });
@@ -169,8 +210,8 @@ describe('FB.api', function() {
                     });
 
                 FB.napi('/4', function(err, result) {
-                    should.not.exist(err);
-                    result.should.have.property('id', '4');
+                    notError(result);
+                    expect(result).to.have.property('id', '4');
                     done();
                 });
             });

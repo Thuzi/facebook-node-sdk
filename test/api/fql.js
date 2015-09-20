@@ -1,5 +1,6 @@
 var nock = require('nock'),
-    should = require('chai').should(),
+    expect = require('chai').expect,
+    notError = require('../_supports/notError'),
     FB = require('../..'),
     omit = require('lodash.omit'),
     defaultOptions = omit(FB.options(), 'appId');
@@ -30,8 +31,9 @@ describe('FB.api', function() {
                     });
 
                 FB.api('fql', { q: 'SELECT uid FROM user WHERE uid=me()' }, function (res) {
+                    notError(res);
                     expectedRequest.done();
-                    res.should.have.deep.property('data[0].uid', '4');
+                    expect(res).to.have.deep.property('data[0].uid', '4');
                     done();
                 });
             })
@@ -67,11 +69,12 @@ describe('FB.api', function() {
                     'SELECT uid FROM user WHERE uid=me()',
                     'SELECT name FROM user WHERE uid=me()'
                 ] }, function(res) {
+                    notError(res);
                     expectedRequest.done();
-                    res.should.have.deep.property('data[0].name', 0);
-                    res.should.have.deep.property('data[1].name', 1);
-                    res.should.have.deep.property('data[0].fql_result_set[0].uid', '4');
-                    res.should.have.deep.property('data[1].fql_result_set[0].name', 'Mark Zuckerberg');
+                    expect(res).to.have.deep.property('data[0].name', 0);
+                    expect(res).to.have.deep.property('data[1].name', 1);
+                    expect(res).to.have.deep.property('data[0].fql_result_set[0].uid', '4');
+                    expect(res).to.have.deep.property('data[1].fql_result_set[0].name', 'Mark Zuckerberg');
                     done();
                 });
             });
@@ -107,11 +110,12 @@ describe('FB.api', function() {
                     id: 'SELECT uid FROM user WHERE uid=me()',
                     name: 'SELECT name FROM user WHERE uid IN (SELECT uid FROM #id)'
                 } }, function(res) {
+                    notError(res);
                     expectedRequest.done();
-                    res.should.have.deep.property('data[0].name', 'id');
-                    res.should.have.deep.property('data[1].name', 'name');
-                    res.should.have.deep.property('data[0].fql_result_set[0].uid', '4');
-                    res.should.have.deep.property('data[1].fql_result_set[0].name', 'Mark Zuckerberg');
+                    expect(res).to.have.deep.property('data[0].name', 'id');
+                    expect(res).to.have.deep.property('data[1].name', 'name');
+                    expect(res).to.have.deep.property('data[0].fql_result_set[0].uid', '4');
+                    expect(res).to.have.deep.property('data[1].fql_result_set[0].name', 'Mark Zuckerberg');
                     done();
                 });
             });
