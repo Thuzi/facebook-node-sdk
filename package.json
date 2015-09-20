@@ -31,5 +31,8 @@
   "scripts": {
     "test": "node ./node_modules/mocha/bin/mocha --recursive --reporter spec",
     "testw": "node ./node_modules/mocha/bin/mocha --recursive --watch --reporter spec"
+  },
+  "publishConfig": {
+    "tag": "next"
   }
 }
