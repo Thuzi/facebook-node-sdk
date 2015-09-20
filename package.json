@@ -7,7 +7,7 @@
     "fb",
     "graph"
   ],
-  "version": "0.7.3",
+  "version": "1.0.0-beta1",
   "homepage": "https://github.com/node-facebook/facebook-node-sdk",
   "license": "Apache-2.0",
   "repository": {
