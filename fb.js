@@ -2,13 +2,14 @@
 
     var FB = (function() {
 
-        var request = require('request'),
-            URL     = require('url'),
-            QS      = require('querystring'),
-            crypto  = require('crypto'),
-            version = require('./package.json').version,
+        var debugReq = require('debug')('fb:req'),
+            debugSig = require('debug')('fb:sig'),
+            request  = require('request'),
+            URL      = require('url'),
+            QS       = require('querystring'),
+            crypto   = require('crypto'),
+            version  = require('./package.json').version,
             getLoginUrl,
-            pingFacebook,
             api,
             napi,
             nodeifyCallback,
@@ -314,6 +315,8 @@
                     'User-Agent': options('userAgent')
                 };
             }
+
+            debugReq(method.toUpperCase() + ' ' + uri);
             request(requestOptions,
                 function(error, response, body) {
                     if(error !== null) {
@@ -429,6 +432,7 @@
                 base64UrlDigest;
 
             if(!signedRequest) {
+                debugSig('invalid signedRequest');
                 return;
             }
 
@@ -439,6 +443,7 @@
             split = signedRequest.split('.');
 
             if(split.length !== 2) {
+                debugSig('invalid signedRequest');
                 return;
             }
 
@@ -446,6 +451,7 @@
             encodedEnvelope = split.shift();
 
             if(!encodedSignature || !encodedEnvelope) {
+                debugSig('invalid signedRequest');
                 return;
             }
 
@@ -453,10 +459,12 @@
                 envelope = JSON.parse(base64UrlDecode(encodedEnvelope));
             }
             catch(ex) {
+                debugSig('encodedEnvelope is not a valid base64 encoded JSON');
                 return;
             }
 
             if(!(envelope && has(envelope, 'algorithm') && envelope.algorithm.toUpperCase() === 'HMAC-SHA256')) {
+                debugSig(envelope.algorithm + ' is not a supported algorithm, must be one of [HMAC-SHA256]');
                 return;
             }
 
@@ -471,6 +479,7 @@
             base64UrlDigest = base64UrlDigest.replace(/\+/g, '-').replace(/\//g, '_');
 
             if(base64UrlDigest !== encodedSignature) {
+                debugSig('invalid signature');
                 return;
             }
 
@@ -495,11 +504,6 @@
                 if(has(opts, key) && has(keyOrOptions, key)) {
                     opts[key] = keyOrOptions[key];
                     switch(key){
-                        case 'appId':
-                            // ping Facebook for instrumentation requirement
-                            pingFacebook(opts[key]);
-                            break;
-
                         case 'appSecret':
                         case 'accessToken':
                             opts.appSecretProof =
@@ -624,54 +628,6 @@
                 +  stateQuery
                 + '&redirect_uri=' + encodeURIComponent(redirectUri)
                 + '&client_id=' + clientId;
-        };
-
-        /**
-         *
-         * @access private
-         * @param appId {String} the Facebook application id
-         */
-        //HTTP POST to:
-        //https://www.facebook.com/impression.php
-        //Parameters:
-        //plugin = "featured_resources"
-        //payload = <JSON_ENCODED_DATA>
-
-        //JSON_ENCODED_DATA
-        //resource "thuzi_winjssdk" for your Win JS SDK and "thuzi_nodejssdk" for your Node.js SDK
-        //appid (Facebook app ID)
-        //version (Your resource version. This is whatever versioning string you attribute to your resource.)
-
-        //Response: A pixel image.
-
-        pingFacebook = function(appId) {
-            var payload = {
-                resource: 'thuzi_nodejssdk',
-                appid: appId,
-                version: version
-            };
-
-            try{
-                var requestOptions = {
-                    method: 'POST',
-                    uri: 'https://www.facebook.com/impression.php',
-                    form: {
-                        plugin: 'featured_resources',
-                        payload: encodeURIComponent(JSON.stringify(payload))
-                    }
-                };
-                if(options('proxy')){
-                    requestOptions['proxy'] = options('proxy');
-                }
-
-                request(
-                    requestOptions,
-                    function(error, response, body) {
-                        // ignore error/response
-                    });
-            }catch(e) {
-                // Eat the error
-            }
         };
 
         return {
