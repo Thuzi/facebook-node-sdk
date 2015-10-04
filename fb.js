@@ -2,11 +2,13 @@
 
     var FB = (function() {
 
-        var request = require('request'),
-            URL     = require('url'),
-            QS      = require('querystring'),
-            crypto  = require('crypto'),
-            version = require('./package.json').version,
+        var debugReq = require('debug')('fb:req'),
+            debugSig = require('debug')('fb:sig'),
+            request  = require('request'),
+            URL      = require('url'),
+            QS       = require('querystring'),
+            crypto   = require('crypto'),
+            version  = require('./package.json').version,
             getLoginUrl,
             pingFacebook,
             api,
@@ -314,6 +316,8 @@
                     'User-Agent': options('userAgent')
                 };
             }
+
+            debugReq(method.toUpperCase() + ' ' + uri);
             request(requestOptions,
                 function(error, response, body) {
                     if(error !== null) {
@@ -429,6 +433,7 @@
                 base64UrlDigest;
 
             if(!signedRequest) {
+                debugSig('invalid signedRequest');
                 return;
             }
 
@@ -439,6 +444,7 @@
             split = signedRequest.split('.');
 
             if(split.length !== 2) {
+                debugSig('invalid signedRequest');
                 return;
             }
 
@@ -446,6 +452,7 @@
             encodedEnvelope = split.shift();
 
             if(!encodedSignature || !encodedEnvelope) {
+                debugSig('invalid signedRequest');
                 return;
             }
 
@@ -453,10 +460,12 @@
                 envelope = JSON.parse(base64UrlDecode(encodedEnvelope));
             }
             catch(ex) {
+                debugSig('encodedEnvelope is not a valid base64 encoded JSON');
                 return;
             }
 
             if(!(envelope && has(envelope, 'algorithm') && envelope.algorithm.toUpperCase() === 'HMAC-SHA256')) {
+                debugSig(envelope.algorithm + ' is not a supported algorithm, must be one of [HMAC-SHA256]');
                 return;
             }
 
@@ -471,6 +480,7 @@
             base64UrlDigest = base64UrlDigest.replace(/\+/g, '-').replace(/\//g, '_');
 
             if(base64UrlDigest !== encodedSignature) {
+                debugSig('invalid signature');
                 return;
             }
 
