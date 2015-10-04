@@ -10,7 +10,6 @@
             crypto   = require('crypto'),
             version  = require('./package.json').version,
             getLoginUrl,
-            pingFacebook,
             api,
             napi,
             nodeifyCallback,
@@ -505,11 +504,6 @@
                 if(has(opts, key) && has(keyOrOptions, key)) {
                     opts[key] = keyOrOptions[key];
                     switch(key){
-                        case 'appId':
-                            // ping Facebook for instrumentation requirement
-                            pingFacebook(opts[key]);
-                            break;
-
                         case 'appSecret':
                         case 'accessToken':
                             opts.appSecretProof =
@@ -634,54 +628,6 @@
                 +  stateQuery
                 + '&redirect_uri=' + encodeURIComponent(redirectUri)
                 + '&client_id=' + clientId;
-        };
-
-        /**
-         *
-         * @access private
-         * @param appId {String} the Facebook application id
-         */
-        //HTTP POST to:
-        //https://www.facebook.com/impression.php
-        //Parameters:
-        //plugin = "featured_resources"
-        //payload = <JSON_ENCODED_DATA>
-
-        //JSON_ENCODED_DATA
-        //resource "thuzi_winjssdk" for your Win JS SDK and "thuzi_nodejssdk" for your Node.js SDK
-        //appid (Facebook app ID)
-        //version (Your resource version. This is whatever versioning string you attribute to your resource.)
-
-        //Response: A pixel image.
-
-        pingFacebook = function(appId) {
-            var payload = {
-                resource: 'thuzi_nodejssdk',
-                appid: appId,
-                version: version
-            };
-
-            try{
-                var requestOptions = {
-                    method: 'POST',
-                    uri: 'https://www.facebook.com/impression.php',
-                    form: {
-                        plugin: 'featured_resources',
-                        payload: encodeURIComponent(JSON.stringify(payload))
-                    }
-                };
-                if(options('proxy')){
-                    requestOptions['proxy'] = options('proxy');
-                }
-
-                request(
-                    requestOptions,
-                    function(error, response, body) {
-                        // ignore error/response
-                    });
-            }catch(e) {
-                // Eat the error
-            }
         };
 
         return {
