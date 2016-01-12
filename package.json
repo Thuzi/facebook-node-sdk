@@ -1,5 +1,8 @@
 {
   "author": "Thuzi LLC <pshrestha@thuzi.com> (https://github.com/Thuzi)",
+  "contributors": [
+    "Daniel Friesen <d@danf.ca> (http://danf.ca)"
+  ],
   "name": "fb",
   "description": "NodeJS Library for Facebook",
   "keywords": [
