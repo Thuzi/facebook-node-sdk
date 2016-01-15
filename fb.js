@@ -237,6 +237,7 @@
         oauthRequest = function(domain, path, method, params, cb) {
             var uri,
                 parsedUri,
+                parsedQuery,
                 query,
                 body,
                 key,
