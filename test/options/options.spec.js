@@ -4,7 +4,8 @@ var FB = require('../..'),
 	expect = require('chai').expect,
 	notError = require('../_supports/notError'),
 	omit = require('lodash.omit'),
-	defaultOptions = omit(FB.options(), 'appId');
+	defaultOptions = omit(FB.options(), 'appId'),
+	{version} = require('../../package.json');
 
 nock.disableNetConnect();
 
@@ -71,14 +72,14 @@ describe('FB.options', function() {
 				});
 		});
 
-		it('Should default to thuzi_nodejssdk/' + FB.version, function() {
-			expect(FB.options('userAgent')).to.equal('thuzi_nodejssdk/' + FB.version);
+		it('Should default to thuzi_nodejssdk/' + version, function() {
+			expect(FB.options('userAgent')).to.equal('thuzi_nodejssdk/' + version);
 		});
 
-		it('Should default the userAgent for FB.api requests to thuzi_nodejssdk/' + FB.version, function() {
+		it('Should default the userAgent for FB.api requests to thuzi_nodejssdk/' + version, function() {
 			FB.api('/4', function(result) {
 				notError(result);
-				expect(result.userAgent).to.equal('thuzi_nodejssdk/' + FB.version);
+				expect(result.userAgent).to.equal('thuzi_nodejssdk/' + version);
 			});
 		});
 
