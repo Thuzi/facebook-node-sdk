@@ -19,11 +19,13 @@
   },
   "main": "./fb.js",
   "scripts": {
+    "lint": "eslint .",
     "test": "node ./node_modules/mocha/bin/mocha --recursive --reporter spec",
     "testw": "node ./node_modules/mocha/bin/mocha --recursive --watch --reporter spec"
   },
   "dependencies": {
     "debug": "^2.2.0",
+    "eslint": "^1.10.3",
     "request": "^2.62.0"
   },
   "devDependencies": {
