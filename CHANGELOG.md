@@ -1,6 +1,15 @@
 Changelog
 =========
 
+## dev
+
+* Update deps:
+    * `request`: `^2.62.0` -> `^2.67.0`
+    * `chai`: `^3.2.0` -> `^3.4.1`
+    * `lodash.omit`: `^3.1.0` -> `^4.0.1`
+    * `mocha`: `^2.3.2` -> `^2.3.4`
+    * `nock`: `^2.12.0` -> `^5.2.1`
+
 ## 1.0.2
 
 * #22 Fix accidental global / strict mode bug

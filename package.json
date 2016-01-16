@@ -25,15 +25,16 @@
   },
   "dependencies": {
     "debug": "^2.2.0",
-    "request": "^2.62.0"
+    "request": "^2.67.0"
   },
   "devDependencies": {
-    "chai": "^3.2.0",
+    "babel-cli": "^6.4.5",
+    "chai": "^3.4.1",
     "eslint": "^1.10.3",
-    "lodash.omit": "^3.1.0",
-    "mocha": "^2.3.2",
+    "lodash.omit": "^4.0.1",
+    "mocha": "^2.3.4",
     "mocha-eslint": "^1.0.0",
-    "nock": "^2.12.0"
+    "nock": "^5.2.1"
   },
   "engines": {
     "node": ">=0.10.0"
