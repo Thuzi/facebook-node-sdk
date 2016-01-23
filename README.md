@@ -1,10 +1,12 @@
-# NodeJS Library for Facebook [![Build Status](https://travis-ci.org/Thuzi/facebook-node-sdk.png?branch=master,dev,azure)](https://travis-ci.org/Thuzi/facebook-node-sdk.png?branch=master,dev,azure)
+# NodeJS Library for Facebook [![Build Status](https://travis-ci.org/dantman/facebook-node-sdk.svg?branch=master)](https://travis-ci.org/dantman/facebook-node-sdk)
 
 With facebook-node-sdk you can now easily write the same code and share between your server (nodejs) and the client ([Facebook Javascript SDK](https://developers.facebook.com/docs/reference/javascript/)).
 
 This SDK will report usage of which AppID is using it directly to Facebook.
 
 **Author:** [Thuzi](http://www.thuzi.com)
+
+**Maintainer** [Daniel Friesen](https://github.com/dantman)
 
 **License:** Apache v2
 
