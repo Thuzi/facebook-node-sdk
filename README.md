@@ -446,12 +446,13 @@ var FB = require('fb');
 FB.setAccessToken('access_token');
 ```
 
-If you want to use the api compaitible with FB JS SDK, pass `access_token` as parameter.
+If you want to use the api compatible with FB JS SDK, pass `access_token` as parameter.
 
 ```js
+var FB = require('fb');
 FB.api('me', { fields: ['id', 'name'], access_token: 'access_token' }, function (res) {
     console.log(res);
-}
+});
 ```
 
 ### getAccessToken
@@ -495,13 +496,13 @@ var accessToken = FB.options('accessToken'); //will get the accessToken of 'XYZ'
 ```
 
 The existing options are:
-* `'accessToken'` string representing the facebook accessToken to be used for requests. This is the same option that is updated by the `setAccessToken` and `getAccessToken` methods.
-* `'appSecret'` string representing the facebook application secret.
-* `'version'` [default=`'v2.0'`] string representing the facebook api version to use. Defaults to the oldest available version of the api.
+* `'accessToken'` string representing the Facebook accessToken to be used for requests. This is the same option that is updated by the `setAccessToken` and `getAccessToken` methods.
+* `'appSecret'` string representing the Facebook application secret.
+* `'version'` [default=`'v2.0'`] string representing the Facebook api version to use. Defaults to the oldest available version of the api.
 * `'proxy'` string representing an HTTP proxy to be used. Support proxy Auth with Basic Auth, embedding the auth info in the uri: 'http://[username:password@]proxy[:port]' (parameters in brackets are optional).
 * `'timeout'` integer number of milliseconds to wait for a response. Requests that have not received a response in *X* ms. If set to null or 0 no timeout will exist. On timeout an error object will be returned to the api callback with the error code of `'ETIMEDOUT'` (example below).
-* `'scope'` string representing the facebook scope to use in `getLoginUrl`.
-* `'redirectUri'` string representing the facebook redirect_uri to use in `getLoginUrl`.
+* `'scope'` string representing the Facebook scope to use in `getLoginUrl`.
+* `'redirectUri'` string representing the Facebook redirect_uri to use in `getLoginUrl`.
 
 ### version
 
@@ -581,7 +582,7 @@ These options are accepted and all correspond to url parameters documented in Fa
 
 ## Error handling
 
-*Note: facebook is not consistent with their error format, and different systems can fail causing different error formats*
+*Note: Facebook is not consistent with their error format, and different systems can fail causing different error formats*
 
 Some examples of various error codes you can check for:
 * `'ECONNRESET'` - connection reset by peer
