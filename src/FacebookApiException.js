@@ -1,6 +1,6 @@
 'use strict';
 
-function FacebookApiException(res) {
+export default function FacebookApiException(res) {
 	this.name = 'FacebookApiException';
 	this.message = JSON.stringify(res || {});
 	this.response = res;
@@ -15,5 +15,3 @@ FacebookApiException.prototype = Object.create(Error.prototype, {
 		configurable: true
 	}
 });
-
-module.exports = FacebookApiException;

@@ -1,12 +1,14 @@
 'use strict';
-var debugReq = require('debug')('fb:req'),
-	debugSig = require('debug')('fb:sig'),
-	request = require('request'),
-	URL = require('url'),
-	QS = require('querystring'),
-	crypto = require('crypto'),
-	FacebookApiException = require('./FacebookApiException'),
-	{version} = require('../package.json'),
+import debug from 'debug';
+import request from 'request';
+import URL from 'url';
+import QS from 'querystring';
+import crypto from 'crypto';
+import FacebookApiException from './FacebookApiException';
+
+var {version} = require('../package.json'),
+	debugReq = debug('fb:req'),
+	debugSig = debug('fb:sig'),
 	METHODS = ['get', 'post', 'delete', 'put'],
 	readOnlyCalls = {
 		'admin.getallocation': true,
@@ -584,4 +586,6 @@ class Facebook {
 	}
 }
 
-module.exports = new Facebook();
+export var FB = new Facebook();
+export default FB;
+export {FacebookApiException, version};
