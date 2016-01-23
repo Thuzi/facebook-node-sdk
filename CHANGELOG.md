@@ -9,6 +9,7 @@ Changelog
     * `lodash.omit`: `^3.1.0` -> `^4.0.1`
     * `mocha`: `^2.3.2` -> `^2.3.4`
     * `nock`: `^2.12.0` -> `^5.2.1`
+* Explicitly support ES2015 `import` in Babel
 
 ## 1.0.2
 
