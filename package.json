@@ -17,12 +17,12 @@
     "type": "git",
     "url": "https://github.com/node-facebook/facebook-node-sdk.git"
   },
-  "main": "./fb.js",
+  "main": "./lib/index.js",
   "scripts": {
     "lint": "eslint .",
     "build": "babel src/ -d lib/",
     "buildw": "babel -w src/ -d lib/",
-    "test": "npm run build && node ./node_modules/mocha/bin/mocha --recursive ",
+    "test": "npm run build && node ./node_modules/mocha/bin/mocha --recursive",
     "prepublish": "npm run build"
   },
   "dependencies": {

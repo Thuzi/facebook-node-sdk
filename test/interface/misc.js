@@ -1,6 +1,6 @@
 'use strict';
 var FB = require('../..'),
-	FacebookApiException = require('../../lib/FacebookApiException'),
+	FacebookApiException = require('../../lib/FacebookApiException').default,
 	{version} = require('../../package.json'),
 	expect = require('chai').expect;
 
