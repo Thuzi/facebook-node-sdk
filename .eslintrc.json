@@ -1,7 +1,9 @@
 {
   "env": {
-    "node": true
+    "node": true,
+    "es6": true
   },
+  "parser": "babel-eslint",
   "rules": {
     "array-bracket-spacing": [1, "never"],
     "brace-style": [1, "1tbs", { "allowSingleLine": true }],
@@ -16,6 +18,7 @@
     "no-trailing-spaces": [1],
     "no-unneeded-ternary": [2],
     "object-curly-spacing": [1, "never"],
+    "prefer-arrow-callback": [1],
     "quote-props": [2, "as-needed"],
     "quotes": [1, "single", "avoid-escape"],
     "semi": [2, "always"],
@@ -27,7 +30,7 @@
     "space-infix-ops": [1],
     "space-return-throw-case": [1],
     "space-unary-ops": [1],
-    "strict": [2, "global"]
+    "strict": [0, "global"]
   },
   "extends": "eslint:recommended"
 }
