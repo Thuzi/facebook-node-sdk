@@ -13,6 +13,7 @@ Changelog
 * Add `new Facebook(options)` for library usage
 * Add `FB.extend` for multi-app usage
 * Add `FB.withAccessToken` for alternate multi-user usage
+* Support file uploads using Buffers and read streams
 
 ## 1.0.2
 
