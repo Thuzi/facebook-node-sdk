@@ -125,7 +125,7 @@ var {version} = require('../package.json'),
 		};
 	};
 
-const opts = Symbol('opts');
+const _opts = Symbol('opts');
 const graph = Symbol('graph');
 const rest = Symbol('rest');
 const oauthRequest = Symbol('oauthRequest');
@@ -134,8 +134,8 @@ class Facebook {
 	FacebookApiException = FacebookApiException; // this Error does not exist in the fb js sdk
 	version = version; // this property does not exist in the fb js sdk
 
-	constructor() {
-		this[opts] = {
+	constructor(opts) {
+		this[_opts] = {
 			accessToken: null,
 			appId: null,
 			appSecret: null,
@@ -148,6 +148,10 @@ class Facebook {
 			proxy: null,
 			userAgent: `thuzi_nodejssdk/${version}`
 		};
+
+		if ( typeof opts === 'object' ) {
+			this.options(opts);
+		}
 	}
 
 	/**
@@ -553,7 +557,7 @@ class Facebook {
 
 	options(keyOrOptions) {
 		// this method does not exist in the fb js sdk
-		var o = this[opts];
+		var o = this[_opts];
 		if ( !keyOrOptions ) {
 			return o;
 		}
@@ -588,4 +592,4 @@ class Facebook {
 
 export var FB = new Facebook();
 export default FB;
-export {FacebookApiException, version};
+export {Facebook, FacebookApiException, version};

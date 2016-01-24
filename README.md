@@ -28,6 +28,24 @@ import FB from 'fb'; // or,
 import {FB, FacebookApiException} from 'fb';
 ```
 
+## Library usage
+
+Libraries can isolate themselves from the options belonging to the default `FB` by creating an instance of the `Facebook` class.
+
+```javascript
+// ES5
+var FB = require('fb'),
+    fb = new FB.Facebook(options);
+
+// ES2015 w/ require()
+var {Facebook, FacebookApiException} = require('fb'),
+    fb = new Facebook(options);
+
+// ES2015 w/ import through Babel
+import {Facebook, FacebookApiException} from 'fb';
+var fb = new Facebook(options);
+```
+
 # Running Samples
 Update `appId` and `appSecret` in `samples/scrumptious/config.js`
 

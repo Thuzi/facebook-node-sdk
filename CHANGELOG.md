@@ -10,6 +10,7 @@ Changelog
     * `mocha`: `^2.3.2` -> `^2.3.4`
     * `nock`: `^2.12.0` -> `^5.2.1`
 * Explicitly support ES2015 `import` in Babel
+* Add `new Facebook(options)` for library usage
 
 ## 1.0.2
 
