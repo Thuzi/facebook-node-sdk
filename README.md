@@ -46,6 +46,16 @@ import {Facebook, FacebookApiException} from 'fb';
 var fb = new Facebook(options);
 ```
 
+## Multi-app usage
+
+Applications that run on behalf of multiple apps with different Facebook appIds and secrets can use `.extend` (on `FB` or any `Facebook` instance) to create a new instance which inherits options not set on it from the instance it is created from (like the API `version` your application is coded against).
+
+```javascript
+FB.options({version: 'v2.4'});
+var fooApp = FB.extend({appId: 'foo_id', appSecret: 'secret'}),
+    barApp = FB.extend({appId: 'bar_id', appSecret: 'secret'});
+```
+
 # Running Samples
 Update `appId` and `appSecret` in `samples/scrumptious/config.js`
 
@@ -451,6 +461,8 @@ FB.api({ method: 'stream.remove', post_id: postId }, function (res) {
 ### setAccessToken
 *This is a non-standard api and does not exist in the official client side FB JS SDK.*
 
+**Warning**: Due to Node's asynchronous nature, you should not use `setAccessToken` when `FB` is used on behalf of for multiple users.
+
 ```js
 FB.setAccessToken('access_token');
 ```
@@ -461,6 +473,15 @@ If you want to use the api compatible with FB JS SDK, pass `access_token` as par
 FB.api('me', { fields: ['id', 'name'], access_token: 'access_token' }, function (res) {
     console.log(res);
 });
+```
+
+### withAccessToken
+*This is a non-standard api and does not exist in the official client side FB JS SDK.*
+
+Using `FB.extend` this returns a new FB object that inherits the same options but has an accessToken specific to it set.
+
+```js
+var fb = FB.withAccessToken('access_token');
 ```
 
 ### getAccessToken

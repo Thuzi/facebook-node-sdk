@@ -71,12 +71,27 @@ var {version} = require('../package.json'),
 		'users.isappuser': true,
 		'users.isverified': true,
 		'video.getuploadlimits': true
-	},
-	toString = Object.prototype.toString,
+	},	toString = Object.prototype.toString,
 	has = Object.prototype.hasOwnProperty,
 	log = function(d) {
 		// todo
 		console.log(d); // eslint-disable-line no-console
+	},
+	defaultOptions = Object.assign(Object.create(null), {
+		accessToken: null,
+		appId: null,
+		appSecret: null,
+		appSecretProof: null,
+		beta: false,
+		version: 'v2.0',
+		timeout: null,
+		scope:  null,
+		redirectUri: null,
+		proxy: null,
+		userAgent: `thuzi_nodejssdk/${version}`
+	}),
+	isValidOption = function(key) {
+		return defaultOptions::has(key);
 	},
 	parseOAuthApiResponse = function(body) {
 		var result = QS.parse(body);
@@ -134,20 +149,12 @@ class Facebook {
 	FacebookApiException = FacebookApiException; // this Error does not exist in the fb js sdk
 	version = version; // this property does not exist in the fb js sdk
 
-	constructor(opts) {
-		this[_opts] = {
-			accessToken: null,
-			appId: null,
-			appSecret: null,
-			appSecretProof: null,
-			beta: false,
-			version: 'v2.0',
-			timeout: null,
-			scope:  null,
-			redirectUri: null,
-			proxy: null,
-			userAgent: `thuzi_nodejssdk/${version}`
-		};
+	constructor(opts, _internalInherit) {
+		if ( _internalInherit instanceof Facebook ) {
+			this[_opts] = Object.create(_internalInherit[_opts]);
+		} else {
+			this[_opts] = Object.create(defaultOptions);
+		}
 
 		if ( typeof opts === 'object' ) {
 			this.options(opts);
@@ -562,10 +569,10 @@ class Facebook {
 			return o;
 		}
 		if ( keyOrOptions::toString() === '[object String]' ) {
-			return o::has(keyOrOptions) ? o[keyOrOptions] : null;
+			return isValidOption(keyOrOptions) && keyOrOptions in o ? o[keyOrOptions] : null;
 		}
 		for ( let key in o ) {
-			if ( o::has(key) && keyOrOptions::has(key) ) {
+			if ( isValidOption(key) && key in o && keyOrOptions::has(key) ) {
 				o[key] = keyOrOptions[key];
 				switch (key) {
 				case 'appSecret':
@@ -580,6 +587,16 @@ class Facebook {
 		}
 	}
 
+	/**
+	 * Return a new instance of Facebook with a different set of options
+	 * that inherit unset options from the current instance.
+	 * @access public
+	 * @param {Object} [opts] Options to set
+	 */
+	extend(opts) {
+		return new Facebook(opts, this);
+	}
+
 	getAccessToken() {
 		return this.options('accessToken');
 	}
@@ -587,6 +604,10 @@ class Facebook {
 	setAccessToken(accessToken) {
 		// this method does not exist in fb js sdk
 		this.options({accessToken});
+	}
+
+	withAccessToken(accessToken) {
+		return this.extend({accessToken});
 	}
 }
 
