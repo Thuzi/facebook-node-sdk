@@ -118,6 +118,29 @@ var {version} = require('../package.json'),
 
 		return QS.stringify(data);
 	},
+	postParamData = function(params) {
+		var data = {},
+			isFormData = false;
+
+		for ( let key in params ) {
+			let value = params[key];
+			if ( value && typeof value !== 'string' ) {
+				let val = typeof value === 'object' && value::has('value') && value::has('options') ? value.value : value;
+				if ( Buffer.isBuffer(val) ) {
+					isFormData = true;
+				} else if ( typeof val.read === 'function' && typeof val.pipe === 'function' && val.readable ) {
+					isFormData = true;
+				} else {
+					value = JSON.stringify(value);
+				}
+			}
+			if ( value !== undefined ) {
+				data[key] = value;
+			}
+		}
+
+		return {[isFormData ? 'formData' : 'form']: data};
+	},
 	getAppSecretProof = function(accessToken, appSecret) {
 		var hmac = crypto.createHmac('sha256', appSecret);
 		hmac.update(accessToken);
@@ -338,7 +361,7 @@ class Facebook {
 		var uri,
 			parsedUri,
 			parsedQuery,
-			body,
+			formOptions,
 			requestOptions,
 			isOAuthRequest,
 			pool;
@@ -382,7 +405,7 @@ class Facebook {
 				}
 			}
 
-			body = stringifyParams(params);
+			formOptions = postParamData(params);
 		} else {
 			for ( let key in params) {
 				parsedQuery[key] = params[key];
@@ -396,7 +419,7 @@ class Facebook {
 		requestOptions = {
 			method,
 			uri,
-			body,
+			...formOptions,
 			pool
 		};
 		if ( this.options('proxy') ) {
