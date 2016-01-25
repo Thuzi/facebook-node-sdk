@@ -85,7 +85,7 @@ var {version} = require('../package.json'),
 		beta: false,
 		version: 'v2.0',
 		timeout: null,
-		scope:  null,
+		scope: null,
 		redirectUri: null,
 		proxy: null,
 		userAgent: `thuzi_nodejssdk/${version}`
@@ -407,7 +407,7 @@ class Facebook {
 
 			formOptions = postParamData(params);
 		} else {
-			for ( let key in params) {
+			for ( let key in params ) {
 				parsedQuery[key] = params[key];
 			}
 		}
