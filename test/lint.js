@@ -1,4 +1,6 @@
 'use strict';
 var lint = require('mocha-eslint');
 
-lint(['.']);
+if ( !process.env.CI_TEST || process.env.CI_TEST !== 'no-lint' ) {
+	lint(['.']);
+}
