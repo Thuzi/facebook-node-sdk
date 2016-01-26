@@ -13,3 +13,6 @@ matrix:
       script: npm run lint
       env:
         - CI_TEST=lint-only
+cache:
+  directories:
+    - node_modules
