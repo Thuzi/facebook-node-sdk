@@ -10,68 +10,7 @@ var {version} = require('../package.json'),
 	debugReq = debug('fb:req'),
 	debugSig = debug('fb:sig'),
 	METHODS = ['get', 'post', 'delete', 'put'],
-	readOnlyCalls = {
-		'admin.getallocation': true,
-		'admin.getappproperties': true,
-		'admin.getbannedusers': true,
-		'admin.getlivestreamvialink': true,
-		'admin.getmetrics': true,
-		'admin.getrestrictioninfo': true,
-		'application.getpublicinfo': true,
-		'auth.getapppublickey': true,
-		'auth.getsession': true,
-		'auth.getsignedpublicsessiondata': true,
-		'comments.get': true,
-		'connect.getunconnectedfriendscount': true,
-		'dashboard.getactivity': true,
-		'dashboard.getcount': true,
-		'dashboard.getglobalnews': true,
-		'dashboard.getnews': true,
-		'dashboard.multigetcount': true,
-		'dashboard.multigetnews': true,
-		'data.getcookies': true,
-		'events.get': true,
-		'events.getmembers': true,
-		'fbml.getcustomtags': true,
-		'feed.getappfriendstories': true,
-		'feed.getregisteredtemplatebundlebyid': true,
-		'feed.getregisteredtemplatebundles': true,
-		'fql.multiquery': true,
-		'fql.query': true,
-		'friends.arefriends': true,
-		'friends.get': true,
-		'friends.getappusers': true,
-		'friends.getlists': true,
-		'friends.getmutualfriends': true,
-		'gifts.get': true,
-		'groups.get': true,
-		'groups.getmembers': true,
-		'intl.gettranslations': true,
-		'links.get': true,
-		'notes.get': true,
-		'notifications.get': true,
-		'pages.getinfo': true,
-		'pages.isadmin': true,
-		'pages.isappadded': true,
-		'pages.isfan': true,
-		'permissions.checkavailableapiaccess': true,
-		'permissions.checkgrantedapiaccess': true,
-		'photos.get': true,
-		'photos.getalbums': true,
-		'photos.gettags': true,
-		'profile.getinfo': true,
-		'profile.getinfooptions': true,
-		'stream.get': true,
-		'stream.getcomments': true,
-		'stream.getfilters': true,
-		'users.getinfo': true,
-		'users.getloggedinuser': true,
-		'users.getstandardinfo': true,
-		'users.hasapppermission': true,
-		'users.isappuser': true,
-		'users.isverified': true,
-		'video.getuploadlimits': true
-	},	toString = Object.prototype.toString,
+	toString = Object.prototype.toString,
 	has = Object.prototype.hasOwnProperty,
 	log = function(d) {
 		// todo
@@ -83,7 +22,7 @@ var {version} = require('../package.json'),
 		appSecret: null,
 		appSecretProof: null,
 		beta: false,
-		version: 'v2.0',
+		version: 'v2.1',
 		timeout: null,
 		scope: null,
 		redirectUri: null,
@@ -165,7 +104,6 @@ var {version} = require('../package.json'),
 
 const _opts = Symbol('opts');
 const graph = Symbol('graph');
-const rest = Symbol('rest');
 const oauthRequest = Symbol('oauthRequest');
 
 class Facebook {
@@ -219,11 +157,7 @@ class Facebook {
 		// });
 		//
 		//
-		if ( typeof arguments[0] === 'string' ) {
-			this[graph](...arguments);
-		} else {
-			this[rest](...arguments);
-		}
+		this[graph](...arguments);
 	}
 
 	/**
@@ -300,6 +234,10 @@ class Facebook {
 			params,
 			cb;
 
+		if ( typeof path !== 'string' ) {
+			throw new Error(`Path is of type ${typeof path}, not string`);
+		}
+
 		while ( next ) {
 			let type = typeof next;
 			if ( type === 'string' && !method ) {
@@ -328,36 +266,19 @@ class Facebook {
 			return;
 		}
 
-		this[oauthRequest]('graph', path, method, params, cb);
-	}
-
-	/**
-	 * Old school restserver.php calls.
-	 *
-	 * @access private
-	 * @param params { Object } The required arguments vary based on the method
-	 * being used, but speficy the method itself is mandatory:
-	 */
-	[rest](params, cb) {
-		var method = params.method.toLowerCase();
-
-		params.format = 'json-strings';
-		var domain = readOnlyCalls[method] ? 'api_read' : 'api';
-		this[oauthRequest](domain, 'restserver.php', 'get', params, cb);
+		this[oauthRequest](path, method, params, cb);
 	}
 
 	/**
 	 * Add the oauth parameter, and fire of a request.
 	 *
 	 * @access private
-	 * @param domain {String}   the domain key, one of 'api', 'api_read',
-	 *                          or 'graph'
 	 * @param path {String}     the request path
 	 * @param method {String}   the http method
 	 * @param params {Object}   the parameters for the query
 	 * @param cb {Function}     the callback function to handle the response
 	 */
-	[oauthRequest](domain, path, method, params, cb) {
+	[oauthRequest](path, method, params, cb) {
 		var uri,
 			parsedUri,
 			parsedQuery,
@@ -378,17 +299,11 @@ class Facebook {
 			params.appsecret_proof = getAppSecretProof(params.access_token, this.options('appSecret'));
 		}
 
-		if ( domain === 'graph' ) {
-			if ( !/^v\d+\.\d+\/|^fql(?:\/|$)/.test(path) ) {
-				path = this.options('version') + '/' + path;
-			}
-			uri = `https://graph.${this.options('beta') ? 'beta.' : ''}facebook.com/${path}`;
-			isOAuthRequest = /^oauth.*/.test('oauth/');
-		} else if ( domain == 'api' ) {
-			uri = `https://api.${this.options('beta') ? 'beta.' : ''}facebook.com/${path}`;
-		} else if ( domain == 'api_read' ) {
-			uri = `https://api-read.${this.options('beta') ? 'beta.' : ''}facebook.com/${path}`;
+		if ( !/^v\d+\.\d+\//.test(path) ) {
+			path = this.options('version') + '/' + path;
 		}
+		uri = `https://graph.${this.options('beta') ? 'beta.' : ''}facebook.com/${path}`;
+		isOAuthRequest = /^oauth.*/.test('oauth/');
 
 		parsedUri = URL.parse(uri);
 		delete parsedUri.search;
