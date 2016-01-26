@@ -107,9 +107,6 @@ const graph = Symbol('graph');
 const oauthRequest = Symbol('oauthRequest');
 
 class Facebook {
-	FacebookApiException = FacebookApiException; // this Error does not exist in the fb js sdk
-	version = version; // this property does not exist in the fb js sdk
-
 	constructor(opts, _internalInherit) {
 		if ( _internalInherit instanceof Facebook ) {
 			this[_opts] = Object.create(_internalInherit[_opts]);

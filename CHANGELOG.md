@@ -5,6 +5,8 @@ Changelog
 
 * **BREAKING CHANGE**: Dropped support for FQL and Legacy REST Api
 * **BREAKING CHANGE**: New minimum API version `v2.1`
+* **BREAKING CHANGE**: `FacebookApiException` and `version` are no longer available on `Facebook` instances.
+    * This means `FB.FacebookApiException` cannot be used when doing `import FB from 'fb';` or `var {FB} = require('fb');` you must import `FacebookApiException` separately.
 
 ## 1.1.0-alpha1
 
