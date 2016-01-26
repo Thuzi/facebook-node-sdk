@@ -303,7 +303,7 @@ class Facebook {
 			path = this.options('version') + '/' + path;
 		}
 		uri = `https://graph.${this.options('beta') ? 'beta.' : ''}facebook.com/${path}`;
-		isOAuthRequest = /^oauth.*/.test('oauth/');
+		isOAuthRequest = /^v\d+\.\d+\/oauth.*/.test(path);
 
 		parsedUri = URL.parse(uri);
 		delete parsedUri.search;
@@ -361,6 +361,7 @@ class Facebook {
 
 				if ( isOAuthRequest && response && response.statusCode === 200 &&
 					response.headers && /.*text\/plain.*/.test(response.headers['content-type'])) {
+					// Parse the querystring body used before v2.3
 					cb(parseOAuthApiResponse(body));
 				} else {
 					let json;
