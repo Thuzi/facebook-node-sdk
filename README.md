@@ -450,7 +450,7 @@ If you want to use the api compaitible with FB JS SDK, pass `access_token` as pa
 ```js
 FB.api('me', { fields: ['id', 'name'], access_token: 'access_token' }, function (res) {
     console.log(res);
-}
+});
 ```
 
 ### getAccessToken
