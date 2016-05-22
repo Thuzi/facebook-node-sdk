@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## 2.0.0-dev
+## 2.0.0-alpha1
 
 * **BREAKING CHANGE**: Dropped support for FQL and Legacy REST Api
 * **BREAKING CHANGE**: New minimum API version `v2.1`
