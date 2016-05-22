@@ -10,7 +10,7 @@ Changelog
 * * **BREAKING CHANGE**: Drop support for node `0.10` and `0.12`, node `4` is the new minimum
 * `FB.api` now supports usage with promises
 
-## 1.1.0-alpha1
+## 1.1.0
 
 * Update deps:
     * `request`: `^2.62.0` -> `^2.67.0`

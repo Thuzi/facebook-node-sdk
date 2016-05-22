@@ -1,6 +1,6 @@
 {
   "name": "fb",
-  "version": "1.1.0-alpha1",
+  "version": "1.1.0",
   "description": "NodeJS Library for Facebook",
   "keywords": [
     "facebook",
