@@ -9,10 +9,6 @@ describe('import', function() {
 			expect(FBdefault).property('api')
 				.to.be.a('function');
 		});
-
-		it('should expose a legacy FB.FacebookApiException', function() {
-			expect(FBdefault.FacebookApiException).to.equal(FacebookApiException);
-		});
 	});
 
 	describe("import {FB} from 'fb';", function() {

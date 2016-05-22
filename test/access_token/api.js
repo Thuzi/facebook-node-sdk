@@ -23,7 +23,7 @@ describe('access_token', function() {
 			FB.setAccessToken('access_token');
 
 			var expectedRequest = nock('https://graph.facebook.com:443')
-				.get('/v2.0/me')
+				.get('/v2.1/me')
 				.query({
 					access_token: 'access_token'
 				})
@@ -46,7 +46,7 @@ describe('access_token', function() {
 			FB.setAccessToken('wrong_token');
 
 			var expectedRequest = nock('https://graph.facebook.com:443')
-				.get('/v2.0/me')
+				.get('/v2.1/me')
 				.query({
 					access_token: 'access_token'
 				})
@@ -85,7 +85,7 @@ describe('access_token', function() {
 			FB.options({appSecret: 'app_secret'});
 
 			var expectedRequest = nock('https://graph.facebook.com:443')
-				.get('/v2.0/me')
+				.get('/v2.1/me')
 				.query({
 					access_token: 'access_token',
 					appsecret_proof: 'd52ddf968d622d8af8677906b7fbae09ac1f89f7cd5c1584b27544624cc23e5a'

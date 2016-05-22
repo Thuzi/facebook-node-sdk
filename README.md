@@ -144,58 +144,6 @@ FB.api(postId, 'delete', function (res) {
 });
 ```
 
-## Facebook Query Language (FQL)
-
-### Query
-
-```js
-FB.setAccessToken('access_token');
-
-FB.api('fql', { q: 'SELECT uid FROM user WHERE uid=me()' }, function (res) {
-  if(!res || res.error) {
-    console.log(!res ? 'error occurred' : res.error);
-    return;
-  }
-  console.log(res.data);
-});
-```
-
-### Multi-query
-
-```js
-FB.setAccessToken('access_token');
-
-FB.api('fql', { q: [
-  'SELECT uid FROM user WHERE uid=me()',
-  'SELECT name FROM user WHERE uid=me()'
-] }, function(res) {
-  if(!res || res.error) {
-    console.log(!res ? 'error occurred' : res.error);
-    return;
-  }
-  console.log(res.data[0].fql_result_set);
-  console.log(res.data[1].fql_result_set);
-});
-```
-
-### Named Multi-query
-
-```js
-FB.setAccessToken('access_token');
-
-FB.api('fql', { q : {
-  id: 'SELECT uid FROM user WHERE uid=me()',
-  name: 'SELECT name FROM user WHERE uid IN (SELECT uid FROM #id)'
-} }, function(res) {
-  if(!res || res.error) {
-    console.log(!res ? 'error occurred' : res.error);
-    return;
-  }
-  console.log(res.data[0].fql_result_set);
-  console.log(res.data[1].fql_result_set);
-});
-```
-
 ## Batch Requests
 
 ```js
@@ -206,21 +154,12 @@ FB.api('', 'post', {
     batch: [
         { method: 'get', relative_url: '4' },
         { method: 'get', relative_url: 'me/friends?limit=50' },
-        { method: 'get', relative_url: 'fql?q=' + encodeURIComponent('SELECT uid FROM user WHERE uid=me()' ) }, /* fql */
-        { method: 'get', relative_url: 'fql?q=' + encodeURIComponent(JSON.stringify([
-                    'SELECT uid FROM user WHERE uid=me()',
-                    'SELECT name FROM user WHERE uid=me()'
-                ])) }, /* fql multi-query */
-        { method: 'get', relative_url: 'fql?q=' + encodeURIComponent(JSON.stringify({
-                    id: 'SELECT uid FROM user WHERE uid=me()',
-                    name: 'SELECT name FROM user WHERE uid IN (SELECT uid FROM #id)'
-                })) }, /* named fql multi-query */
         { method: 'get', relative_url: '4', headers: { 'If-None-Match': '"7de572574f2a822b65ecd9eb8acef8f476e983e1"' } }, /* etags */
         { method: 'get', relative_url: 'me/friends?limit=1', name: 'one-friend' /* , omit_response_on_success: false */ },
         { method: 'get', relative_url: '{result=one-friend:$.data.0.id}/feed?limit=5'}
     ]
 }, function(res) {
-    var res0, res1, res2, res3, res4, res5, res6, res7,
+    var res0, res1, res2, res3, res4,
         etag1;
 
     if(!res || res.error) {
@@ -230,13 +169,10 @@ FB.api('', 'post', {
 
     res0 = JSON.parse(res[0].body);
     res1 = JSON.parse(res[1].body);
-    res2 = JSON.parse(res[2].body);
-    res3 = JSON.parse(res[3].body);
-    res4 = JSON.parse(res[4].body);
-    res5 = res[5].code === 304 ? undefined : JSON.parse(res[5].body);   // special case for not-modified responses
-                                                                        // set res5 as undefined if response wasn't modified.
-    res6 = res[6] === null ? null : JSON.parse(res[6].body);
-    res7 = res6 === null ? JSON.parse(res[7].body) : undefined; // set result as undefined if previous dependency failed
+    res2 = res[2].code === 304 ? undefined : JSON.parse(res[2].body);   // special case for not-modified responses
+                                                                        // set res2 as undefined if response wasn't modified.
+    res3 = res[3] === null ? null : JSON.parse(res[3].body);
+    res4 = res3 === null ? JSON.parse(res[4].body) : undefined; // set result as undefined if previous dependency failed
 
     if(res0.error) {
         console.log(res0.error);
@@ -252,34 +188,14 @@ FB.api('', 'post', {
         console.log(res1);
     }
 
-    if(res2.error) {
-        console.log(res2.error);
-    } else {
-        console.log(res2.data);
-    }
-
-    if(res3.error) {
-        console.log(res3.error);
-    } else {
-        console.log(res3.data[0].fql_result_set);
-        console.log(res3.data[1].fql_result_set);
-    }
-
-    if(res4.error) {
-        console.log(res4.error);
-    } else {
-        console.log(res4.data[0].fql_result_set);
-        console.log(res4.data[0].fql_result_set);
-    }
-
     // check if there are any new updates
-    if(typeof res5 !== "undefined") {
+    if(typeof res2 !== "undefined") {
         // make sure there was no error
-        if(res5.error) {
+        if(res2.error) {
             console.log(error);
         } else {
             console.log('new update available');
-            console.log(res5);
+            console.log(res2);
         }
     }
     else {
@@ -287,15 +203,15 @@ FB.api('', 'post', {
     }
 
     // check if dependency executed successfully
-    if(res[6] === null) {
+    if(res[3] === null) {
         // then check if the result it self doesn't have any errors.
-        if(res7.error) {
-            console.log(res7.error);
+        if(res4.error) {
+            console.log(res4.error);
         } else {
-            console.log(res7);
+            console.log(res4);
         }
     } else {
-        console.log(res6.error);
+        console.log(res3.error);
     }
 });
 
@@ -426,56 +342,6 @@ FB.api('oauth/access_token', {
 });
 ```
 
-## Legacy REST Api
-
-__Although Legacy REST Api is supported by facebook-node-sdk, it is highly discouraged to be used, as Facebook is in the process of deprecating the Legacy REST Api.__
-
-### Get
-
-```javascript
-
-FB.api({ method: 'users.getInfo', uids: ['4'], fields: ['uid', 'name'] }, function (res) {
-    if(!res || res.error_msg) {
-        console.log(!res ? 'error occurred' : res.error_msg);
-        return;
-    }
-
-    console.log('User Id: ' + res[0].uid);
-    console.log('Name: ' + res[0].name);
-});
-```
-
-### Post
-
-```javascript
-FB.setAccessToken('access_token');
-
-var message = 'Hi from facebook-node-sdk';
-FB.api({ method: 'stream.publish', message: message }, function (res) {
-    if(!res || res.error_msg) {
-        console.log(!res ? 'error occurred' : res.error_msg);
-        return;
-    }
-
-    console.log(res);
-});
-```
-### Delete
-
-```javascript
-FB.setAccessToken('access_token');
-
-var postId = '.....';
-FB.api({ method: 'stream.remove', post_id: postId }, function (res) {
-    if(!res || res.error_msg) {
-        console.log(!res ? 'error occurred' : res.error_msg);
-        return;
-    }
-
-    console.log(res);
-});
-```
-
 ## Access Tokens
 
 ### setAccessToken
@@ -551,6 +417,7 @@ The existing options are:
 * `'timeout'` integer number of milliseconds to wait for a response. Requests that have not received a response in *X* ms. If set to null or 0 no timeout will exist. On timeout an error object will be returned to the api callback with the error code of `'ETIMEDOUT'` (example below).
 * `'scope'` string representing the Facebook scope to use in `getLoginUrl`.
 * `'redirectUri'` string representing the Facebook redirect_uri to use in `getLoginUrl`.
+* `'Promise'` Promise implementation to use when `FB.api` is called without a callback. Defaults to the Promise implementation returned by `require('any-promise')`.
 
 ### version
 
@@ -651,16 +518,71 @@ FB.api('/me', function (res) {
 });
 ```
 
+## Promise based interface
+
+*This is a non-standard api and does not exist in the official client side FB JS SDK.*
+
+When `FB.api` is called without a callback it will instead return a Promise that will either resolve with the same response as `FB.api` or be rejected with a `FacebookApiException` error.
+
+```js
+FB.api('4')
+    .then(function(response) {
+        console.log(response);
+    })
+    .catch(function(error) {
+        if(error.response.error.code === 'ETIMEDOUT') {
+            console.log('request timeout');
+        }
+        else {
+            console.log('error', error.message);
+        }
+    });
+
+// In an async function
+async function example() {
+    try {
+        var response = await FB.api('4');
+        console.log(response);
+    }
+    catch(error) {
+        if(error.response.error.code === 'ETIMEDOUT') {
+            console.log('request timeout');
+        }
+        else {
+            console.log('error', error.message);
+        }
+    }
+}
+```
+
+The promise implementation used can be controlled using [any-promise](https://www.npmjs.com/package/any-promise)'s register interface or by setting the `Promise` option.
+
+```js
+// any-promise
+import 'any-promise/register/bluebird';
+import FB from 'fb';
+let response = await FB.api('4');
+
+// Promise option
+import FB from 'fb';
+FB.options({
+    Promise: require('bluebird')
+});
+let response = await fb.api('4');
+
+// Promise option in a library
+import {Facebook} from 'fb';
+var fb = new Facebook({
+    Promise: require('bluebird')
+});
+let response = await fb.api('4');
+```
+
 ## Node style callback with FB.napi
 
 *This is a non-standard api and does not exist in the official client side FB JS SDK.*
 
-`FB.napi` takes the same input as `FB.api`. Only the callback parameters is different. In the original 
-`FB.api`, the callback expects one parameter which is the response. In `FB.napi` the callback expects two
-parameters instead of one and follows the node standards. The first parameter is an error which is always
-of type `FB.FacebookApiException` and the second parameter is the same response as in `FB.api`.
-Error response can be accessed using `error.response` which is the same response as the response when using
-`FB.api`
+`FB.napi` takes the same input as `FB.api`. Only the callback parameters is different. In the original `FB.api`, the callback expects one parameter which is the response. In `FB.napi` the callback expects two parameters instead of one and follows the node standards. The first parameter is an error which is always of type `FacebookApiException` and the second parameter is the same response as in `FB.api`. Error response can be accessed using `error.response` which is the same response as the response when using `FB.api`.
 
 ```js
 FB.napi('4', function(error, response) {

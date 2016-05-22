@@ -24,7 +24,7 @@ describe('FB.api', function() {
 		describe("FB.api('me/feed', 'post', { message: 'My first post using facebook-node-sdk' }, cb)", function() {
 			beforeEach(function() {
 				nock('https://graph.facebook.com:443')
-					.post('/v2.0/me/feed', 'message=My%20first%20post%20using%20facebook-node-sdk')
+					.post('/v2.1/me/feed', 'message=My%20first%20post%20using%20facebook-node-sdk')
 					.reply(200, function() {
 						return {
 							contentType: this.req.headers['content-type'],
@@ -46,7 +46,7 @@ describe('FB.api', function() {
 		describe("FB.api('path', 'post', { file: { value: new Buffer('...', 'utf8'), options: { contentType: 'text/plain' } }, cb)", function() {
 			beforeEach(function() {
 				nock('https://graph.facebook.com:443')
-					.post('/v2.0/path')
+					.post('/v2.1/path')
 					.reply(200, function(uri, body) {
 						return {
 							contentType: this.req.headers['content-type'],
@@ -69,7 +69,7 @@ describe('FB.api', function() {
 		describe("FB.api('path', 'post', { file: fs.createReadStream('./ellipsis.txt') }, cb)", function() {
 			beforeEach(function() {
 				nock('https://graph.facebook.com:443')
-					.post('/v2.0/path')
+					.post('/v2.1/path')
 					.reply(200, function(uri, body) {
 						return {
 							contentType: this.req.headers['content-type'],
