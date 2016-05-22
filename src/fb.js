@@ -1,4 +1,5 @@
 'use strict';
+import Promise from 'any-promise';
 import debug from 'debug';
 import request from 'request';
 import URL from 'url';
@@ -17,6 +18,7 @@ var {version} = require('../package.json'),
 		console.log(d); // eslint-disable-line no-console
 	},
 	defaultOptions = Object.assign(Object.create(null), {
+		Promise: Promise,
 		accessToken: null,
 		appId: null,
 		appSecret: null,
@@ -126,8 +128,9 @@ class Facebook {
 	 * @param method {String} the http method (default: `"GET"`)
 	 * @param params {Object} the parameters for the query
 	 * @param cb {Function} the callback function to handle the response
+	 * @return {Promise|undefined}
 	 */
-	api() {
+	api(...args) {
 		//
 		// FB.api('/platform', function(response) {
 		//  console.log(response.company_overview);
@@ -154,7 +157,25 @@ class Facebook {
 		// });
 		//
 		//
-		this[graph](...arguments);
+
+		let ret;
+
+		if ( args.length > 0 && typeof args[args.length - 1] !== 'function' ) {
+			let Promise = this.options('Promise');
+			ret = new Promise((resolve, reject) => {
+				args.push((res) => {
+					if ( !res || res.error ) {
+						reject(new FacebookApiException(res));
+					} else {
+						resolve(res);
+					}
+				});
+			});
+		}
+
+		this[graph](...args);
+
+		return ret;
 	}
 
 	/**
@@ -199,8 +220,8 @@ class Facebook {
 		//
 
 		if ( args.length > 0 ) {
-			var originalCallback = args.pop();
-			args.push(typeof originalCallback == 'function' ? nodeifyCallback(originalCallback) : originalCallback);
+			let originalCallback = args.pop();
+			args.push(typeof originalCallback === 'function' ? nodeifyCallback(originalCallback) : originalCallback);
 		}
 
 		this.api(...args);
