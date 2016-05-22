@@ -2,8 +2,6 @@
 
 With facebook-node-sdk you can now easily write the same code and share between your server (nodejs) and the client ([Facebook Javascript SDK](https://developers.facebook.com/docs/reference/javascript/)).
 
-This SDK will report usage of which AppID is using it directly to Facebook.
-
 **Author:** [Thuzi](http://www.thuzi.com)
 
 **Maintainer** [Daniel Friesen](https://github.com/dantman)
@@ -546,6 +544,7 @@ var accessToken = FB.options('accessToken'); //will get the accessToken of 'XYZ'
 
 The existing options are:
 * `'accessToken'` string representing the Facebook accessToken to be used for requests. This is the same option that is updated by the `setAccessToken` and `getAccessToken` methods.
+* `'appId'` The ID of your app, found in your app's dashboard.
 * `'appSecret'` string representing the Facebook application secret.
 * `'version'` [default=`'v2.0'`] string representing the Facebook api version to use. Defaults to the oldest available version of the api.
 * `'proxy'` string representing an HTTP proxy to be used. Support proxy Auth with Basic Auth, embedding the auth info in the uri: 'http://[username:password@]proxy[:port]' (parameters in brackets are optional).

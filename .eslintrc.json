@@ -23,12 +23,10 @@
     "quotes": [1, "single", "avoid-escape"],
     "semi": [2, "always"],
     "spaced-comment": [2, "always"],
-    "space-before-keywords": [1, "always"],
-    "space-after-keywords": [1, "always"],
+    "keyword-spacing": [1, {"before": true, "after": true}],
     "space-before-blocks": [1, "always"],
     "space-before-function-paren": [1, "never"],
     "space-infix-ops": [1],
-    "space-return-throw-case": [1],
     "space-unary-ops": [1],
     "strict": [0, "global"]
   },
