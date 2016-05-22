@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## 1.1.0-alpha1
+## 1.1.0
 
 * Update deps:
     * `request`: `^2.62.0` -> `^2.67.0`
