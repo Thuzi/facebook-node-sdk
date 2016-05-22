@@ -8,6 +8,7 @@ Changelog
 * **BREAKING CHANGE**: `FacebookApiException` and `version` are no longer available on `Facebook` instances.
     * This means `FB.FacebookApiException` cannot be used when doing `import FB from 'fb';` or `var {FB} = require('fb');` you must import `FacebookApiException` separately.
 * * **BREAKING CHANGE**: Drop support for node `0.10` and `0.12`, node `4` is the new minimum
+* `FB.api` now supports usage with promises
 
 ## 1.1.0-alpha1
 

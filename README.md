@@ -418,6 +418,7 @@ The existing options are:
 * `'timeout'` integer number of milliseconds to wait for a response. Requests that have not received a response in *X* ms. If set to null or 0 no timeout will exist. On timeout an error object will be returned to the api callback with the error code of `'ETIMEDOUT'` (example below).
 * `'scope'` string representing the Facebook scope to use in `getLoginUrl`.
 * `'redirectUri'` string representing the Facebook redirect_uri to use in `getLoginUrl`.
+* `'Promise'` Promise implementation to use when `FB.api` is called without a callback. Defaults to the Promise implementation returned by `require('any-promise')`.
 
 ### version
 
@@ -518,16 +519,71 @@ FB.api('/me', function (res) {
 });
 ```
 
+## Promise based interface
+
+*This is a non-standard api and does not exist in the official client side FB JS SDK.*
+
+When `FB.api` is called without a callback it will instead return a Promise that will either resolve with the same response as `FB.api` or be rejected with a `FacebookApiException` error.
+
+```js
+FB.api('4')
+    .then(function(response) {
+        console.log(response);
+    })
+    .catch(function(error) {
+        if(error.response.error.code === 'ETIMEDOUT') {
+            console.log('request timeout');
+        }
+        else {
+            console.log('error', error.message);
+        }
+    });
+
+// In an async function
+async function example() {
+    try {
+        var response = await FB.api('4');
+        console.log(response);
+    }
+    catch(error) {
+        if(error.response.error.code === 'ETIMEDOUT') {
+            console.log('request timeout');
+        }
+        else {
+            console.log('error', error.message);
+        }
+    }
+}
+```
+
+The promise implementation used can be controlled using [any-promise](https://www.npmjs.com/package/any-promise)'s register interface or by setting the `Promise` option.
+
+```js
+// any-promise
+import 'any-promise/register/bluebird';
+import FB from 'fb';
+let response = await FB.api('4');
+
+// Promise option
+import FB from 'fb';
+FB.options({
+    Promise: require('bluebird')
+});
+let response = await fb.api('4');
+
+// Promise option in a library
+import {Facebook} from 'fb';
+var fb = new Facebook({
+    Promise: require('bluebird')
+});
+let response = await fb.api('4');
+```
+
 ## Node style callback with FB.napi
 
 *This is a non-standard api and does not exist in the official client side FB JS SDK.*
 
-`FB.napi` takes the same input as `FB.api`. Only the callback parameters is different. In the original 
-`FB.api`, the callback expects one parameter which is the response. In `FB.napi` the callback expects two
-parameters instead of one and follows the node standards. The first parameter is an error which is always
-of type `FB.FacebookApiException` and the second parameter is the same response as in `FB.api`.
-Error response can be accessed using `error.response` which is the same response as the response when using
-`FB.api`
+`FB.napi` takes the same input as `FB.api`. Only the callback parameters is different. In the original `FB.api`, the callback expects one parameter which is the response. In `FB.napi` the callback expects two parameters instead of one and follows the node standards. The first parameter is an error which is always of type `FacebookApiException` and the second parameter is the same response as in `FB.api`. Error response can be accessed using `error.response` which is the same response as the response when using `FB.api`.
 
 ```js
 FB.napi('4', function(error, response) {

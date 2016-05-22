@@ -1,5 +1,6 @@
 'use strict';
-var nock = require('nock'),
+var Bluebird = require('bluebird'),
+	nock = require('nock'),
 	expect = require('chai').expect,
 	notError = require('../_supports/notError'),
 	FB = require('../..'),
@@ -210,6 +211,88 @@ describe('FB.api', function() {
 					expect(result).to.have.property('id', '4');
 					done();
 				});
+			});
+		});
+
+		describe("FB.api('/4')", function() {
+			it('should return a Promise', function(done) {
+				nock('https://graph.facebook.com:443')
+					.get('/v2.1/4')
+					.reply(200, {
+						id: '4',
+						name: 'Mark Zuckerberg',
+						first_name: 'Mark',
+						last_name: 'Zuckerberg',
+						link: 'http://www.facebook.com/zuck',
+						username: 'zuck',
+						gender: 'male',
+						locale: 'en_US'
+					});
+
+				var ret = FB.api('/4');
+
+				expect(ret).to.have.property('then').that.is.a('function');
+				expect(ret).to.have.property('catch').that.is.a('function');
+				expect(ret).to.be.an.instanceof(require('any-promise'));
+				ret
+					.then((result) => {
+						expect(result).to.have.property('id', '4');
+						done();
+					});
+			});
+
+			it('should work when the Promise option is native Promise', function(done) {
+				nock('https://graph.facebook.com:443')
+					.get('/v2.1/4')
+					.reply(200, {
+						id: '4',
+						name: 'Mark Zuckerberg',
+						first_name: 'Mark',
+						last_name: 'Zuckerberg',
+						link: 'http://www.facebook.com/zuck',
+						username: 'zuck',
+						gender: 'male',
+						locale: 'en_US'
+					});
+
+				var fb = new FB.Facebook({Promise: Promise});
+				var ret = fb.api('/4');
+
+				expect(ret).to.have.property('then').that.is.a('function');
+				expect(ret).to.have.property('catch').that.is.a('function');
+				expect(ret).to.be.an.instanceof(Promise);
+				ret
+					.then((result) => {
+						expect(result).to.have.property('id', '4');
+						done();
+					});
+			});
+
+			it('should work when the Promise option is Bluebird', function(done) {
+				nock('https://graph.facebook.com:443')
+					.get('/v2.1/4')
+					.reply(200, {
+						id: '4',
+						name: 'Mark Zuckerberg',
+						first_name: 'Mark',
+						last_name: 'Zuckerberg',
+						link: 'http://www.facebook.com/zuck',
+						username: 'zuck',
+						gender: 'male',
+						locale: 'en_US'
+					});
+
+				var fb = new FB.Facebook({Promise: Bluebird});
+				var ret = fb.api('/4');
+
+				expect(ret).to.have.property('then').that.is.a('function');
+				expect(ret).to.have.property('catch').that.is.a('function');
+				expect(ret).to.be.an.instanceof(Bluebird);
+				ret
+					.then((result) => {
+						expect(result).to.have.property('id', '4');
+						done();
+					});
 			});
 		});
 	});
