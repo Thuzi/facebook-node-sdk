@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## 1.1.1
+
+* Fix #54: FB methods should be bound
+
 ## 1.1.0
 
 * Update deps:

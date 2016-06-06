@@ -64,6 +64,27 @@ describe('FB.api', function() {
 					done();
 				});
 			});
+
+			it('should work without `this`', function(done) {
+				nock('https://graph.facebook.com:443')
+					.get('/v2.0/4')
+					.reply(200, {
+						id: '4',
+						name: 'Mark Zuckerberg',
+						first_name: 'Mark',
+						last_name: 'Zuckerberg',
+						link: 'http://www.facebook.com/zuck',
+						username: 'zuck',
+						gender: 'male',
+						locale: 'en_US'
+					});
+
+				FB.api.call(undefined, '/4', function(result) {
+					notError(result);
+					expect(result).to.have.property('id', '4');
+					done();
+				});
+			});
 		});
 
 		describe('FB.api(4, cb)', function() {
@@ -206,6 +227,27 @@ describe('FB.api', function() {
 					});
 
 				FB.napi('/4', function(err, result) {
+					notError(result);
+					expect(result).to.have.property('id', '4');
+					done();
+				});
+			});
+
+			it('should work without `this`', function(done) {
+				nock('https://graph.facebook.com:443')
+					.get('/v2.0/4')
+					.reply(200, {
+						id: '4',
+						name: 'Mark Zuckerberg',
+						first_name: 'Mark',
+						last_name: 'Zuckerberg',
+						link: 'http://www.facebook.com/zuck',
+						username: 'zuck',
+						gender: 'male',
+						locale: 'en_US'
+					});
+
+				FB.napi.call(undefined, '/4', function(err, result) {
 					notError(result);
 					expect(result).to.have.property('id', '4');
 					done();
