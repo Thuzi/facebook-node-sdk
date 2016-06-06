@@ -1,5 +1,6 @@
 'use strict';
 import Promise from 'any-promise';
+import {autobind} from 'core-decorators';
 import debug from 'debug';
 import request from 'request';
 import URL from 'url';
@@ -130,6 +131,7 @@ class Facebook {
 	 * @param cb {Function} the callback function to handle the response
 	 * @return {Promise|undefined}
 	 */
+	@autobind
 	api(...args) {
 		//
 		// FB.api('/platform', function(response) {
@@ -187,6 +189,7 @@ class Facebook {
 	 * @param cb {Function} the callback function to handle the error and response
 	 */
 	// this method does not exist in fb js sdk
+	@autobind
 	napi(...args) {
 		//
 		// normalizes to node style callback so can use the sdk with async control flow node libraries
@@ -414,6 +417,7 @@ class Facebook {
 	 * FB.parseSignedRequest('signedRequest') // will use appSecret from options('appSecret')
 	 *
 	 */
+	@autobind
 	parseSignedRequest(signedRequest, ...args) {
 		// this method does not exist in fb js sdk
 		var appSecret = args.shift() || this.options('appSecret'),
@@ -483,6 +487,7 @@ class Facebook {
 	 * @access public
 	 * @param opt {Object} the parameters for appId and scope
 	 */
+	@autobind
 	getLoginUrl(opt = {}) {
 		// this method does not exist in fb js sdk
 		var clientId = opt.appId || opt.client_id || this.options('appId'),
@@ -519,6 +524,7 @@ class Facebook {
 			+ '&client_id=' + clientId;
 	}
 
+	@autobind
 	options(keyOrOptions) {
 		// this method does not exist in the fb js sdk
 		var o = this[_opts];
@@ -550,19 +556,23 @@ class Facebook {
 	 * @access public
 	 * @param {Object} [opts] Options to set
 	 */
+	@autobind
 	extend(opts) {
 		return new Facebook(opts, this);
 	}
 
+	@autobind
 	getAccessToken() {
 		return this.options('accessToken');
 	}
 
+	@autobind
 	setAccessToken(accessToken) {
 		// this method does not exist in fb js sdk
 		this.options({accessToken});
 	}
 
+	@autobind
 	withAccessToken(accessToken) {
 		return this.extend({accessToken});
 	}
