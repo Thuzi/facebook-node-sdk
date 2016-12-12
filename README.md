@@ -112,7 +112,7 @@ FB.api('me/feed', 'post', { message: body }, function (res) {
 ```js
 FB.setAccessToken('access_token');
 
-FB.api('me/photo', 'post', { source: fs.createReadStream('my-vacation.jpg'), caption: 'My vacation' }, function (res) {
+FB.api('me/photos', 'post', { source: fs.createReadStream('my-vacation.jpg'), caption: 'My vacation' }, function (res) {
   if(!res || res.error) {
     console.log(!res ? 'error occurred' : res.error);
     return;
@@ -120,7 +120,7 @@ FB.api('me/photo', 'post', { source: fs.createReadStream('my-vacation.jpg'), cap
   console.log('Post Id: ' + res.post_id);
 });
 
-FB.api('me/photo', 'post', { source: { value: photoBuffer, options: { contentType: 'image/jpeg' } }, caption: 'My vacation' }, function (res) {
+FB.api('me/photos', 'post', { source: { value: photoBuffer, options: { contentType: 'image/jpeg' } }, caption: 'My vacation' }, function (res) {
   if(!res || res.error) {
     console.log(!res ? 'error occurred' : res.error);
     return;
