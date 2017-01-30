@@ -32,6 +32,11 @@ var {version} = require('../package.json'),
 		proxy: null,
 		userAgent: `thuzi_nodejssdk/${version}`
 	}),
+	emptyRateLimit = Object.assign(Object.create(null), {
+		callCount: 0,
+		totalTime: 0,
+		totalCPUTime: 0
+	}),
 	isValidOption = function(key) {
 		return defaultOptions::has(key);
 	},
@@ -44,6 +49,18 @@ var {version} = require('../package.json'),
 		}
 
 		return result;
+	},
+	parseOAuthApiResponseHeaderAppUsage = function(header) {
+		if ( !header::has('x-app-usage') ) {
+			return null;
+		}
+		return JSON.parse(header['x-app-usage']);
+	},
+	parseOAuthApiResponseHeaderPageUsage = function(header) {
+		if ( !header::has('x-page-usage') ) {
+			return null;
+		}
+		return JSON.parse(header['x-page-usage']);
 	},
 	stringifyParams = function(params) {
 		var data = {};
@@ -120,6 +137,9 @@ class Facebook {
 		if ( typeof opts === 'object' ) {
 			this.options(opts);
 		}
+
+		this._pageUsage = Object.create(emptyRateLimit);
+		this._appUsage = Object.create(emptyRateLimit);
 	}
 
 	/**
@@ -380,6 +400,20 @@ class Facebook {
 					return cb({error});
 				}
 
+				let appUsage = parseOAuthApiResponseHeaderAppUsage(response.headers);
+				if ( appUsage !== null ) {
+					this._appUsage['callCount'] = appUsage['call_count'];
+					this._appUsage['totalTime'] = appUsage['total_time'];
+					this._appUsage['totalCPUTime'] = appUsage['total_cputime'];
+				}
+
+				let pageUsage = parseOAuthApiResponseHeaderPageUsage(response.headers);
+				if ( pageUsage !== null ) {
+					this._pageUsage['callCount'] = pageUsage['call_count'];
+					this._pageUsage['totalTime'] = pageUsage['total_time'];
+					this._pageUsage['totalCPUTime'] = pageUsage['total_cputime'];
+				}
+
 				if ( isOAuthRequest && response && response.statusCode === 200 &&
 					response.headers && /.*text\/plain.*/.test(response.headers['content-type'])) {
 					// Parse the querystring body used before v2.3
@@ -564,6 +598,16 @@ class Facebook {
 	@autobind
 	getAccessToken() {
 		return this.options('accessToken');
+	}
+
+	@autobind
+	getAppUsage() {
+		return this._appUsage;
+	}
+
+	@autobind
+	getPageUsage() {
+		return this._pageUsage;
 	}
 
 	@autobind
