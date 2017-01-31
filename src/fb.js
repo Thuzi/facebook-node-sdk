@@ -62,6 +62,13 @@ var {version} = require('../package.json'),
 		}
 		return JSON.parse(header['x-page-usage']);
 	},
+	buildRateLimitObjectFromJson = function(rateLimit) {
+		return Object.assign(Object.create(null), {
+			callCount: rateLimit['call_count'],
+			totalTime: rateLimit['total_time'],
+			totalCPUTime: rateLimit['total_cputime']
+		});
+	},
 	stringifyParams = function(params) {
 		var data = {};
 
@@ -402,16 +409,16 @@ class Facebook {
 
 				let appUsage = parseOAuthApiResponseHeaderAppUsage(response.headers);
 				if ( appUsage !== null ) {
-					this._appUsage['callCount'] = appUsage['call_count'];
-					this._appUsage['totalTime'] = appUsage['total_time'];
-					this._appUsage['totalCPUTime'] = appUsage['total_cputime'];
+					this._appUsage = buildRateLimitObjectFromJson(appUsage);
+				} else {
+					this._appUsage = emptyRateLimit;
 				}
 
 				let pageUsage = parseOAuthApiResponseHeaderPageUsage(response.headers);
 				if ( pageUsage !== null ) {
-					this._pageUsage['callCount'] = pageUsage['call_count'];
-					this._pageUsage['totalTime'] = pageUsage['total_time'];
-					this._pageUsage['totalCPUTime'] = pageUsage['total_cputime'];
+					this._pageUsage = buildRateLimitObjectFromJson(pageUsage);
+				} else {
+					this._pageUsage = emptyRateLimit;
 				}
 
 				if ( isOAuthRequest && response && response.statusCode === 200 &&
