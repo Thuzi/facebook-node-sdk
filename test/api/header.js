@@ -20,19 +20,13 @@ afterEach(function() {
 describe('FB.api', function() {
 	describe('headers', function() {
 		describe('FB.getAppUsage()', function() {
-			beforeEach(function() {
+			it('should be updated', function(done) {
 				nock('https://graph.facebook.com:443')
 					.get('/v2.1/4')
 					.reply(200, {}, {
 						'X-App-Usage': '{"call_count":50, "total_time":60, "total_cputime":70}'
 					});
 
-				nock('https://graph.facebook.com:443')
-					.get('/v2.1/5')
-					.reply(200, {});
-			});
-
-			it('should be updated', function(done) {
 				FB.api('4', function(result) {
 					notError(result);
 					let appUsage = FB.getAppUsage();
@@ -44,6 +38,10 @@ describe('FB.api', function() {
 			});
 
 			it('should be set back to 0 if no header sent', function(done) {
+				nock('https://graph.facebook.com:443')
+					.get('/v2.1/5')
+					.reply(200, {});
+
 				FB.api('5', function(result) {
 					notError(result);
 					let appUsage = FB.getAppUsage();
@@ -56,19 +54,13 @@ describe('FB.api', function() {
 		});
 
 		describe('FB.getPageUsage()', function() {
-			beforeEach(function() {
+			it('should be updated', function(done) {
 				nock('https://graph.facebook.com:443')
 					.get('/v2.1/4')
 					.reply(200, {}, {
 						'X-Page-Usage': '{"call_count":10, "total_time":20, "total_cputime":30}'
 					});
 
-				nock('https://graph.facebook.com:443')
-					.get('/v2.1/5')
-					.reply(200, {});
-			});
-
-			it('should be updated', function(done) {
 				FB.api('4', function(result) {
 					notError(result);
 					let pageUsage = FB.getPageUsage();
@@ -80,6 +72,9 @@ describe('FB.api', function() {
 			});
 
 			it('should be set back to 0 if no header sent', function(done) {
+				nock('https://graph.facebook.com:443')
+					.get('/v2.1/5')
+					.reply(200, {});
 				FB.api('5', function(result) {
 					notError(result);
 					let pageUsage = FB.getPageUsage();
