@@ -40,13 +40,13 @@ var {version} = require('../package.json'),
 	isValidOption = function(key) {
 		return defaultOptions::has(key);
 	},
-	parseOAuthApiResponseHeaderAppUsage = function(header) {
+	parseResponseHeaderAppUsage = function(header) {
 		if ( !header::has('x-app-usage') ) {
 			return null;
 		}
 		return JSON.parse(header['x-app-usage']);
 	},
-	parseOAuthApiResponseHeaderPageUsage = function(header) {
+	parseResponseHeaderPageUsage = function(header) {
 		if ( !header::has('x-page-usage') ) {
 			return null;
 		}
@@ -395,14 +395,14 @@ class Facebook {
 					return cb({error});
 				}
 
-				let appUsage = parseOAuthApiResponseHeaderAppUsage(response.headers);
+				let appUsage = parseResponseHeaderAppUsage(response.headers);
 				if ( appUsage !== null ) {
 					this._appUsage = buildRateLimitObjectFromJson(appUsage);
 				} else {
 					this._appUsage = emptyRateLimit;
 				}
 
-				let pageUsage = parseOAuthApiResponseHeaderPageUsage(response.headers);
+				let pageUsage = parseResponseHeaderPageUsage(response.headers);
 				if ( pageUsage !== null ) {
 					this._pageUsage = buildRateLimitObjectFromJson(pageUsage);
 				} else {
