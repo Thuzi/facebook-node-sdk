@@ -372,6 +372,35 @@ var accessToken = FB.getAccessToken();
 For improved security, as soon as you provide an app secret and an access token, the
 library automatically computes and adds the appsecret_proof parameter to your requests.
 
+## Rate limiting
+Current rate limit values are updated after each response received.
+>If your app is making enough calls to be considered for rate limiting by our system, we return an X-App-Usage HTTP header.
+
+That means if your API usage is low enough, Facebook don't send any information about rate limits and we consider them as 0
+### getAppUsage
+```js
+var appUsage = FB.getAppUsage();
+/*
+  {
+    callCount: 0,
+    totalTime: 0,
+    totalCPUTime: 0
+  }
+*/
+```
+
+### getPageUsage
+```js
+var pageUsage = FB.getPageUsage();
+/*
+{
+    callCount: 0,
+    totalTime: 0,
+    totalCPUTime: 0
+}
+*/
+```
+
 ## Configuration options
 
 ### options

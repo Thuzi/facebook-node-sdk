@@ -32,8 +32,32 @@ var {version} = require('../package.json'),
 		proxy: null,
 		userAgent: `thuzi_nodejssdk/${version}`
 	}),
+	emptyRateLimit = Object.assign(Object.create(null), {
+		callCount: 0,
+		totalTime: 0,
+		totalCPUTime: 0
+	}),
 	isValidOption = function(key) {
 		return defaultOptions::has(key);
+	},
+	parseResponseHeaderAppUsage = function(header) {
+		if ( !header::has('x-app-usage') ) {
+			return null;
+		}
+		return JSON.parse(header['x-app-usage']);
+	},
+	parseResponseHeaderPageUsage = function(header) {
+		if ( !header::has('x-page-usage') ) {
+			return null;
+		}
+		return JSON.parse(header['x-page-usage']);
+	},
+	buildRateLimitObjectFromJson = function(rateLimit) {
+		return Object.assign(Object.create(null), {
+			callCount: rateLimit['call_count'],
+			totalTime: rateLimit['total_time'],
+			totalCPUTime: rateLimit['total_cputime']
+		});
 	},
 	stringifyParams = function(params) {
 		var data = {};
@@ -110,6 +134,9 @@ class Facebook {
 		if ( typeof opts === 'object' ) {
 			this.options(opts);
 		}
+
+		this._pageUsage = Object.create(emptyRateLimit);
+		this._appUsage = Object.create(emptyRateLimit);
 	}
 
 	/**
@@ -368,6 +395,20 @@ class Facebook {
 					return cb({error});
 				}
 
+				let appUsage = parseResponseHeaderAppUsage(response.headers);
+				if ( appUsage !== null ) {
+					this._appUsage = buildRateLimitObjectFromJson(appUsage);
+				} else {
+					this._appUsage = emptyRateLimit;
+				}
+
+				let pageUsage = parseResponseHeaderPageUsage(response.headers);
+				if ( pageUsage !== null ) {
+					this._pageUsage = buildRateLimitObjectFromJson(pageUsage);
+				} else {
+					this._pageUsage = emptyRateLimit;
+				}
+
 				let json;
 				try {
 					json = JSON.parse(body);
@@ -546,6 +587,16 @@ class Facebook {
 	@autobind
 	getAccessToken() {
 		return this.options('accessToken');
+	}
+
+	@autobind
+	getAppUsage() {
+		return this._appUsage;
+	}
+
+	@autobind
+	getPageUsage() {
+		return this._pageUsage;
 	}
 
 	@autobind
