@@ -1,6 +1,6 @@
 {
   "name": "fb",
-  "version": "2.0.0-beta2",
+  "version": "2.0.0",
   "description": "NodeJS Library for Facebook",
   "keywords": [
     "facebook",
@@ -50,8 +50,5 @@
   },
   "engines": {
     "node": ">=4"
-  },
-  "publishConfig": {
-    "tag": "next"
   }
 }
