@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## 2.0.0-beta2
+
+* Migrate to babel-preset-env
+* Update deps
+* **BREAKING CHANGE**: New minimum API version `v2.3`
+* **BREAKING CHANGE**: The old broken samples/ directory has been removed
+
 ## 2.0.0-beta1
 
 * Update deps
