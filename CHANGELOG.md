@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## 2.0.0-beta2
+
+* Update deps
+
 ## 2.0.0-beta1
 
 * Update deps
