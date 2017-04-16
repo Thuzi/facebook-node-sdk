@@ -54,16 +54,6 @@ var fooApp = FB.extend({appId: 'foo_id', appSecret: 'secret'}),
     barApp = FB.extend({appId: 'bar_id', appSecret: 'secret'});
 ```
 
-# Running Samples
-Update `appId` and `appSecret` in `samples/scrumptious/config.js`
-
-```
-npm install
-cd samples/scrumptious
-npm install
-node app.js
-```
-
 ## Graph Api
 
 ### Get

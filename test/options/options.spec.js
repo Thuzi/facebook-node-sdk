@@ -35,7 +35,7 @@ describe('FB.options', function() {
 		});
 
 		it('Should make use graph.facebook when beta is false', function(done) {
-			var expectedRequest = nock('https://graph.facebook.com:443').get('/v2.1/4').reply(200, {});
+			var expectedRequest = nock('https://graph.facebook.com:443').get('/v2.3/4').reply(200, {});
 
 			FB.options({beta: false});
 
@@ -48,7 +48,7 @@ describe('FB.options', function() {
 		});
 
 		it('Should make use graph.beta.facebook when beta is true', function(done) {
-			var expectedRequest = nock('https://graph.beta.facebook.com:443').get('/v2.1/4').reply(200, {});
+			var expectedRequest = nock('https://graph.beta.facebook.com:443').get('/v2.3/4').reply(200, {});
 
 			FB.options({beta: true});
 
@@ -64,7 +64,7 @@ describe('FB.options', function() {
 	describe('userAgent', function() {
 		beforeEach(function() {
 			nock('https://graph.facebook.com:443')
-				.get('/v2.1/4')
+				.get('/v2.3/4')
 				.reply(function() {
 					return {
 						userAgent: this.req.headers['user-agent']
@@ -94,8 +94,8 @@ describe('FB.options', function() {
 	});
 
 	describe('version', function() {
-		it('Should default version to v2.1', function() {
-			expect(FB.options('version')).to.equal('v2.1');
+		it('Should default version to v2.3', function() {
+			expect(FB.options('version')).to.equal('v2.3');
 		});
 
 		it('Should change the version used in FB.api requests', function(done) {

@@ -25,7 +25,7 @@ var {version} = require('../package.json'),
 		appSecret: null,
 		appSecretProof: null,
 		beta: false,
-		version: 'v2.1',
+		version: 'v2.3',
 		timeout: null,
 		scope: null,
 		redirectUri: null,
@@ -39,16 +39,6 @@ var {version} = require('../package.json'),
 	}),
 	isValidOption = function(key) {
 		return defaultOptions::has(key);
-	},
-	parseOAuthApiResponse = function(body) {
-		var result = QS.parse(body);
-		for ( let key in result ) {
-			if ( !isNaN(result[key]) ) {
-				result[key] = parseInt(result[key]);
-			}
-		}
-
-		return result;
 	},
 	parseOAuthApiResponseHeaderAppUsage = function(header) {
 		if ( !header::has('x-app-usage') ) {
@@ -332,7 +322,6 @@ class Facebook {
 			parsedQuery,
 			formOptions,
 			requestOptions,
-			isOAuthRequest,
 			pool;
 
 		cb = cb || function() {};
@@ -351,7 +340,6 @@ class Facebook {
 			path = this.options('version') + '/' + path;
 		}
 		uri = `https://graph.${this.options('beta') ? 'beta.' : ''}facebook.com/${path}`;
-		isOAuthRequest = /^v\d+\.\d+\/oauth.*/.test(path);
 
 		parsedUri = URL.parse(uri);
 		delete parsedUri.search;
@@ -421,27 +409,21 @@ class Facebook {
 					this._pageUsage = emptyRateLimit;
 				}
 
-				if ( isOAuthRequest && response && response.statusCode === 200 &&
-					response.headers && /.*text\/plain.*/.test(response.headers['content-type'])) {
-					// Parse the querystring body used before v2.3
-					cb(parseOAuthApiResponse(body));
-				} else {
-					let json;
-					try {
-						json = JSON.parse(body);
-					} catch (ex) {
-						// sometimes FB is has API errors that return HTML and a message
-						// of "Sorry, something went wrong". These are infrequent and unpredictable but
-						// let's not let them blow up our application.
-						json = {
-							error: {
-								code: 'JSONPARSE',
-								Error: ex
-							}
-						};
-					}
-					cb(json);
+				let json;
+				try {
+					json = JSON.parse(body);
+				} catch (ex) {
+					// sometimes FB is has API errors that return HTML and a message
+					// of "Sorry, something went wrong". These are infrequent and unpredictable but
+					// let's not let them blow up our application.
+					json = {
+						error: {
+							code: 'JSONPARSE',
+							Error: ex
+						}
+					};
 				}
+				cb(json);
 			});
 	}
 

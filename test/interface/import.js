@@ -27,7 +27,7 @@ describe('import', function() {
 
 		it('FB.api should work without `this`', function(done) {
 			nock('https://graph.facebook.com:443')
-				.get('/v2.1/4')
+				.get('/v2.3/4')
 				.reply(200, {
 					id: '4'
 				});
@@ -48,7 +48,7 @@ describe('import', function() {
 
 		it('FB.api should work without `this`', function(done) {
 			nock('https://graph.facebook.com:443')
-				.get('/v2.1/4')
+				.get('/v2.3/4')
 				.reply(200, {
 					id: '4'
 				});

@@ -1,18 +1,17 @@
 Changelog
 =========
 
-## 2.0.0-beta1
-
-* Update deps
-
-## 2.0.0-alpha1
+## 2.0.0
 
 * **BREAKING CHANGE**: Dropped support for FQL and Legacy REST Api
-* **BREAKING CHANGE**: New minimum API version `v2.1`
+* **BREAKING CHANGE**: New minimum API version `v2.3`
 * **BREAKING CHANGE**: `FacebookApiException` and `version` are no longer available on `Facebook` instances.
     * This means `FB.FacebookApiException` cannot be used when doing `import FB from 'fb';` or `var {FB} = require('fb');` you must import `FacebookApiException` separately.
-* * **BREAKING CHANGE**: Drop support for node `0.10` and `0.12`, node `4` is the new minimum
+* **BREAKING CHANGE**: Drop support for node `0.10` and `0.12`, node `4` is the new minimum
+* **BREAKING CHANGE**: The old broken samples/ directory has been removed
 * `FB.api` now supports usage with promises
+* Update deps
+* Migrate to babel-preset-env
 
 ## 1.1.1
 

@@ -23,7 +23,7 @@ describe('FB.api', function() {
 		describe("FB.api('4', cb)", function() {
 			beforeEach(function() {
 				nock('https://graph.facebook.com:443')
-					.get('/v2.1/4')
+					.get('/v2.3/4')
 					.reply(200, {
 						id: '4',
 						name: 'Mark Zuckerberg',
@@ -47,7 +47,7 @@ describe('FB.api', function() {
 		describe("FB.api('/4', cb)", function() {
 			it('should have id 4', function(done) {
 				nock('https://graph.facebook.com:443')
-					.get('/v2.1/4')
+					.get('/v2.3/4')
 					.reply(200, {
 						id: '4',
 						name: 'Mark Zuckerberg',
@@ -68,7 +68,7 @@ describe('FB.api', function() {
 
 			it('should work without `this`', function(done) {
 				nock('https://graph.facebook.com:443')
-					.get('/v2.1/4')
+					.get('/v2.3/4')
 					.reply(200, {
 						id: '4',
 						name: 'Mark Zuckerberg',
@@ -105,7 +105,7 @@ describe('FB.api', function() {
 		describe("FB.api('4', { fields: 'id' }), cb)", function() {
 			it("should return { id: '4' } object", function(done) {
 				nock('https://graph.facebook.com:443')
-					.get('/v2.1/4?fields=id')
+					.get('/v2.3/4?fields=id')
 					.reply(200, {
 						id: '4'
 					});
@@ -121,7 +121,7 @@ describe('FB.api', function() {
 		describe("FB.api('/4?fields=name', cb)", function() {
 			it("should return { id: '4', name: 'Mark Zuckerberg' } object", function(done) {
 				nock('https://graph.facebook.com:443')
-					.get('/v2.1/4?fields=name')
+					.get('/v2.3/4?fields=name')
 					.reply(200, {
 						name: 'Mark Zuckerberg',
 						id: '4'
@@ -139,7 +139,7 @@ describe('FB.api', function() {
 		describe("FB.api('/4?fields=name', { fields: 'id,first_name' }, cb)", function() {
 			it("should return { id: '4', name: 'Mark Zuckerberg' } object", function(done) {
 				var expectedRequest = nock('https://graph.facebook.com:443')
-					.get('/v2.1/4?fields=id%2Cname')
+					.get('/v2.3/4?fields=id%2Cname')
 					.reply(200, {
 						id: '4',
 						name: 'Mark Zuckerberg'
@@ -160,13 +160,15 @@ describe('FB.api', function() {
 		describe("FB.api('oauth/access_token', { ..., grant_type: 'client_credentials' }, cb)", function() {
 			it("should return an { access_token: '...' } object", function(done) {
 				nock('https://graph.facebook.com:443')
-					.get('/v2.1/oauth/access_token')
+					.get('/v2.3/oauth/access_token')
 					.query({
 						client_id: 'app_id',
 						client_secret: 'app_secret',
 						grant_type: 'client_credentials'
 					})
-					.reply(200, 'access_token=...', {'Content-Type': 'text/plain'});
+					.reply(200, {
+						access_token: '...',
+					});
 
 				FB.api('oauth/access_token', {
 					client_id: 'app_id',
@@ -184,14 +186,17 @@ describe('FB.api', function() {
 		describe("FB.api('oauth/access_token', { grant_type: 'fb_exchange_token', ..., fb_exchange_token: ... }, cb)", function() {
 			it('should return an object with expires as a number', function(done) {
 				nock('https://graph.facebook.com:443')
-					.get('/v2.1/oauth/access_token')
+					.get('/v2.3/oauth/access_token')
 					.query({
 						grant_type: 'fb_exchange_token',
 						client_id: 'app_id',
 						client_secret: 'app_secret',
 						fb_exchange_token: 'access_token'
 					})
-					.reply(200, 'access_token=...&expires=99999', {'Content-Type': 'text/plain'});
+					.reply(200, {
+						access_token: '...',
+						expires_in: 99999,
+					});
 
 				FB.api('oauth/access_token', {
 					grant_type: 'fb_exchange_token',
@@ -200,7 +205,7 @@ describe('FB.api', function() {
 					fb_exchange_token: 'access_token'
 				}, function(result) {
 					notError(result);
-					expect(result).to.have.property('expires')
+					expect(result).to.have.property('expires_in')
 						.and.be.a('number')
 						.and.equal(99999);
 					done();
@@ -215,7 +220,7 @@ describe('FB.api', function() {
 		describe("FB.napi('/4', cb)", function() {
 			it('should have id 4', function(done) {
 				nock('https://graph.facebook.com:443')
-					.get('/v2.1/4')
+					.get('/v2.3/4')
 					.reply(200, {
 						id: '4',
 						name: 'Mark Zuckerberg',
@@ -236,7 +241,7 @@ describe('FB.api', function() {
 
 			it('should work without `this`', function(done) {
 				nock('https://graph.facebook.com:443')
-					.get('/v2.1/4')
+					.get('/v2.3/4')
 					.reply(200, {
 						id: '4',
 						name: 'Mark Zuckerberg',
@@ -259,7 +264,7 @@ describe('FB.api', function() {
 		describe("FB.api('/4')", function() {
 			it('should return a Promise', function(done) {
 				nock('https://graph.facebook.com:443')
-					.get('/v2.1/4')
+					.get('/v2.3/4')
 					.reply(200, {
 						id: '4',
 						name: 'Mark Zuckerberg',
@@ -285,7 +290,7 @@ describe('FB.api', function() {
 
 			it('should work when the Promise option is native Promise', function(done) {
 				nock('https://graph.facebook.com:443')
-					.get('/v2.1/4')
+					.get('/v2.3/4')
 					.reply(200, {
 						id: '4',
 						name: 'Mark Zuckerberg',
@@ -312,7 +317,7 @@ describe('FB.api', function() {
 
 			it('should work when the Promise option is Bluebird', function(done) {
 				nock('https://graph.facebook.com:443')
-					.get('/v2.1/4')
+					.get('/v2.3/4')
 					.reply(200, {
 						id: '4',
 						name: 'Mark Zuckerberg',
