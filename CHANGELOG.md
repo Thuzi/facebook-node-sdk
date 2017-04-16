@@ -3,6 +3,7 @@ Changelog
 
 ## 2.0.0-beta2
 
+* Migrate to babel-preset-env
 * Update deps
 
 ## 2.0.0-beta1
