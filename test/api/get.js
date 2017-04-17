@@ -136,6 +136,34 @@ describe('FB.api', function() {
 			});
 		});
 
+		describe("FB.api('/', { object: { a: false, b: 2, c: 'cat' } }), cb)", function() {
+			it('should serialize object parameter values to json ?object={"a":false,"b":2,"c":"cat"}', function(done) {
+				nock('https://graph.facebook.com:443')
+					.get('/v2.3/4?object=%7B%22a%22%3Afalse%2C%22b%22%3A2%2C%22c%22%3A%22cat%22%7D')
+					.reply(200, {
+					});
+
+				FB.api('4', {object: {a: false, b: 2, c: 'cat'}}, function(result) {
+					notError(result);
+					done();
+				});
+			});
+		});
+
+		describe("FB.api('/', { array: [false, 2, 'c'] }), cb)", function() {
+			it('should serialize array parameter values to json ?array=[false,2,"c"]', function(done) {
+				nock('https://graph.facebook.com:443')
+					.get('/v2.3/4?array=%5Bfalse%2C2%2C%22c%22%5D')
+					.reply(200, {
+					});
+
+				FB.api('4', {array: [false, 2, 'c']}, function(result) {
+					notError(result);
+					done();
+				});
+			});
+		});
+
 		describe("FB.api('/4?fields=name', { fields: 'id,first_name' }, cb)", function() {
 			it("should return { id: '4', name: 'Mark Zuckerberg' } object", function(done) {
 				var expectedRequest = nock('https://graph.facebook.com:443')
