@@ -72,7 +72,7 @@ FB.api('4', function (res) {
 __Passing Parameters__
 
 ```js
-FB.api('4', { fields: ['id', 'name'] }, function (res) {
+FB.api('4', { fields: 'id,name' }, function (res) {
   if(!res || res.error) {
     console.log(!res ? 'error occurred' : res.error);
     return;
@@ -346,7 +346,7 @@ FB.setAccessToken('access_token');
 If you want to use the api compatible with FB JS SDK, pass `access_token` as parameter.
 
 ```js
-FB.api('me', { fields: ['id', 'name'], access_token: 'access_token' }, function (res) {
+FB.api('me', { fields: 'id,name', access_token: 'access_token' }, function (res) {
     console.log(res);
 });
 ```
