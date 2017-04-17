@@ -72,7 +72,7 @@ FB.api('4', function (res) {
 __Passing Parameters__
 
 ```js
-FB.api('4', { fields: 'id,name' }, function (res) {
+FB.api('4', { fields: 'id,name,picture.type(large)' }, function (res) {
   if(!res || res.error) {
     console.log(!res ? 'error occurred' : res.error);
     return;
