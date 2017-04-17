@@ -14,7 +14,7 @@ With facebook-node-sdk you can now easily write the same code and share between 
 npm install fb
 ```
 
-```javascript
+```js
 // Using require() in ES5
 var FB = require('fb');
 
@@ -30,7 +30,7 @@ import {FB, FacebookApiException} from 'fb';
 
 Libraries can isolate themselves from the options belonging to the default `FB` by creating an instance of the `Facebook` class.
 
-```javascript
+```js
 // ES5
 var FB = require('fb'),
     fb = new FB.Facebook(options);
@@ -48,7 +48,7 @@ var fb = new Facebook(options);
 
 Applications that run on behalf of multiple apps with different Facebook appIds and secrets can use `.extend` (on `FB` or any `Facebook` instance) to create a new instance which inherits options not set on it from the instance it is created from (like the API `version` your application is coded against).
 
-```javascript
+```js
 FB.options({version: 'v2.4'});
 var fooApp = FB.extend({appId: 'foo_id', appSecret: 'secret'}),
     barApp = FB.extend({appId: 'bar_id', appSecret: 'secret'});
@@ -253,7 +253,7 @@ facebook-node-sdk is capable of handling oauth requests which return non-json re
 
 ### Get facebook application access token
 
-```javascript
+```js
 
 FB.api('oauth/access_token', {
     client_id: 'app_id',
@@ -271,7 +271,7 @@ FB.api('oauth/access_token', {
 
 ### Exchange code for access token
 
-```javascript
+```js
 
 FB.api('oauth/access_token', {
     client_id: 'app_id',
@@ -292,7 +292,7 @@ FB.api('oauth/access_token', {
 You can safely extract the code from the url using the `url` module. Always make sure to handle invalid oauth callback as
 well as error.
 
-```javascript
+```js
 var url = require('url');
 
 var urlToParse = 'http://yoururl.com/callback?code=.....#_=_';
@@ -314,7 +314,7 @@ var code = result.query.code;
 
 ### Extend expiry time of the access token
 
-```javascript
+```js
 
 FB.api('oauth/access_token', {
     client_id: 'client_id',
@@ -431,7 +431,7 @@ The existing options are:
 * `'accessToken'` string representing the Facebook accessToken to be used for requests. This is the same option that is updated by the `setAccessToken` and `getAccessToken` methods.
 * `'appId'` The ID of your app, found in your app's dashboard.
 * `'appSecret'` string representing the Facebook application secret.
-* `'version'` [default=`'v2.0'`] string representing the Facebook api version to use. Defaults to the oldest available version of the api.
+* `'version'` [default=`'v2.3'`] string representing the Facebook api version to use. Defaults to the oldest available version of the api.
 * `'proxy'` string representing an HTTP proxy to be used. Support proxy Auth with Basic Auth, embedding the auth info in the uri: 'http://[username:password@]proxy[:port]' (parameters in brackets are optional).
 * `'timeout'` integer number of milliseconds to wait for a response. Requests that have not received a response in *X* ms. If set to null or 0 no timeout will exist. On timeout an error object will be returned to the api callback with the error code of `'ETIMEDOUT'` (example below).
 * `'scope'` string representing the Facebook scope to use in `getLoginUrl`.
