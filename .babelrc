@@ -1,0 +1,4 @@
+{
+  "presets": [["env", {"targets": {"node": 4}}], "stage-0"],
+  "plugins": ["transform-decorators-legacy", "transform-runtime"]
+}

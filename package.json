@@ -1,34 +1,54 @@
 {
-  "author": "Thuzi LLC <pshrestha@thuzi.com> (https://github.com/Thuzi)",
   "name": "fb",
+  "version": "2.0.0",
   "description": "NodeJS Library for Facebook",
   "keywords": [
     "facebook",
     "fb",
     "graph"
   ],
-  "version": "0.7.3",
-  "homepage": "https://github.com/Thuzi/facebook-node-sdk",
+  "author": "Thuzi LLC <pshrestha@thuzi.com> (https://github.com/Thuzi)",
+  "contributors": [
+    "Daniel Friesen <d@danf.ca> (http://danf.ca)"
+  ],
+  "homepage": "https://github.com/node-facebook/facebook-node-sdk",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git://github.com/Thuzi/facebook-node-sdk.git"
+    "url": "https://github.com/node-facebook/facebook-node-sdk.git"
   },
-  "engines": {
-    "node": ">=0.6.9"
+  "main": "./lib/index.js",
+  "scripts": {
+    "lint": "eslint .",
+    "build": "babel src/ -d lib/",
+    "buildw": "babel -w src/ -d lib/",
+    "test": "npm run build && node ./node_modules/mocha/bin/mocha --recursive",
+    "prepublish": "npm run build"
   },
   "dependencies": {
-    "request": "2.9.x",
-    "crypto": "0.0.3"
+    "any-promise": "^1.3.0",
+    "babel-runtime": "^6.23.0",
+    "core-decorators": "^0.17.0",
+    "debug": "^2.6.3",
+    "request": "^2.81.0"
   },
   "devDependencies": {
-    "nock": "~0.17.2",
-    "mocha": "~1.9.0",
-    "should": "~1.2.2"
+    "babel-cli": "^6.24.1",
+    "babel-eslint": "^7.2.2",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.4.0",
+    "babel-preset-stage-0": "^6.24.1",
+    "babel-register": "^6.24.1",
+    "bluebird": "^3.5.0",
+    "chai": "^3.5.0",
+    "eslint": "^3.19.0",
+    "lodash.omit": "^4.5.0",
+    "mocha": "^3.2.0",
+    "mocha-eslint": "^3.0.1",
+    "nock": "^9.0.13"
   },
-  "optionalDependencies": {},
-  "main": "./fb.js",
-  "scripts": {
-    "test": "node ./node_modules/mocha/bin/mocha --recursive --reporter spec",
-    "testw": "node ./node_modules/mocha/bin/mocha --recursive --watch --reporter spec"
+  "engines": {
+    "node": ">=4"
   }
 }

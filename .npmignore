@@ -1,0 +1,9 @@
+src/
+
+Thumbs.db
+# WebStrom IDE ignore
+.idea/
+test/
+samples/
+.travis.yml
+.release.json

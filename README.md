@@ -1,10 +1,10 @@
-# NodeJS Library for Facebook [![Build Status](https://travis-ci.org/Thuzi/facebook-node-sdk.png?branch=master,dev,azure)](https://travis-ci.org/Thuzi/facebook-node-sdk.png?branch=master,dev,azure)
+# NodeJS Library for Facebook [![Build Status](https://travis-ci.org/node-facebook/facebook-node-sdk.svg?branch=master)](https://travis-ci.org/node-facebook/facebook-node-sdk)
 
 With facebook-node-sdk you can now easily write the same code and share between your server (nodejs) and the client ([Facebook Javascript SDK](https://developers.facebook.com/docs/reference/javascript/)).
 
-This SDK will report usage of which AppID is using it directly to Facebook.
-
 **Author:** [Thuzi](http://www.thuzi.com)
+
+**Maintainer** [Daniel Friesen](https://github.com/dantman)
 
 **License:** Apache v2
 
@@ -14,18 +14,44 @@ This SDK will report usage of which AppID is using it directly to Facebook.
 npm install fb
 ```
 
-```javascript
+```js
+// Using require() in ES5
 var FB = require('fb');
+
+// Using require() in ES2015
+var {FB, FacebookApiException} = require('fb');
+
+// Using ES2015 import through Babel
+import FB from 'fb'; // or,
+import {FB, FacebookApiException} from 'fb';
 ```
 
-# Running Samples
-Update `appId` and `appSecret` in `samples/scrumptious/config.js`
+## Library usage
 
+Libraries can isolate themselves from the options belonging to the default `FB` by creating an instance of the `Facebook` class.
+
+```js
+// ES5
+var FB = require('fb'),
+    fb = new FB.Facebook(options);
+
+// ES2015 w/ require()
+var {Facebook, FacebookApiException} = require('fb'),
+    fb = new Facebook(options);
+
+// ES2015 w/ import through Babel
+import {Facebook, FacebookApiException} from 'fb';
+var fb = new Facebook(options);
 ```
-npm install
-cd samples/scrumptious
-npm install
-node app.js
+
+## Multi-app usage
+
+Applications that run on behalf of multiple apps with different Facebook appIds and secrets can use `.extend` (on `FB` or any `Facebook` instance) to create a new instance which inherits options not set on it from the instance it is created from (like the API `version` your application is coded against).
+
+```js
+FB.options({version: 'v2.4'});
+var fooApp = FB.extend({appId: 'foo_id', appSecret: 'secret'}),
+    barApp = FB.extend({appId: 'bar_id', appSecret: 'secret'});
 ```
 
 ## Graph Api
@@ -33,8 +59,6 @@ node app.js
 ### Get
 
 ```js
-var FB = require('fb');
-
 FB.api('4', function (res) {
   if(!res || res.error) {
    console.log(!res ? 'error occurred' : res.error);
@@ -48,9 +72,7 @@ FB.api('4', function (res) {
 __Passing Parameters__
 
 ```js
-var FB = require('fb');
-
-FB.api('4', { fields: ['id', 'name'] }, function (res) {
+FB.api('4', { fields: 'id,name,picture.type(large)' }, function (res) {
   if(!res || res.error) {
     console.log(!res ? 'error occurred' : res.error);
     return;
@@ -63,11 +85,10 @@ FB.api('4', { fields: ['id', 'name'] }, function (res) {
 ### Post
 
 ```js
-var FB = require('fb');
 FB.setAccessToken('access_token');
 
 var body = 'My first post using facebook-node-sdk';
-FB.api('me/feed', 'post', { message: body}, function (res) {
+FB.api('me/feed', 'post', { message: body }, function (res) {
   if(!res || res.error) {
     console.log(!res ? 'error occurred' : res.error);
     return;
@@ -76,10 +97,31 @@ FB.api('me/feed', 'post', { message: body}, function (res) {
 });
 ```
 
+#### Upload
+
+```js
+FB.setAccessToken('access_token');
+
+FB.api('me/photos', 'post', { source: fs.createReadStream('my-vacation.jpg'), caption: 'My vacation' }, function (res) {
+  if(!res || res.error) {
+    console.log(!res ? 'error occurred' : res.error);
+    return;
+  }
+  console.log('Post Id: ' + res.post_id);
+});
+
+FB.api('me/photos', 'post', { source: { value: photoBuffer, options: { contentType: 'image/jpeg' } }, caption: 'My vacation' }, function (res) {
+  if(!res || res.error) {
+    console.log(!res ? 'error occurred' : res.error);
+    return;
+  }
+  console.log('Post Id: ' + res.post_id);
+});
+```
+
 ### Delete
 
 ```js
-var FB = require('fb');
 FB.setAccessToken('access_token');
 
 var postId = '1234567890';
@@ -92,87 +134,22 @@ FB.api(postId, 'delete', function (res) {
 });
 ```
 
-## Facebook Query Language (FQL)
-
-### Query
-
-```js
-var FB = require('fb');
-FB.setAccessToken('access_token');
-
-FB.api('fql', { q: 'SELECT uid FROM user WHERE uid=me()' }, function (res) {
-  if(!res || res.error) {
-    console.log(!res ? 'error occurred' : res.error);
-    return;
-  }
-  console.log(res.data);
-});
-```
-
-### Multi-query
-
-```js
-var FB = require('fb');
-FB.setAccessToken('access_token');
-
-FB.api('fql', { q: [
-  'SELECT uid FROM user WHERE uid=me()',
-  'SELECT name FROM user WHERE uid=me()'
-] }, function(res) {
-  if(!res || res.error) {
-    console.log(!res ? 'error occurred' : res.error);
-    return;
-  }
-  console.log(res.data[0].fql_result_set);
-  console.log(res.data[1].fql_result_set);
-});
-```
-
-### Named Multi-query
-
-```js
-var FB = require('fb');
-FB.setAccessToken('access_token');
-
-FB.api('fql', { q : {
-  id: 'SELECT uid FROM user WHERE uid=me()',
-  name: 'SELECT name FROM user WHERE uid IN (SELECT uid FROM #id)'
-} }, function(res) {
-  if(!res || res.error) {
-    console.log(!res ? 'error occurred' : res.error);
-    return;
-  }
-  console.log(res.data[0].fql_result_set);
-  console.log(res.data[1].fql_result_set);
-});
-```
-
 ## Batch Requests
 
 ```js
-var FB = require('fb');
 FB.setAccessToken('access_token');
 
 var extractEtag;
-FB.api('', 'post', { 
+FB.api('', 'post', {
     batch: [
         { method: 'get', relative_url: '4' },
         { method: 'get', relative_url: 'me/friends?limit=50' },
-        { method: 'get', relative_url: 'fql?q=' + encodeURIComponent('SELECT uid FROM user WHERE uid=me()' ) }, /* fql */
-        { method: 'get', relative_url: 'fql?q=' + encodeURIComponent(JSON.stringify([
-                    'SELECT uid FROM user WHERE uid=me()',
-                    'SELECT name FROM user WHERE uid=me()'
-                ])) }, /* fql multi-query */
-        { method: 'get', relative_url: 'fql?q=' + encodeURIComponent(JSON.stringify({
-                    id: 'SELECT uid FROM user WHERE uid=me()',
-                    name: 'SELECT name FROM user WHERE uid IN (SELECT uid FROM #id)'
-                })) }, /* named fql multi-query */
         { method: 'get', relative_url: '4', headers: { 'If-None-Match': '"7de572574f2a822b65ecd9eb8acef8f476e983e1"' } }, /* etags */
         { method: 'get', relative_url: 'me/friends?limit=1', name: 'one-friend' /* , omit_response_on_success: false */ },
         { method: 'get', relative_url: '{result=one-friend:$.data.0.id}/feed?limit=5'}
     ]
 }, function(res) {
-    var res0, res1, res2, res3, res4, res5, res6, res7,
+    var res0, res1, res2, res3, res4,
         etag1;
 
     if(!res || res.error) {
@@ -182,13 +159,10 @@ FB.api('', 'post', {
 
     res0 = JSON.parse(res[0].body);
     res1 = JSON.parse(res[1].body);
-    res2 = JSON.parse(res[2].body);
-    res3 = JSON.parse(res[3].body);
-    res4 = JSON.parse(res[4].body);
-    res5 = res[5].code === 304 ? undefined : JSON.parse(res[5].body);   // special case for not-modified responses
-                                                                        // set res5 as undefined if response wasn't modified.
-    res6 = res[6] === null ? null : JSON.parse(res[6].body);
-    res7 = res6 === null ? JSON.parse(res[7].body) : undefined; // set result as undefined if previous dependency failed
+    res2 = res[2].code === 304 ? undefined : JSON.parse(res[2].body);   // special case for not-modified responses
+                                                                        // set res2 as undefined if response wasn't modified.
+    res3 = res[3] === null ? null : JSON.parse(res[3].body);
+    res4 = res3 === null ? JSON.parse(res[4].body) : undefined; // set result as undefined if previous dependency failed
 
     if(res0.error) {
         console.log(res0.error);
@@ -204,50 +178,30 @@ FB.api('', 'post', {
         console.log(res1);
     }
 
-    if(res2.error) {
-        console.log(res2.error);
-    } else {
-        console.log(res2.data);
-    }
-
-    if(res3.error) {
-        console.log(res3.error);
-    } else {
-        console.log(res3.data[0].fql_result_set);
-        console.log(res3.data[1].fql_result_set);
-    }
-
-    if(res4.error) {
-        console.log(res4.error);
-    } else {
-        console.log(res4.data[0].fql_result_set);
-        console.log(res4.data[0].fql_result_set);
-    }
-
     // check if there are any new updates
-    if(typeof res5 !== "undefined") {
+    if(typeof res2 !== "undefined") {
         // make sure there was no error
-        if(res5.error) {
+        if(res2.error) {
             console.log(error);
         } else {
             console.log('new update available');
-            console.log(res5);
+            console.log(res2);
         }
     }
     else {
         console.log('no updates');
     }
 
-    // check if dependency executed successfully    
-    if(res[6] === null) {
+    // check if dependency executed successfully
+    if(res[3] === null) {
         // then check if the result it self doesn't have any errors.
-        if(res7.error) {
-            console.log(res7.error);
+        if(res4.error) {
+            console.log(res4.error);
         } else {
-            console.log(res7);
+            console.log(res4);
         }
     } else {
-        console.log(res6.error);
+        console.log(res3.error);
     }
 });
 
@@ -262,10 +216,10 @@ extractETag = function(res) {
     return etag;
 };
 ```
+
 ### Post
 
 ```js
-var FB = require('fb');
 FB.setAccessToken('access_token');
 
 var message = 'Hi from facebook-node-js';
@@ -299,8 +253,7 @@ facebook-node-sdk is capable of handling oauth requests which return non-json re
 
 ### Get facebook application access token
 
-```javascript
-var FB = require('fb');
+```js
 
 FB.api('oauth/access_token', {
     client_id: 'app_id',
@@ -311,15 +264,14 @@ FB.api('oauth/access_token', {
         console.log(!res ? 'error occurred' : res.error);
         return;
     }
-    
+
     var accessToken = res.access_token;
 });
 ```
 
 ### Exchange code for access token
 
-```javascript
-var FB = require('fb');
+```js
 
 FB.api('oauth/access_token', {
     client_id: 'app_id',
@@ -340,9 +292,8 @@ FB.api('oauth/access_token', {
 You can safely extract the code from the url using the `url` module. Always make sure to handle invalid oauth callback as
 well as error.
 
-```javascript
+```js
 var url = require('url');
-var FB = require('fb');
 
 var urlToParse = 'http://yoururl.com/callback?code=.....#_=_';
 var result = url.parse(urlToParse, true);
@@ -363,8 +314,7 @@ var code = result.query.code;
 
 ### Extend expiry time of the access token
 
-```javascript
-var FB = require('fb');
+```js
 
 FB.api('oauth/access_token', {
     client_id: 'client_id',
@@ -376,62 +326,9 @@ FB.api('oauth/access_token', {
         console.log(!res ? 'error occurred' : res.error);
         return;
     }
-    
+
     var accessToken = res.access_token;
     var expires = res.expires ? res.expires : 0;
-});
-```
-
-## Legacy REST Api
-
-__Although Legacy REST Api is supported by facebook-node-sdk, it is highly discouraged to be used, as Facebook is in the process of deprecating the Legacy REST Api.__
-
-### Get
-
-```javascript
-var FB = require('fb');
-
-FB.api({ method: 'users.getInfo', uids: ['4'], fields: ['uid', 'name'] }, function (res) {
-    if(!res || res.error_msg) {
-        console.log(!res ? 'error occurred' : res.error_msg);
-        return;
-    }
-
-    console.log('User Id: ' + res[0].uid);
-    console.log('Name: ' + res[0].name);
-});
-```
-
-### Post
-
-```javascript
-var FB = require('fb');
-FB.setAccessToken('access_token');
-
-var message = 'Hi from facebook-node-sdk';
-FB.api({ method: 'stream.publish', message: message }, function (res) {
-    if(!res || res.error_msg) {
-        console.log(!res ? 'error occurred' : res.error_msg);
-        return;
-    }
-    
-    console.log(res);
-});
-```
-### Delete
-
-```javascript
-var FB = require('fb');
-FB.setAccessToken('access_token');
-
-var postId = '.....';
-FB.api({ method: 'stream.remove', post_id: postId }, function (res) {
-    if(!res || res.error_msg) {
-        console.log(!res ? 'error occurred' : res.error_msg);
-        return;
-    }
-    
-    console.log(res);
 });
 ```
 
@@ -440,24 +337,33 @@ FB.api({ method: 'stream.remove', post_id: postId }, function (res) {
 ### setAccessToken
 *This is a non-standard api and does not exist in the official client side FB JS SDK.*
 
+**Warning**: Due to Node's asynchronous nature, you should not use `setAccessToken` when `FB` is used on behalf of for multiple users.
+
 ```js
-var FB = require('fb');
 FB.setAccessToken('access_token');
 ```
 
-If you want to use the api compaitible with FB JS SDK, pass `access_token` as parameter.
+If you want to use the api compatible with FB JS SDK, pass `access_token` as parameter.
 
 ```js
-FB.api('me', { fields: ['id', 'name'], access_token: 'access_token' }, function (res) {
+FB.api('me', { fields: 'id,name', access_token: 'access_token' }, function (res) {
     console.log(res);
-}
+});
+```
+
+### withAccessToken
+*This is a non-standard api and does not exist in the official client side FB JS SDK.*
+
+Using `FB.extend` this returns a new FB object that inherits the same options but has an accessToken specific to it set.
+
+```js
+var fb = FB.withAccessToken('access_token');
 ```
 
 ### getAccessToken
 *Unlike `setAccessToken` this is a standard api and exists in FB JS SDK.*
 
 ```js
-var FB = require('fb');
 FB.setAccessToken('access_token');
 var accessToken = FB.getAccessToken();
 ```
@@ -465,6 +371,35 @@ var accessToken = FB.getAccessToken();
 ### AppSecret Proof
 For improved security, as soon as you provide an app secret and an access token, the
 library automatically computes and adds the appsecret_proof parameter to your requests.
+
+## Rate limiting
+Current rate limit values are updated after each response received.
+>If your app is making enough calls to be considered for rate limiting by our system, we return an X-App-Usage HTTP header.
+
+That means if your API usage is low enough, Facebook don't send any information about rate limits and we consider them as 0
+### getAppUsage
+```js
+var appUsage = FB.getAppUsage();
+/*
+  {
+    callCount: 0,
+    totalTime: 0,
+    totalCPUTime: 0
+  }
+*/
+```
+
+### getPageUsage
+```js
+var pageUsage = FB.getPageUsage();
+/*
+{
+    callCount: 0,
+    totalTime: 0,
+    totalCPUTime: 0
+}
+*/
+```
 
 ## Configuration options
 
@@ -475,7 +410,6 @@ library automatically computes and adds the appsecret_proof parameter to your re
 When this method is called with no parameters it will return all of the current options.
 
 ```js
-var FB = require('fb');
 var options = FB.options();
 ```
 
@@ -494,14 +428,15 @@ var accessToken = FB.options('accessToken'); //will get the accessToken of 'XYZ'
 ```
 
 The existing options are:
-* `'accessToken'` string representing the facebook accessToken to be used for requests. This is the same option that is updated by the `setAccessToken` and `getAccessToken` methods.
-* `'appSecret'` string representing the facebook application secret.
+* `'accessToken'` string representing the Facebook accessToken to be used for requests. This is the same option that is updated by the `setAccessToken` and `getAccessToken` methods.
+* `'appId'` The ID of your app, found in your app's dashboard.
+* `'appSecret'` string representing the Facebook application secret.
+* `'version'` [default=`'v2.3'`] string representing the Facebook api version to use. Defaults to the oldest available version of the api.
 * `'proxy'` string representing an HTTP proxy to be used. Support proxy Auth with Basic Auth, embedding the auth info in the uri: 'http://[username:password@]proxy[:port]' (parameters in brackets are optional).
 * `'timeout'` integer number of milliseconds to wait for a response. Requests that have not received a response in *X* ms. If set to null or 0 no timeout will exist. On timeout an error object will be returned to the api callback with the error code of `'ETIMEDOUT'` (example below).
-
-`'scope'` and `'redirectUri'` have been whitelisted in options for convenience. These value will not be automatically
-added when using any of the sdk apis unlike the above options. These are whitelisted so you can use it to pass values
-using the same `FB` object.
+* `'scope'` string representing the Facebook scope to use in `getLoginUrl`.
+* `'redirectUri'` string representing the Facebook redirect_uri to use in `getLoginUrl`.
+* `'Promise'` Promise implementation to use when `FB.api` is called without a callback. Defaults to the Promise implementation returned by `require('any-promise')`.
 
 ### version
 
@@ -510,7 +445,6 @@ using the same `FB` object.
 Gets the string representation of the facebook-node-sdk library version.
 
 ```js
-var FB = require('fb');
 var version = FB.version;
 ```
 
@@ -521,8 +455,6 @@ var version = FB.version;
 *This is a non-standard api and does not exist in the official client side FB JS SDK.*
 
 ```js
-var FB = require('fb');
-
 var signedRequestValue = 'signed_request_value';
 var appSecret = 'app_secret';
 
@@ -536,13 +468,12 @@ if(signedRequest) {
 
 *Note: parseSignedRequest will return undefined if validation fails. Always remember to check the result of parseSignedRequest before accessing the result.*
 
-If you already set the appSeceret in options, you can ignore the second parameter when calling parseSignedRequest. If you do pass the second parameter it will use the appSecret passed in parameter instead of using appSecret from options.
+If you already set the appSecret in options, you can ignore the second parameter when calling parseSignedRequest. If you do pass the second parameter it will use the appSecret passed in parameter instead of using appSecret from options.
 
 If appSecret is absent, parseSignedRequest will throw an error.
 
 ```js
-var FB = require('fb');
-FB.options({ 'appSecret': 'app_secret'});
+FB.options({'appSecret': 'app_secret'});
 
 var signedRequestValue = 'signed_request_value';
 
@@ -554,9 +485,33 @@ if(signedRequest) {
 }
 ```
 
+## Manual Login Flow
+
+### getLoginUrl
+*This is a non-standard api and does not exist in the official client side FB JS SDK.*
+
+This returns the redirect url for a [manual login flow](https://developers.facebook.com/docs/facebook-login/manually-build-a-login-flow).
+
+```js
+FB.getLoginUrl({
+    scope: 'email,user_likes',
+    redirect_uri: 'http://example.com/'
+});
+```
+
+These options are accepted and all correspond to url parameters documented in Facebook's manual login flow documentation.
+
+* `'appId'`/`'client_id'` [default=`FB.options('appId')`] The ID of your app, found in your app's dashboard.
+* `'redirectUri'`/`'redirect_uri'` [default=`FB.options('redirectUri')`] The URL that you want to redirect the person logging in back to. This URL will capture the response from the Login Dialog.
+* `'scope'` [default=`FB.options('scope')`] A comma separated list of Permissions to request from the person using your app.
+* `'display'` Can be set to 'popup'.
+* `'state'` An arbitrary unique string created by your app to guard against Cross-site Request Forgery.
+* `'responseType'`/`'response_type'` [default=`'code'`] Determines whether the response data included when the redirect back to the app occurs is in URL parameters or fragments.
+
+
 ## Error handling
 
-*Note: facebook is not consistent with their error format, and different systems can fail causing different error formats*
+*Note: Facebook is not consistent with their error format, and different systems can fail causing different error formats*
 
 Some examples of various error codes you can check for:
 * `'ECONNRESET'` - connection reset by peer
@@ -565,7 +520,6 @@ Some examples of various error codes you can check for:
 * `'JSONPARSE'` - could not parse JSON response, happens when the FB API has availability issues. It sometimes returns HTML
 
 ```js
-var FB = require('fb');
 FB.options({timeout: 1, accessToken: 'access_token'});
 
 FB.api('/me', function (res) {
@@ -583,20 +537,73 @@ FB.api('/me', function (res) {
 });
 ```
 
+## Promise based interface
+
+*This is a non-standard api and does not exist in the official client side FB JS SDK.*
+
+When `FB.api` is called without a callback it will instead return a Promise that will either resolve with the same response as `FB.api` or be rejected with a `FacebookApiException` error.
+
+```js
+FB.api('4')
+    .then(function(response) {
+        console.log(response);
+    })
+    .catch(function(error) {
+        if(error.response.error.code === 'ETIMEDOUT') {
+            console.log('request timeout');
+        }
+        else {
+            console.log('error', error.message);
+        }
+    });
+
+// In an async function
+async function example() {
+    try {
+        var response = await FB.api('4');
+        console.log(response);
+    }
+    catch(error) {
+        if(error.response.error.code === 'ETIMEDOUT') {
+            console.log('request timeout');
+        }
+        else {
+            console.log('error', error.message);
+        }
+    }
+}
+```
+
+The promise implementation used can be controlled using [any-promise](https://www.npmjs.com/package/any-promise)'s register interface or by setting the `Promise` option.
+
+```js
+// any-promise
+import 'any-promise/register/bluebird';
+import FB from 'fb';
+let response = await FB.api('4');
+
+// Promise option
+import FB from 'fb';
+FB.options({
+    Promise: require('bluebird')
+});
+let response = await fb.api('4');
+
+// Promise option in a library
+import {Facebook} from 'fb';
+var fb = new Facebook({
+    Promise: require('bluebird')
+});
+let response = await fb.api('4');
+```
+
 ## Node style callback with FB.napi
 
 *This is a non-standard api and does not exist in the official client side FB JS SDK.*
 
-`FB.napi` takes the same input as `FB.api`. Only the callback parameters is different. In the original 
-`FB.api`, the callback expects one parameter which is the response. In `FB.napi` the callback expects two
-parameters instead of one and follows the node standards. The first parameter is an error which is always
-of type `FB.FacebookApiException` and the second parameter is the same response as in `FB.api`.
-Error response can be accessed using `error.response` which is the same response as the response when using
-`FB.api`
+`FB.napi` takes the same input as `FB.api`. Only the callback parameters is different. In the original `FB.api`, the callback expects one parameter which is the response. In `FB.napi` the callback expects two parameters instead of one and follows the node standards. The first parameter is an error which is always of type `FacebookApiException` and the second parameter is the same response as in `FB.api`. Error response can be accessed using `error.response` which is the same response as the response when using `FB.api`.
 
 ```js
-var FB = require('fb');
-
 FB.napi('4', function(error, response) {
     if(error) {
         if(error.response.error.code === 'ETIMEDOUT') {
